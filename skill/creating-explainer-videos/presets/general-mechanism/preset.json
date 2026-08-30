@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "id": "general-mechanism",
+  "version": "1.0.0",
+  "displayName": "通用机制解释",
+  "description": "Domain-neutral starting point for explaining inputs, internal state changes, outputs, boundaries, and failures.",
+  "template": null,
+  "extensions": {
+    "voice": "neutral-technical-zh",
+    "research": "primary-source-research",
+    "qc": "strict-release-qc",
+    "publishing": "douyin-release"
+  },
+  "contentRules": {
+    "requiredMechanismFields": ["input", "internalChanges", "output", "boundaries", "failures"],
+    "opening": "state-the-exact-question",
+    "closing": "summarize-the-mechanism-and-preview-the-next-question"
+  }
+}

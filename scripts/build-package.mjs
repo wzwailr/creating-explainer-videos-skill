@@ -1,14 +1,23 @@
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { spawnSync } from "node:child_process";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 
 import { createSkillManifest } from "../lib/manifest.mjs";
 
-const packageRoot = path.resolve(import.meta.dirname, "..");
-const canonicalSkill = path.join(packageRoot, "skill", "creating-ai-principle-videos");
+const packageRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
+const canonicalSkill = path.join(packageRoot, "skill", "creating-explainer-videos");
 const manifestPath = path.join(packageRoot, "skill-manifest.json");
 const distRoot = path.join(packageRoot, "dist");
 const forbiddenExtensions = new Set([".ttf", ".otf", ".woff", ".woff2", ".mp3", ".wav", ".mp4", ".mov"]);
+const sensitivePatterns = [
+  { label: "personal Windows user path", pattern: /C:\\Users\\GALAXY/i },
+  { label: "workspace path", pattern: /D:\\aiCode/i },
+  { label: "credential-directory path", pattern: /D:\\密码/i },
+  { label: "npm auth token", pattern: /(?:npm_[A-Za-z0-9]{20,}|_authToken\s*=)/ },
+  { label: "GitHub token", pattern: /(?:ghp|github_pat)_[A-Za-z0-9_]{20,}/ },
+  { label: "private key", pattern: /-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----/ },
+];
 
 async function main() {
   const packageJson = JSON.parse(await readFile(path.join(packageRoot, "package.json"), "utf8"));
@@ -16,6 +25,12 @@ async function main() {
   const forbidden = manifest.files.filter((item) => forbiddenExtensions.has(path.extname(item.path).toLowerCase()));
   if (forbidden.length) {
     throw new Error(`third-party media/font binaries are not allowed: ${forbidden.map((item) => item.path).join(", ")}`);
+  }
+  for (const item of manifest.files) {
+    const text = await readFile(path.join(canonicalSkill, ...item.path.split("/")), "utf8");
+    for (const { label, pattern } of sensitivePatterns) {
+      if (pattern.test(text)) throw new Error(`${label} is not allowed in Skill payload: ${item.path}`);
+    }
   }
   await writeFile(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`, "utf8");
   console.log(`Built package payload: ${manifest.files.length} files, version ${packageJson.version}`);

@@ -1,0 +1,15 @@
+{
+  "apiVersion": 1,
+  "id": "strict-release-qc",
+  "type": "qc",
+  "version": "1.0.0",
+  "displayName": "严格发布质检",
+  "description": "Automated media evidence plus muted, audio-only, and normal-watch human gates.",
+  "entrypoints": {
+    "reference": "reference.md",
+    "profile": "profile.json",
+    "assets": []
+  },
+  "capabilities": ["qc.media", "qc.visual", "qc.audio", "qc.release-decision"],
+  "permissions": ["filesystem:project-read", "filesystem:project-write", "process:ffmpeg", "process:ffprobe"]
+}

@@ -4,18 +4,19 @@ import { mkdtemp, mkdir, writeFile } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { spawnSync } from "node:child_process";
+import { fileURLToPath } from "node:url";
 
-const packageRoot = path.resolve(import.meta.dirname, "..");
-const cli = path.join(packageRoot, "bin", "ai-principle-video-skill.mjs");
+const packageRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
+const cli = path.join(packageRoot, "bin", "explainer-video-skill.mjs");
 
 async function createSource(root) {
-  const source = path.join(root, "creating-ai-principle-videos");
+  const source = path.join(root, "creating-explainer-videos");
   for (const directory of ["agents", "scripts", "references", "assets", "extensions"]) {
     await mkdir(path.join(source, directory), { recursive: true });
   }
   await writeFile(
     path.join(source, "SKILL.md"),
-    "---\nname: creating-ai-principle-videos\ndescription: Use when testing CLI installation.\n---\n\n# CLI fixture\n",
+    "---\nname: creating-explainer-videos\ndescription: Use when testing CLI installation.\n---\n\n# CLI fixture\n",
     "utf8",
   );
   await writeFile(path.join(source, "agents", "openai.yaml"), "interface:\n  display_name: CLI fixture\n", "utf8");
@@ -60,4 +61,37 @@ test("CLI installs product-neutral skill into an arbitrary skills directory", as
   assert.equal(JSON.parse(install.stdout).targetKind, "custom");
   assert.equal(verify.status, 0, verify.stderr || verify.stdout);
   assert.equal(JSON.parse(verify.stdout).valid, true);
+});
+
+test("CLI creates a project and reports its next state as JSON", async () => {
+  const tempRoot = await mkdtemp(path.join(os.tmpdir(), "explainer-video-project-cli-"));
+  const projectRoot = path.join(tempRoot, "clearing-flow");
+  const created = spawnSync(process.execPath, [
+    cli,
+    "new",
+    projectRoot,
+    "--title",
+    "信用卡清算",
+    "--topic",
+    "清算为什么分多步",
+    "--template",
+    "spatial-chamber",
+    "--json",
+  ], { encoding: "utf8" });
+  const status = spawnSync(process.execPath, [cli, "status", projectRoot, "--json"], { encoding: "utf8" });
+
+  assert.equal(created.status, 0, created.stderr || created.stdout);
+  assert.equal(JSON.parse(created.stdout).project.template, "spatial-chamber");
+  assert.equal(status.status, 0, status.stderr || status.stdout);
+  assert.equal(JSON.parse(status.stdout).next.action, "write-brief");
+});
+
+test("CLI lists the visual template collection", () => {
+  const listed = spawnSync(process.execPath, [cli, "templates", "list", "--json"], { encoding: "utf8" });
+
+  assert.equal(listed.status, 0, listed.stderr || listed.stdout);
+  assert.deepEqual(
+    JSON.parse(listed.stdout).map((item) => item.id),
+    ["ink-explainer", "paper-theatre", "spatial-chamber"],
+  );
 });

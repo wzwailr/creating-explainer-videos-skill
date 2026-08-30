@@ -1,0 +1,10 @@
+:root {
+  --void: #080b12;
+  --panel: #121a29;
+  --ink: #eef4ff;
+  --cyan: #56d8ff;
+  --violet: #9b7cff;
+  --amber: #ffc457;
+  --alert: #ff5f70;
+  --caption-bg: rgba(8, 11, 18, .92);
+}

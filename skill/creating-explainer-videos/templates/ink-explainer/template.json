@@ -1,0 +1,48 @@
+{
+  "id": "ink-explainer",
+  "version": "2.0.0",
+  "displayName": "Ink Explainer / 手绘动态图解",
+  "description": "Ruled paper, rough strokes, annotations, and step-by-step mechanism derivation.",
+  "domFingerprint": "ruled-board-rough-strokes-and-teacher-notes",
+  "capabilities": {
+    "required": ["drawn-relations", "progressive-derivation"],
+    "optional": ["DrawSVGPlugin", "MorphSVGPlugin", "SplitText", "CustomEase"]
+  },
+  "tokens": {
+    "background": "#f5f0e4",
+    "foreground": "#202225",
+    "primary": "#2457c5",
+    "secondary": "#d84738",
+    "accent": "#e0b72f",
+    "note": "#2c835f"
+  },
+  "primitives": ["rough-line", "hand-arrow", "annotation", "derivation-row", "circled-term", "teacher-note"],
+  "motionGrammar": {
+    "fingerprint": "draw-annotate-derive-and-correct",
+    "entry": "the claim appears before its explanation is drawn",
+    "relation": "lines and labels are added in the same order as reasoning",
+    "transition": "board shift, page pan, or erased correction"
+  },
+  "coverGrammar": {
+    "layout": "explanation-board",
+    "hero": "one hand-drawn causal diagram with a highlighted conclusion"
+  },
+  "fontPolicy": {
+    "display": ["DingTalk JinBuTi", "DingTalk Sans", "Microsoft YaHei", "sans-serif"],
+    "body": ["Noto Sans SC", "Microsoft YaHei", "sans-serif"],
+    "redistribute": false
+  },
+  "fallbacks": {
+    "DrawSVGPlugin": "stroke-dashoffset",
+    "MorphSVGPlugin": "crossfade-between-shapes",
+    "SplitText": "whole-line-reveal",
+    "CustomEase": "cubic-bezier(0.22,0.74,0.2,1)"
+  },
+  "fixtures": ["derivation", "cause-effect", "failure-correction"],
+  "qcRules": {
+    "minimumAnnotationPixels": 28,
+    "maximumSimultaneousAnnotations": 5,
+    "requiresMobilePreview": true,
+    "requiresDrawOrderMatch": true
+  }
+}

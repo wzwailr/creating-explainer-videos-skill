@@ -1,21 +1,33 @@
 # Changelog
 
-All notable changes to this project are documented here.
+All notable changes are documented here.
 
-## [1.1.0] - 2026-08-30
+## [2.0.0] - 2026-08-31
+
+### Changed
+
+- Renamed the product from an AI-series-specific Skill to the domain-neutral `creating-explainer-videos-skill` package and `creating-explainer-videos` Skill.
+- Promoted `explainer-video-skill` to the primary CLI; kept `ai-principle-video-skill` as a deprecated compatibility alias.
+- Moved series-specific defaults into the isolated `ai-principle-series` example preset.
 
 ### Added
 
-- Product-neutral npm/npx installer with a Codex adapter and arbitrary `--destination` support.
-- Install, update, verify, rollback, list-extensions, doctor, and recoverable uninstall commands.
-- SHA-256 package manifest and installed-file tamper detection.
-- Declarative Extension API v1 for visual, voice, research, QC, and publishing profiles.
-- Built-in Ink Explainer and Paper Theatre visual systems.
-- Episode extension lockfile, immutable profile snapshots, and hash validation.
-- Mechanism-first episode scaffold, narration-caption identity checks, underscore speech guard, cover hierarchy contract, and release-state validation.
-- Local `.tgz` and clean ZIP packaging with isolated lifecycle smoke tests.
+- Executable production state machine and JSON-first project lifecycle commands.
+- Runnable renderer and dedicated cover generated for every new project.
+- Canonical narration normalization, escaped/snake-case underscore guard, caption/TTS identity, and measured timing import.
+- Deterministic render, mux, ffprobe/FFmpeg audit, artifact hashing, packaging, and human-release decision boundary.
+- Three-template visual collection: Paper Theatre, Spatial Chamber, and Ink Explainer.
+- Spatial Chamber depth/path grammar, licensed-plugin fallbacks, and QC limits derived from the former B visual direction.
+- Declarative presets, permission-listed extensions, immutable hash metadata, and legacy research ID alias.
+- Credit-card clearing and quantum-tunneling non-AI fixtures.
+- Windows/Linux and Node.js 18/22 CI plus packed npx/global install smoke tests.
 
 ### Security and licensing
 
-- Public npm publication is blocked until separately authorized.
-- Font, GSAP, music, sound-effect, image, and video binaries are excluded.
+- No font, premium GSAP, music, audio, image, or video binaries are redistributed.
+- Automated QC cannot set `passed`; a named human must completely review the exact artifact hash.
+- Package commands use argument arrays and keep provider credentials outside projects and logs.
+
+## [1.1.0] - 2026-08-30
+
+Legacy AI-series-specific first public release: portable installer, declarative extension API, integrity manifest, Ink/Paper profiles, episode scaffold, and release gates.

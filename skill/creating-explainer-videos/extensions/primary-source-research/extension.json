@@ -1,0 +1,15 @@
+{
+  "apiVersion": 1,
+  "id": "primary-source-research",
+  "type": "research",
+  "version": "1.0.0",
+  "displayName": "一手资料研究",
+  "description": "Primary-source evidence profile for explaining mechanisms, systems, and scientific processes.",
+  "entrypoints": {
+    "reference": "reference.md",
+    "profile": "profile.json",
+    "assets": []
+  },
+  "capabilities": ["research.primary-sources", "research.fact-table", "research.current-verification"],
+  "permissions": ["network:read"]
+}

@@ -1,25 +1,27 @@
 # Contributing
 
-Contributions are welcome when they preserve the production contract and remain portable.
+Contributions are welcome when they preserve the executable production contract, portability, and release truthfulness.
 
-## Before opening a pull request
+## Required rules
 
-1. Keep the core Skill product-neutral. Host-specific discovery metadata must remain optional.
-2. Do not add credentials, paid-provider authorization, font binaries, GSAP binaries, music, or media files.
-3. Keep extensions declarative. Extension API v1 rejects `hooks`, `scripts`, and `postinstall`.
-4. Add or update tests before production behavior changes.
-5. Run:
+1. Keep the core package domain-neutral; domain or series behavior belongs in a named preset/example.
+2. Do not add credentials, paid-provider authorization, personal paths, font binaries, premium GSAP binaries, music, or media files.
+3. Keep Extension API v1 declarative. `hooks`, `scripts`, and `postinstall` are forbidden.
+4. A new visual template needs a unique DOM/motion fingerprint, semantic primitives, fallback implementation, cover grammar, QC rules, and fixtures. A recolor is not a template.
+5. Preserve canonical narration/caption identity, real timing, deterministic seek, and the human release boundary.
+6. Add a failing test before changing behavior and keep changes scoped.
+
+## Validation
 
 ```powershell
 npm test
-$env:PYTHONDONTWRITEBYTECODE='1'
-python skill\creating-ai-principle-videos\scripts\test_skill.py
-python skill\creating-ai-principle-videos\scripts\test_extensions.py
+npm run examples:verify
+$env:PYTHONUTF8='1'
+python skill\creating-explainer-videos\scripts\test_skill.py
+python skill\creating-explainer-videos\scripts\test_extensions.py
 npm run build
+npm run pack:local
+npm run smoke:packed -- .\dist\creating-explainer-videos-skill-2.0.0.tgz
 ```
 
-## Adding an extension
-
-Copy an existing extension of the same type, assign a new lowercase hyphenated ID and semantic version, update `extension.json`, `profile.json`, and `reference.md`, then scaffold a disposable episode and inspect `extensions.lock.json`.
-
-New visual profiles must define their own semantic-motion language, typography roles, cover grammar, and style tokens. They must not be simple recolors of an existing template.
+Run the clean ZIP build on Windows when changing the portable Skill payload. Review `npm pack --dry-run --json` and the unpacked tarball before a release.

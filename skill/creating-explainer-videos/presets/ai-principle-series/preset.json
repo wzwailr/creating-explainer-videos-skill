@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "id": "ai-principle-series",
+  "version": "1.0.0",
+  "displayName": "AI 底层原理图解系列示例",
+  "description": "Example preset preserving the production rules learned from the AI principle explainer series without branding the core package.",
+  "template": null,
+  "extensions": {
+    "voice": "neutral-technical-zh",
+    "research": "primary-source-research",
+    "qc": "strict-release-qc",
+    "publishing": "douyin-release"
+  },
+  "seriesRules": {
+    "opening": "one-sentence-recap-and-exact-topic",
+    "closing": "one-sentence-next-episode-preview",
+    "cover": "series-season-episode-topic-in-top-left-cluster",
+    "depth": "teach-input-state-change-output-boundary-and-failure",
+    "captionSource": "canonical-narration"
+  }
+}

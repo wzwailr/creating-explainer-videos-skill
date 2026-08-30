@@ -1,0 +1,74 @@
+{
+  "schemaVersion": 1,
+  "project": {
+    "title": "量子隧穿",
+    "topic": "粒子能量低于势垒时，穿透概率从哪里来",
+    "template": "ink-explainer",
+    "language": "zh-CN",
+    "platform": "short-video"
+  },
+  "brief": {
+    "title": "量子隧穿",
+    "topic": "粒子能量低于势垒时，穿透概率从哪里来",
+    "audience": "知道粒子和概率但没有系统学过量子力学的观众",
+    "exactQuestion": "为什么低于势垒的量子态在另一侧仍有非零概率",
+    "promisedAnswer": "波函数在有限势垒中指数衰减而不是突然归零，边界连续条件留下另一侧的非零振幅",
+    "scope": ["一维有限方势垒", "波函数", "边界连续", "透射概率", "指数敏感性"],
+    "constraints": ["不把波函数说成经典粒子轨迹", "不把单次测量画成粒子在墙内走固定路径"]
+  },
+  "evidence": {
+    "claims": [
+      {"claim": "有限势垒内的定态解呈指数衰减", "sourceType": "standard-quantum-mechanics-text", "verifiedAt": "2026-08-31", "teachingSimplification": "只展示一维矩形势垒", "visualExpression": "振幅曲线进入势垒后指数下降"},
+      {"claim": "透射率对势垒宽度和衰减常数呈指数敏感", "sourceType": "derived-from-schrodinger-equation", "verifiedAt": "2026-08-31", "teachingSimplification": "省略完整系数只保留指数关系", "visualExpression": "宽度翻倍导致尾部显著缩小"}
+    ],
+    "sources": [
+      {"id": "source-textbook", "kind": "primary-placeholder", "note": "Fixture demonstrates the evidence schema; add an authoritative textbook or paper citation before publication."}
+    ]
+  },
+  "mechanismMap": {
+    "input": ["能量为 E 的一维量子态", "高度为 V 零且 V 零大于 E 的有限势垒", "势垒宽度 a"],
+    "internalChanges": ["解定态薛定谔方程", "势垒内波数变为衰减常数", "匹配波函数与导数", "得到另一侧透射振幅"],
+    "output": ["非零透射概率", "概率随势垒宽度指数降低"],
+    "boundaries": ["无限高或无限宽极限下概率趋近零", "描述的是测量分布而非经典轨迹"],
+    "failures": ["把概率云画成小球打洞", "忽略边界条件", "把非零概率说成必然穿过"],
+    "workedExample": {"teachingOnly": true, "comparison": "衰减常数不变时，势垒宽度从 a 增加到二 a，主要指数因子从 e 的负二 kappa a 次方变成 e 的负四 kappa a 次方"}
+  },
+  "narration": [
+    {"id": "C01", "sceneId": "S01", "text": "这一条只回答一个问题：粒子能量低于势垒，另一侧的穿透概率到底从哪里来。", "focus": "exact-question", "visualEvent": "draw energy below rectangular barrier"},
+    {"id": "C02", "sceneId": "S02", "text": "经典粒子会在墙前停下；量子力学描述的却不是一条确定轨迹，而是覆盖空间的波函数。", "focus": "wavefunction-not-trajectory", "visualEvent": "cross out ball path and draw distributed wave"},
+    {"id": "C03", "sceneId": "S03", "text": "在势垒外，波函数可以振荡；进入能量不足的势垒后，方程把振荡波数变成衰减常数。", "focus": "kappa-transition", "visualEvent": "derive oscillation to exponential decay"},
+    {"id": "C04", "sceneId": "S03", "text": "所以振幅不会在边界突然归零，而会在势垒内部按指数快速变小。", "focus": "exponential-tail", "visualEvent": "draw decaying amplitude inside barrier"},
+    {"id": "C05", "sceneId": "S04", "text": "波函数和它的导数要在两侧边界连续，这个条件把左侧入射、内部衰减和右侧透射连成同一个解。", "focus": "boundary-matching", "visualEvent": "connect three solution regions at both boundaries"},
+    {"id": "C06", "sceneId": "S05", "text": "只要势垒有限，衰减后的尾部通常仍不为零；平方以后，就是在另一侧测到粒子的非零概率。", "focus": "nonzero-transmission", "visualEvent": "square remaining amplitude into probability"},
+    {"id": "C07", "sceneId": "S06", "text": "关键不是墙上开了洞，而是概率对宽度极其敏感：宽度增加一倍，主要指数会再衰减一大截。", "focus": "width-sensitivity", "visualEvent": "compare one-width and double-width barriers"},
+    {"id": "C08", "sceneId": "S07", "text": "单次测量只会在某处发现粒子；穿透率描述的是重复准备同一状态后，另一侧结果所占的比例。", "focus": "ensemble-meaning", "visualEvent": "convert repeated trials into outcome histogram"},
+    {"id": "C09", "sceneId": "S08", "text": "因此，隧穿的底层链条是有限势垒让波函数衰减但不截断，边界连续留下透射振幅，测量统计把它变成概率。", "focus": "mechanism-reconstruction", "visualEvent": "rebuild decay boundary amplitude probability chain"}
+  ],
+  "timing": [
+    {"id": "C01", "start": 0, "duration": 5.8},
+    {"id": "C02", "start": 5.8, "duration": 7.1},
+    {"id": "C03", "start": 12.9, "duration": 7.2},
+    {"id": "C04", "start": 20.1, "duration": 5.9},
+    {"id": "C05", "start": 26, "duration": 8.2},
+    {"id": "C06", "start": 34.2, "duration": 7.1},
+    {"id": "C07", "start": 41.3, "duration": 7.2},
+    {"id": "C08", "start": 48.5, "duration": 7.8},
+    {"id": "C09", "start": 56.3, "duration": 7.9}
+  ],
+  "scenes": [
+    {"id": "S01", "title": "精确问题", "purpose": "限定有限势垒与低能量", "knowledgePoint": "问题是非零概率的来源", "input": "E 小于 V 零", "transformation": "画出有限势垒", "output": "待解释的右侧概率", "compositionTask": "手绘能量线与方势垒", "cueIds": ["C01"]},
+    {"id": "S02", "title": "不是经典轨迹", "purpose": "替换错误小球模型", "knowledgePoint": "量子态由波函数描述", "input": "经典反弹直觉", "transformation": "划掉轨迹并展开波", "output": "空间分布视角", "compositionTask": "错误分支与正确波函数对照", "cueIds": ["C02"]},
+    {"id": "S03", "title": "势垒内指数衰减", "purpose": "从方程符号变化得到衰减", "knowledgePoint": "有限势垒不让振幅瞬间归零", "input": "势垒外振荡解", "transformation": "波数变成衰减常数", "output": "势垒内指数尾部", "compositionTask": "逐行推导并绘制衰减曲线", "cueIds": ["C03", "C04"]},
+    {"id": "S04", "title": "边界把三段连起来", "purpose": "解释右侧振幅为何存在", "knowledgePoint": "解与导数连续", "input": "三段候选解", "transformation": "匹配两个边界", "output": "统一的透射解", "compositionTask": "两条边界线与连续性标注", "cueIds": ["C05"]},
+    {"id": "S05", "title": "振幅平方成为概率", "purpose": "把非零尾部连接到测量", "knowledgePoint": "有限振幅意味着非零透射率", "input": "右侧透射振幅", "transformation": "取模平方", "output": "透射概率", "compositionTask": "圈出尾部并变换成概率条", "cueIds": ["C06"]},
+    {"id": "S06", "title": "宽度的指数代价", "purpose": "给出可计算的敏感性", "knowledgePoint": "宽度增大会强烈抑制隧穿", "input": "宽度 a", "transformation": "比较 a 与二 a", "output": "指数项进一步变小", "compositionTask": "双栏势垒与尾部长度对照", "cueIds": ["C07"]},
+    {"id": "S07", "title": "概率不是墙内路径", "purpose": "说明统计含义", "knowledgePoint": "透射率来自重复测量分布", "input": "同态重复实验", "transformation": "记录左右结果", "output": "频率趋近概率", "compositionTask": "重复点阵汇成直方图", "cueIds": ["C08"]},
+    {"id": "S08", "title": "重建隧穿链条", "purpose": "用四步总结机制", "knowledgePoint": "衰减、连续、振幅、概率", "input": "有限势垒", "transformation": "串联四个因果节点", "output": "非零透射概率", "compositionTask": "手绘因果链逐项圈定", "cueIds": ["C09"]}
+  ],
+  "publishing": {
+    "title": "量子隧穿：低于势垒的穿透概率从哪来",
+    "description": "不把粒子画成穿墙小球，从波函数衰减、边界连续和测量概率重建隧穿机制。",
+    "topics": ["量子力学", "量子隧穿", "物理科普", "原理图解"],
+    "pinnedComment": "你以前把隧穿想成粒子在墙里走了一条隐秘路径吗？"
+  }
+}

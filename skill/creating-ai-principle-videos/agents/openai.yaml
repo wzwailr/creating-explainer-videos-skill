@@ -1,4 +1,0 @@
-interface:
-  display_name: "AI 原理图解视频制作"
-  short_description: "从深度脚本、逐字字幕和语义动效制作可发布的 AI 原理图解视频"
-  default_prompt: "使用 $creating-ai-principle-videos 按完整深度、视觉、音画同步和发布验收标准制作一集 AI 原理图解视频。"

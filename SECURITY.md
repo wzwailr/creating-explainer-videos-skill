@@ -2,15 +2,18 @@
 
 ## Supported version
 
-Security fixes currently target the latest GitHub Release.
+Security fixes target the latest major release. v1 is retained as a legacy release; upgrade to v2 for current fixes.
 
 ## Reporting
 
-Do not post credentials, tokens, private media, or paid-provider task IDs in a public issue. Open a GitHub issue containing only a minimal non-sensitive reproduction and request a private follow-up when sensitive evidence is required.
+Do not post credentials, tokens, private media, paid-provider task IDs, or personal filesystem paths in a public issue. Create a minimal non-sensitive report and request a private follow-up when sensitive evidence is unavoidable.
 
-## Trust boundary
+## Trust boundaries
 
-- Extension API v1 is declarative and rejects executable hooks.
-- Package installation verifies a SHA-256 manifest before copying files.
-- Update, rollback, and uninstall operate on one exact Skill directory and keep recoverable backups.
-- Provider credentials and paid execution authorization must remain outside the Skill.
+- Extension API v1 is declarative, permission-listed, path-contained, and rejects executable hooks.
+- Skill installation verifies a SHA-256 package manifest before copying files.
+- Update, rollback, and uninstall target one exact Skill directory and preserve recoverable backups.
+- CLI process execution uses argument arrays; it does not build shell commands from project text.
+- Provider credentials and paid-execution authorization remain outside the package and generated projects.
+- Automated QC cannot create a human `passed` decision.
+- Published archives must exclude tokens, personal absolute paths, cache files, generated media, font binaries, and premium plugin binaries.

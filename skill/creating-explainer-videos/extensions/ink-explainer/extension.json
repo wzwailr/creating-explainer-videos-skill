@@ -1,0 +1,15 @@
+{
+  "apiVersion": 1,
+  "id": "ink-explainer",
+  "type": "visual",
+  "version": "1.0.0",
+  "displayName": "Ink Explainer 手绘动态图解",
+  "description": "Ruled-paper, hand-drawn mechanism explanation for dense mechanisms and derivations.",
+  "entrypoints": {
+    "reference": "reference.md",
+    "profile": "profile.json",
+    "assets": ["assets/style-tokens.css"]
+  },
+  "capabilities": ["visual.tokens", "visual.semantic-motion", "visual.cover-grammar"],
+  "permissions": []
+}

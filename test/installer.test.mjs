@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { mkdtemp, mkdir, readFile, writeFile } from "node:fs/promises";
+import { access, mkdtemp, mkdir, readFile, writeFile } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 
@@ -23,14 +23,14 @@ async function writeJson(filePath, value) {
 }
 
 async function createFixtureSkill(root, marker = "v1") {
-  const skillRoot = path.join(root, "creating-ai-principle-videos");
+  const skillRoot = path.join(root, "creating-explainer-videos");
   await mkdir(path.join(skillRoot, "agents"), { recursive: true });
   await mkdir(path.join(skillRoot, "scripts"), { recursive: true });
   await mkdir(path.join(skillRoot, "references"), { recursive: true });
   await mkdir(path.join(skillRoot, "assets"), { recursive: true });
   await writeFile(
     path.join(skillRoot, "SKILL.md"),
-    `---\nname: creating-ai-principle-videos\ndescription: Use when testing a packaged video skill.\n---\n\n# Fixture\n\n${marker}\n`,
+    `---\nname: creating-explainer-videos\ndescription: Use when testing a packaged video skill.\n---\n\n# Fixture\n\n${marker}\n`,
     "utf8",
   );
   await writeFile(path.join(skillRoot, "agents", "openai.yaml"), "interface:\n  display_name: Fixture\n", "utf8");
@@ -49,12 +49,22 @@ async function createFixtureSkill(root, marker = "v1") {
       assets: ["assets/style-tokens.css"],
     },
     capabilities: ["visual.tokens", "visual.motion", "cover.template"],
+    permissions: [],
   });
   await writeFile(path.join(extensionRoot, "reference.md"), "# Ink Explainer\n", "utf8");
   await writeJson(path.join(extensionRoot, "profile.json"), { style: "ink" });
   await mkdir(path.join(extensionRoot, "assets"), { recursive: true });
   await writeFile(path.join(extensionRoot, "assets", "style-tokens.css"), ":root{}\n", "utf8");
   return skillRoot;
+}
+
+async function exists(filePath) {
+  try {
+    await access(filePath);
+    return true;
+  } catch {
+    return false;
+  }
 }
 
 test("resolves both Codex and product-neutral skills roots", () => {
@@ -65,7 +75,7 @@ test("resolves both Codex and product-neutral skills roots", () => {
   assert.equal(resolveSkillsRoot({ destination: generic }), generic);
   assert.equal(
     installedSkillPath({ destination: generic }),
-    path.join(generic, "creating-ai-principle-videos"),
+    path.join(generic, "creating-explainer-videos"),
   );
 });
 
@@ -81,8 +91,31 @@ test("installs and verifies the skill in an isolated CODEX_HOME", async () => {
   assert.equal(verification.valid, true);
   assert.deepEqual(verification.extensions.map((item) => item.id), ["ink-explainer"]);
   assert.match(
-    await readFile(path.join(codexHome, "skills", "creating-ai-principle-videos", "SKILL.md"), "utf8"),
+    await readFile(path.join(codexHome, "skills", "creating-explainer-videos", "SKILL.md"), "utf8"),
     /v1/,
+  );
+});
+
+test("migrates a legacy AI-specific installation into a recoverable backup", async () => {
+  const tempRoot = await mkdtemp(path.join(os.tmpdir(), "explainer-video-skill-migrate-"));
+  const source = await createFixtureSkill(path.join(tempRoot, "source"), "generic-v2");
+  const codexHome = path.join(tempRoot, "codex-home");
+  const legacyRoot = path.join(codexHome, "skills", "creating-ai-principle-videos");
+  await mkdir(legacyRoot, { recursive: true });
+  await writeFile(
+    path.join(legacyRoot, "SKILL.md"),
+    "---\nname: creating-ai-principle-videos\ndescription: Legacy fixture.\n---\n",
+    "utf8",
+  );
+
+  const result = await installSkill({ source, codexHome });
+
+  assert.equal(result.action, "migrated");
+  assert.equal(await exists(legacyRoot), false);
+  assert.equal(await exists(result.legacyBackupPath), true);
+  assert.match(
+    await readFile(path.join(codexHome, "skills", "creating-explainer-videos", "SKILL.md"), "utf8"),
+    /generic-v2/,
   );
 });
 
@@ -99,7 +132,7 @@ test("upgrades with a recoverable backup", async () => {
   assert.ok(result.backupPath);
   assert.match(await readFile(path.join(result.backupPath, "SKILL.md"), "utf8"), /v1/);
   assert.match(
-    await readFile(path.join(codexHome, "skills", "creating-ai-principle-videos", "SKILL.md"), "utf8"),
+    await readFile(path.join(codexHome, "skills", "creating-explainer-videos", "SKILL.md"), "utf8"),
     /v2/,
   );
 });
@@ -116,7 +149,7 @@ test("rolls back to the most recent recoverable backup", async () => {
 
   assert.equal(result.action, "rolled_back");
   assert.match(
-    await readFile(path.join(destination, "creating-ai-principle-videos", "SKILL.md"), "utf8"),
+    await readFile(path.join(destination, "creating-explainer-videos", "SKILL.md"), "utf8"),
     /v1/,
   );
   assert.ok(result.displacedTo);
@@ -125,7 +158,7 @@ test("rolls back to the most recent recoverable backup", async () => {
 test("rejects an invalid source without disturbing the installed skill", async () => {
   const tempRoot = await mkdtemp(path.join(os.tmpdir(), "ai-video-skill-rollback-"));
   const validSource = await createFixtureSkill(path.join(tempRoot, "valid"), "keep-me");
-  const invalidSource = path.join(tempRoot, "invalid", "creating-ai-principle-videos");
+  const invalidSource = path.join(tempRoot, "invalid", "creating-explainer-videos");
   const codexHome = path.join(tempRoot, "codex-home");
   await mkdir(invalidSource, { recursive: true });
   await writeFile(path.join(invalidSource, "SKILL.md"), "broken\n", "utf8");
@@ -133,7 +166,7 @@ test("rejects an invalid source without disturbing the installed skill", async (
   await installSkill({ source: validSource, codexHome });
   await assert.rejects(() => installSkill({ source: invalidSource, codexHome }), /invalid skill source/i);
   assert.match(
-    await readFile(path.join(codexHome, "skills", "creating-ai-principle-videos", "SKILL.md"), "utf8"),
+    await readFile(path.join(codexHome, "skills", "creating-explainer-videos", "SKILL.md"), "utf8"),
     /keep-me/,
   );
 });

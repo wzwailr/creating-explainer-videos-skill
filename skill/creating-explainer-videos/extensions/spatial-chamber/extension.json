@@ -1,0 +1,15 @@
+{
+  "apiVersion": 1,
+  "id": "spatial-chamber",
+  "type": "visual",
+  "version": "1.0.0",
+  "displayName": "Spatial Chamber 空间叙事舱",
+  "description": "Perspective, path, depth, and occlusion grammar for systems, routing, and multi-stage flows.",
+  "entrypoints": {
+    "reference": "reference.md",
+    "profile": "profile.json",
+    "assets": ["assets/style-tokens.css"]
+  },
+  "capabilities": ["visual.tokens", "visual.semantic-motion", "visual.spatial-depth", "visual.cover-grammar"],
+  "permissions": []
+}

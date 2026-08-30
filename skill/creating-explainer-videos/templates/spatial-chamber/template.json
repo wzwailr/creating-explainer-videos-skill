@@ -1,0 +1,48 @@
+{
+  "id": "spatial-chamber",
+  "version": "2.0.0",
+  "displayName": "Spatial Chamber / 空间数据舱",
+  "description": "Perspective depth, signal tunnels, path motion, spatial reconfiguration, and high-impact system views.",
+  "domFingerprint": "perspective-chamber-tunnel-and-depth-lanes",
+  "capabilities": {
+    "required": ["perspective", "path-motion", "depth-layout"],
+    "optional": ["MotionPathPlugin", "DrawSVGPlugin", "SplitText", "CustomEase"]
+  },
+  "tokens": {
+    "background": "#030611",
+    "foreground": "#eefcff",
+    "primary": "#3af2ff",
+    "secondary": "#8a6bff",
+    "accent": "#c6ff3d",
+    "danger": "#ff4f72"
+  },
+  "primitives": ["signal-tunnel", "depth-card", "path-node", "perspective-grid", "decoder-lane", "volume-chart"],
+  "motionGrammar": {
+    "fingerprint": "camera-depth-path-and-signal-flight",
+    "entry": "camera establishes depth before objects travel",
+    "relation": "signals move along visible paths through stages",
+    "transition": "depth push, aperture, or light-plane cut"
+  },
+  "coverGrammar": {
+    "layout": "dark-spatial-hero",
+    "hero": "one luminous route crossing a volumetric mechanism"
+  },
+  "fontPolicy": {
+    "display": ["DingTalk JinBuTi", "DingTalk Sans", "Microsoft YaHei", "sans-serif"],
+    "body": ["Noto Sans SC", "Microsoft YaHei", "sans-serif"],
+    "redistribute": false
+  },
+  "fallbacks": {
+    "MotionPathPlugin": "svg-path-sampling",
+    "DrawSVGPlugin": "stroke-dashoffset",
+    "SplitText": "whole-line-reveal",
+    "CustomEase": "cubic-bezier(0.2,0.75,0.15,1)"
+  },
+  "fixtures": ["data-flow", "network-route", "state-transition"],
+  "qcRules": {
+    "minimumPerspectiveTextPixels": 34,
+    "maximumDepthOcclusionRatio": 0.18,
+    "requiresMobilePreview": true,
+    "requiresPathMeaning": true
+  }
+}

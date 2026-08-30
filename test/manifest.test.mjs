@@ -8,14 +8,14 @@ import { createSkillManifest, verifySkillManifest } from "../lib/manifest.mjs";
 
 test("manifest verifies the exact packaged skill and detects tampering", async () => {
   const root = await mkdtemp(path.join(os.tmpdir(), "ai-video-skill-manifest-"));
-  const skillRoot = path.join(root, "skill", "creating-ai-principle-videos");
+  const skillRoot = path.join(root, "skill", "creating-explainer-videos");
   await mkdir(path.join(skillRoot, "scripts"), { recursive: true });
   await writeFile(path.join(skillRoot, "SKILL.md"), "fixture\n", "utf8");
   await writeFile(path.join(skillRoot, "scripts", "check.py"), "print('ok')\n", "utf8");
 
   const manifest = await createSkillManifest({
     skillRoot,
-    packageVersion: "1.1.0",
+    packageVersion: "2.0.0",
   });
   const manifestPath = path.join(root, "skill-manifest.json");
   await writeFile(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`, "utf8");

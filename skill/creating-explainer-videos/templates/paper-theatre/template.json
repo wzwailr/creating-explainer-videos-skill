@@ -1,0 +1,45 @@
+{
+  "id": "paper-theatre",
+  "version": "2.0.0",
+  "displayName": "Paper Theatre / 纸艺编辑剧场",
+  "description": "Physical paper layers, cut edges, evidence cards, stamps, and editorial transformations.",
+  "domFingerprint": "paper-stage-layer-stack-and-cutouts",
+  "capabilities": {
+    "required": ["layered-paper", "physical-rearrangement"],
+    "optional": ["Flip", "MorphSVGPlugin", "CustomEase"]
+  },
+  "tokens": {
+    "background": "#f1e4c5",
+    "foreground": "#1d1b18",
+    "primary": "#dc3f36",
+    "secondary": "#264ac7",
+    "accent": "#f0c331"
+  },
+  "primitives": ["paper-card", "evidence-strip", "torn-edge", "stamp", "fold", "layer-stack"],
+  "motionGrammar": {
+    "fingerprint": "physical-cut-fold-stack",
+    "entry": "objects arrive with weight and small rotation",
+    "relation": "paper paths and folds reveal causal order",
+    "transition": "page turn or paper curtain"
+  },
+  "coverGrammar": {
+    "layout": "editorial-collage",
+    "hero": "one physical mechanism assembled from paper objects"
+  },
+  "fontPolicy": {
+    "display": ["DingTalk JinBuTi", "DingTalk Sans", "Microsoft YaHei", "sans-serif"],
+    "body": ["Noto Sans SC", "Microsoft YaHei", "sans-serif"],
+    "redistribute": false
+  },
+  "fallbacks": {
+    "Flip": "measured-transform-from-to",
+    "MorphSVGPlugin": "crossfade-between-shapes",
+    "CustomEase": "cubic-bezier(0.2,0.8,0.2,1)"
+  },
+  "fixtures": ["comparison", "evidence", "layered-process"],
+  "qcRules": {
+    "minimumBodyPixels": 30,
+    "maximumCardRotationDegrees": 8,
+    "requiresMobilePreview": true
+  }
+}

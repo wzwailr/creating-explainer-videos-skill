@@ -1,0 +1,12 @@
+{
+  "style": "ink",
+  "styleName": "Ink Explainer 手绘动态图解",
+  "tokenAsset": "assets/style-tokens.css",
+  "motionPlugins": ["DrawSVGPlugin", "SplitText", "CustomEase"],
+  "coverGrammar": "top-left-series-cluster-clean-top-right",
+  "fontRoles": {
+    "displayZh": "钉钉进步体 Regular",
+    "latinAndNumbers": "DingTalk Sans",
+    "caption": "Noto Sans SC"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "style": "spatial",
+  "styleName": "Spatial Chamber 空间叙事舱",
+  "tokenAsset": "assets/style-tokens.css",
+  "motionPlugins": ["MotionPathPlugin", "DrawSVGPlugin", "Flip", "CustomEase"],
+  "fallbacks": {
+    "MotionPathPlugin": "svg-path-sampling",
+    "DrawSVGPlugin": "stroke-dashoffset"
+  },
+  "coverGrammar": "top-left-identity-central-spatial-mechanism-clean-edge",
+  "fontRoles": {
+    "displayZh": "钉钉进步体 Regular",
+    "latinAndNumbers": "DingTalk Sans",
+    "caption": "Noto Sans SC"
+  }
+}

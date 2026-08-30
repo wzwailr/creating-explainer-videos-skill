@@ -1,33 +1,46 @@
-# AI Principle Explainer Video Skill
+# Explainer Video Skill
 
-A product-neutral Agent Skill for producing rigorous Chinese AI-principle explainer videos.
+An installable, extensible, executable Agent Skill and project scaffold for mechanism, process, system, science, and technical explainer videos.
 
-It connects primary-source research, mechanism-first scripts, narration-identical captions, real-audio timing, semantic motion, dedicated covers, release QC, and publishing assets into one verifiable workflow.
+This is not a Markdown-only prompt pack. It ships a production state machine, JSON-first project generator, narration normalization, measured-audio timing import, three programmable visual templates, deterministic HTML/SVG/GSAP rendering, HyperFrames/FFmpeg adapters, media QC, declarative extensions, release gates, and non-AI end-to-end fixtures.
 
-## Install from GitHub
-
-Codex:
+## Install
 
 ```powershell
-npx --yes --package github:wzwailr/creating-ai-principle-videos-skill `
-  ai-principle-video-skill install
+npx --yes --package creating-explainer-videos-skill@2 explainer-video-skill --version
+npm install --global creating-explainer-videos-skill@2
 ```
 
-Any folder-based Agent Skill host:
+Install the Skill into Codex or another folder-based Agent host:
 
 ```powershell
-npx --yes --package github:wzwailr/creating-ai-principle-videos-skill `
-  ai-principle-video-skill install --destination "C:\path\to\agent\skills"
+explainer-video-skill install --target codex --json
+explainer-video-skill install --destination "C:\path\to\skills" --json
 ```
 
-The installer supports install, update, integrity verification, rollback, extension discovery, and recoverable uninstall.
+## Create a project
 
-## Extension API
+```powershell
+explainer-video-skill doctor --json
+explainer-video-skill new ".\demo" --title "Credit-card clearing" --topic "Why authorization is not settlement" --template spatial-chamber --preset general-mechanism --json
+explainer-video-skill status --json ".\demo"
+explainer-video-skill next --json ".\demo"
+```
 
-Five declarative extension types are supported: visual, voice, research, QC, and publishing. Extensions cannot execute hooks or store credentials. Episode scaffolds snapshot and hash every selected extension.
+Agents advance through `status -> next -> real work -> evidence -> validate`. The production stages cover brief, evidence, mechanism mapping, canonical narration/cues, measured audio timing, scene design, renderer, media render, automated QC, human listening, publishing package, and explicit human release decision.
 
-See the [Chinese README](README.md), [extension contract](skill/creating-ai-principle-videos/references/extension-api.md), and [release notes](CHANGELOG.md).
+Automation cannot approve a release. It can only produce `release_candidate_pending_human_listen`; `passed` requires a named human who reviewed the exact artifact hash.
 
-## License boundary
+## Visual template collection
 
-Original code and documentation are MIT licensed. Fonts, GSAP binaries/plugins, music, sound effects, and third-party media are intentionally excluded.
+- `paper-theatre`: object identity, evidence, sorting, comparison, and physical processing.
+- `spatial-chamber`: routes, layers, pipelines, networks, queues, and spatial state transitions.
+- `ink-explainer`: derivations, formulas, causal relations, comparison, annotation, and correction.
+
+The templates have distinct DOM and motion fingerprints, cover grammars, plugin fallbacks, and measurable QC rules. They are not lettered recolors.
+
+## Portable boundaries
+
+The package does not redistribute fonts, premium GSAP plugins, music, sound effects, stock media, or credentials. DingTalk JinBuTi/DingTalk Sans and Noto Sans SC may be used when legally installed on the host. Paid or asynchronous providers require explicit authorization and task-ID recovery rules.
+
+See the [Chinese README](README.md), [visual collection](skill/creating-explainer-videos/references/visual-template-collection.md), [extension API](skill/creating-explainer-videos/references/extension-api.md), [v2 migration](docs/MIGRATION_V2.md), and [release notes](docs/releases/v2.0.0.md).

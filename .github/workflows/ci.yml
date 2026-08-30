@@ -12,16 +12,18 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest]
+        node: [18, 22]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version: ${{ matrix.node }}
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
       - run: npm test
+      - run: npm run examples:verify
       - name: Validate Skill contract
         env:
           PYTHONDONTWRITEBYTECODE: "1"
@@ -43,4 +45,4 @@ jobs:
           node-version: 22
       - run: npm run pack:local
       - run: npm run pack:zip
-      - run: npm run smoke:packed -- .\dist\creating-ai-principle-videos-skill-1.1.0.tgz
+      - run: npm run smoke:packed -- .\dist\creating-explainer-videos-skill-2.0.0.tgz

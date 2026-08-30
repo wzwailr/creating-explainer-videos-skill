@@ -1,0 +1,107 @@
+import { access, readFile, writeFile } from "node:fs/promises";
+import path from "node:path";
+
+import { readJson } from "./json.mjs";
+
+async function exists(filePath) {
+  try {
+    await access(filePath);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+function escapeHtml(value) {
+  return String(value ?? "")
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;");
+}
+
+function jsonForScript(value) {
+  return JSON.stringify(value).replaceAll("<", "\\u003c");
+}
+
+function resolvedCues(project, cueDocument) {
+  if (Array.isArray(cueDocument.cues) && cueDocument.cues.length) return cueDocument.cues;
+  return [{
+    id: "C01",
+    sceneId: "S01",
+    start: 0,
+    duration: 8,
+    caption: project.topic,
+    tts: project.topic,
+    focus: "input-change-output",
+    visualEvent: "establish-mechanism",
+  }];
+}
+
+function resolvedScenes(project, sceneDocument, cues) {
+  const source = Array.isArray(sceneDocument.scenes) && sceneDocument.scenes.length
+    ? sceneDocument.scenes
+    : [{ id: "S01", title: project.title, purpose: project.topic, cueIds: cues.map((cue) => cue.id) }];
+  return source.map((scene, index) => {
+    const sceneCues = cues.filter((cue) => scene.cueIds?.includes(cue.id) || cue.sceneId === scene.id);
+    const attached = sceneCues.length ? sceneCues : index === 0 ? cues : [];
+    const start = attached.length ? Math.min(...attached.map((cue) => cue.start)) : 0;
+    const end = attached.length ? Math.max(...attached.map((cue) => cue.start + cue.duration)) : start + 1;
+    return { ...scene, cueIds: attached.map((cue) => cue.id), start, duration: Math.max(.1, end - start) };
+  });
+}
+
+function paperScene(scene, project) {
+  return `<div class="paper-stage"><div class="paper-kicker">PAPER THEATRE · ${escapeHtml(scene.id)}</div><h1 class="paper-title" data-motion="paper">${escapeHtml(scene.title || project.title)}</h1><p class="paper-copy" data-motion="paper">${escapeHtml(scene.purpose || project.topic)}</p><div class="paper-mechanism"><span class="paper-node" data-motion="paper">输入</span><i class="paper-link"></i><span class="paper-node" data-motion="paper">内部变化</span><i class="paper-link"></i><span class="paper-node" data-motion="paper">输出</span></div></div>`;
+}
+
+function spatialScene(scene, project) {
+  return `<div class="spatial-grid"></div><div class="chamber-stage"><div class="chamber-kicker">SPATIAL CHAMBER · ${escapeHtml(scene.id)}</div><h1 class="chamber-title" data-motion="depth">${escapeHtml(scene.title || project.title)}</h1><p class="chamber-copy" data-motion="depth">${escapeHtml(scene.purpose || project.topic)}</p><div class="signal-lane"><span class="depth-card" data-motion="depth">INPUT</span><svg width="240" height="100" viewBox="0 0 240 100"><path data-signal-path d="M8 74 C72 5 164 96 232 28" fill="none" stroke="#3af2ff" stroke-width="5"/><circle data-signal-dot cx="0" cy="0" r="12" fill="#c6ff3d"/></svg><span class="depth-card" data-motion="depth">CHANGE</span><span class="depth-card" data-motion="depth">OUTPUT</span></div></div>`;
+}
+
+function inkScene(scene, project) {
+  return `<div class="ink-stage"><div class="ink-kicker">INK EXPLAINER · ${escapeHtml(scene.id)}</div><h1 class="ink-title" data-motion="note">${escapeHtml(scene.title || project.title)}</h1><p class="ink-copy" data-motion="note">${escapeHtml(scene.purpose || project.topic)}</p><div class="derivation-board"><span class="derivation-node" data-motion="note">输入</span><svg width="190" height="70" viewBox="0 0 190 70"><path class="rough-line" data-motion="draw" d="M5 42 C55 8 115 68 180 26"/></svg><span class="derivation-node" data-motion="note">机制</span><svg width="190" height="70" viewBox="0 0 190 70"><path class="rough-line" data-motion="draw" d="M5 35 C64 70 128 5 182 38"/></svg><span class="derivation-node" data-motion="note">输出</span></div></div>`;
+}
+
+function sceneMarkup(scene, project) {
+  const body = project.template === "paper-theatre"
+    ? paperScene(scene, project)
+    : project.template === "spatial-chamber"
+      ? spatialScene(scene, project)
+      : inkScene(scene, project);
+  return `<section id="scene-${escapeHtml(scene.id)}" class="clip scene" data-scene-id="${escapeHtml(scene.id)}" data-start="${scene.start.toFixed(3)}" data-duration="${scene.duration.toFixed(3)}">${body}</section>`;
+}
+
+function captionMarkup(cue) {
+  return `<div class="clip caption" data-cue-id="${escapeHtml(cue.id)}" data-start="${Number(cue.start).toFixed(3)}" data-duration="${Number(cue.duration).toFixed(3)}"><div class="caption-inner">${escapeHtml(cue.caption)}</div></div>`;
+}
+
+export async function buildRenderer(projectRoot) {
+  const root = path.resolve(projectRoot);
+  const rendererRoot = path.join(root, "renderer");
+  const project = await readJson(path.join(root, "project.json"));
+  const cueDocument = await readJson(path.join(root, "script", "cues.json"));
+  const sceneDocument = await readJson(path.join(root, "scene-spec.json"));
+  const cues = resolvedCues(project, cueDocument);
+  const scenes = resolvedScenes(project, sceneDocument, cues);
+  const duration = Math.max(...cues.map((cue) => Number(cue.start) + Number(cue.duration)));
+  const hasGsap = await exists(path.join(rendererRoot, "assets", "gsap.min.js"));
+  const html = `<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${escapeHtml(project.title)}</title><link rel="stylesheet" href="./template/scene.css"><style>*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden}body{background:#000}.composition{position:relative;width:1920px;height:1080px;overflow:hidden}.clip{position:absolute;inset:0}.scene{z-index:2;visibility:hidden}.caption{z-index:20;display:flex;align-items:flex-end;justify-content:center;padding:0 72px 28px;visibility:hidden;pointer-events:none}.caption-inner{width:min(1650px,calc(100% - 144px));padding:18px 34px;background:#05070ce8;color:#fff;border-top:2px solid #68e7ff;font:760 34px/1.3 "Noto Sans SC","Microsoft YaHei",sans-serif;text-align:center}</style>${hasGsap ? '<script src="./assets/gsap.min.js"></script>' : ""}</head>
+<body class="${escapeHtml(project.template)}"><main id="composition" class="composition" data-template="${escapeHtml(project.template)}">${scenes.map((scene) => sceneMarkup(scene, project)).join("")}${cues.map(captionMarkup).join("")}</main>
+<script type="module">import {createMotionController} from './template/motion.mjs';const duration=${duration.toFixed(3)};const sceneData=${jsonForScript(scenes.map(({ id, start, duration: sceneDuration }) => ({ id, start, duration: sceneDuration })))};const scenes=sceneData.map(meta=>{const element=document.querySelector('[data-scene-id="'+meta.id+'"]');return {...meta,element,controller:createMotionController({root:element,duration:meta.duration,gsap:globalThis.gsap})};});const captions=[...document.querySelectorAll('.caption')];function seek(seconds){const time=Math.max(0,Math.min(duration,Number(seconds)||0));for(const scene of scenes){const active=time>=scene.start&&time<scene.start+scene.duration+.001;scene.element.style.visibility=active?'visible':'hidden';if(active)scene.controller.seek(Math.max(0,time-scene.start));}for(const caption of captions){const start=Number(caption.dataset.start),end=start+Number(caption.dataset.duration);caption.style.visibility=time>=start&&time<end?'visible':'hidden';}}const timeline={duration:()=>duration,seek,paused:()=>true};window.__timelines={main:timeline};window.__explainer={duration,template:${jsonForScript(project.template)},seek};seek(0);</script></body></html>
+`;
+  const target = path.join(rendererRoot, "index.html");
+  await writeFile(target, html, "utf8");
+  return { path: target, html, duration, scenes, cues, template: project.template };
+}
+
+export async function buildCover(projectRoot) {
+  const root = path.resolve(projectRoot);
+  const project = await readJson(path.join(root, "project.json"));
+  const html = `<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><title>${escapeHtml(project.title)} 封面</title><link rel="stylesheet" href="./template/cover.css"><style>*{box-sizing:border-box}html,body{margin:0;width:1920px;height:1080px;overflow:hidden}body{font-family:"Noto Sans SC","Microsoft YaHei",sans-serif}.series-cluster{font-size:27px}.cover-question{font-weight:750}.cover-visual{display:grid;place-items:center}.cover-flow{display:grid;gap:34px;font-size:38px;text-align:center}.cover-flow i{height:5px;background:currentColor}</style></head><body><main class="cover ${escapeHtml(project.template)}"><div class="series-cluster"><span>EXPLAINER VIDEO</span><span>MECHANISM / PROCESS</span></div><h1 class="cover-title">${escapeHtml(project.title)}</h1><p class="cover-question">${escapeHtml(project.topic)}</p><section class="cover-visual" aria-label="输入经过内部机制产生输出"><div class="cover-flow"><b>输入</b><i></i><b>内部变化</b><i></i><b>输出</b></div></section></main></body></html>\n`;
+  const target = path.join(root, "renderer", "cover.html");
+  await writeFile(target, html, "utf8");
+  return { path: target, html, template: project.template };
+}
+

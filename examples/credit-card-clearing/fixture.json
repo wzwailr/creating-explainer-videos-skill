@@ -1,0 +1,71 @@
+{
+  "schemaVersion": 1,
+  "project": {
+    "title": "信用卡清算",
+    "topic": "为什么刷卡授权成功后，钱还没有真正到账",
+    "template": "spatial-chamber",
+    "language": "zh-CN",
+    "platform": "short-video"
+  },
+  "brief": {
+    "title": "信用卡清算",
+    "topic": "为什么刷卡授权成功后，钱还没有真正到账",
+    "audience": "使用信用卡但不了解支付后台流程的普通观众",
+    "exactQuestion": "授权、清算和结算分别改变了什么状态",
+    "promisedAnswer": "授权只确认额度与风险，清算计算各方应收应付，结算才完成资金转移",
+    "scope": ["四方卡组织模型的教学简化", "授权", "批量清算", "净额结算", "异常对账"],
+    "constraints": ["示例金额仅用于解释", "不描述某一机构的实时规则"]
+  },
+  "evidence": {
+    "claims": [
+      {"claim": "授权与最终资金结算是不同阶段", "sourceType": "official-network-process-guide", "verifiedAt": "2026-08-31", "teachingSimplification": "合并了部分机构内部步骤", "visualExpression": "授权信号与资金路径分离"},
+      {"claim": "清算阶段形成参与方应收应付记录", "sourceType": "payment-system-standard", "verifiedAt": "2026-08-31", "teachingSimplification": "用单笔交易展示批量净额", "visualExpression": "多笔指令汇入净额舱"}
+    ],
+    "sources": [
+      {"id": "source-network-guide", "kind": "primary-placeholder", "note": "Fixture demonstrates the evidence schema; replace with current authoritative links before publication."}
+    ]
+  },
+  "mechanismMap": {
+    "input": ["持卡人交易请求", "商户金额", "账户可用额度"],
+    "internalChanges": ["发卡行授权", "商户请款", "收单机构汇总", "卡组织清算", "银行间结算", "商户入账"],
+    "output": ["各方账本一致", "资金完成转移", "商户获得可用余额"],
+    "boundaries": ["授权成功不是到账证明", "各网络的批次和时限不同"],
+    "failures": ["撤销或冲正", "清算文件不一致", "结算余额不足", "商户对账差异"],
+    "workedExample": {"purchase": 100, "teachingOnly": true, "explanation": "先冻结或占用一百元额度，再把一百元交易纳入清算，最后按净额完成银行间资金转移"}
+  },
+  "narration": [
+    {"id": "C01", "sceneId": "S01", "text": "这一条要讲清楚，为什么刷卡显示授权成功，商户却还没有真正收到这笔钱。", "focus": "authorization-signal", "visualEvent": "separate approval signal from money route"},
+    {"id": "C02", "sceneId": "S01", "text": "授权只完成第一件事：发卡行检查额度和风险，并承诺这笔交易可以继续。", "focus": "issuer-check", "visualEvent": "approval passes while funds remain at issuer"},
+    {"id": "C03", "sceneId": "S02", "text": "营业结束后，商户把已完成交易交给收单机构请款，交易才进入清算队列。", "focus": "capture-queue", "visualEvent": "merchant batches captured transactions"},
+    {"id": "C04", "sceneId": "S03", "text": "卡组织按照卡号路由，把每笔指令送回对应发卡行，同时记录谁应该付给谁。", "focus": "network-route", "visualEvent": "instructions travel through named network nodes"},
+    {"id": "C05", "sceneId": "S04", "text": "真实系统会把大量交易合并计算净额；教学例子里的一百元，只是这批应收应付中的一条。", "focus": "netting-chamber", "visualEvent": "many gross instructions collapse into net positions"},
+    {"id": "C06", "sceneId": "S05", "text": "到了结算阶段，银行间结算账户才按净额转移资金，账本状态从承诺变成已结算。", "focus": "settlement-ledger", "visualEvent": "reserve balances move and ledger turns settled"},
+    {"id": "C07", "sceneId": "S06", "text": "如果清算文件、撤销记录或结算余额对不上，交易会进入异常和对账流程，而不是假装已经到账。", "focus": "exception-lane", "visualEvent": "mismatched transaction diverts into reconciliation"},
+    {"id": "C08", "sceneId": "S07", "text": "所以完整链条是授权确认能不能做，清算算清谁欠谁，结算才真正把资金交割。", "focus": "three-stage-reconstruction", "visualEvent": "reconstruct authorization clearing settlement route"}
+  ],
+  "timing": [
+    {"id": "C01", "start": 0, "duration": 5.8},
+    {"id": "C02", "start": 5.8, "duration": 6.4},
+    {"id": "C03", "start": 12.2, "duration": 6.1},
+    {"id": "C04", "start": 18.3, "duration": 6.5},
+    {"id": "C05", "start": 24.8, "duration": 7.2},
+    {"id": "C06", "start": 32, "duration": 6.8},
+    {"id": "C07", "start": 38.8, "duration": 7.1},
+    {"id": "C08", "start": 45.9, "duration": 6.4}
+  ],
+  "scenes": [
+    {"id": "S01", "title": "授权不是到账", "purpose": "把授权信号与资金位置分开", "knowledgePoint": "授权只确认交易可以继续", "input": "交易请求", "transformation": "额度与风险检查", "output": "授权承诺", "compositionTask": "双路径空间舱展示信号通过而资金不动", "cueIds": ["C01", "C02"]},
+    {"id": "S02", "title": "商户发起请款", "purpose": "已完成交易进入批量队列", "knowledgePoint": "请款触发清算输入", "input": "已授权且完成的交易", "transformation": "捕获与批量汇总", "output": "清算指令", "compositionTask": "多笔交易进入队列隧道", "cueIds": ["C03"]},
+    {"id": "S03", "title": "网络路由与记账", "purpose": "交易回到对应发卡行", "knowledgePoint": "网络建立参与方义务", "input": "清算指令", "transformation": "路由与费用规则", "output": "应收应付记录", "compositionTask": "信号穿越收单行、网络、发卡行节点", "cueIds": ["C04"]},
+    {"id": "S04", "title": "从总额到净额", "purpose": "大量交易压缩成净头寸", "knowledgePoint": "清算计算而非直接搬钱", "input": "多笔总额指令", "transformation": "抵消相反义务", "output": "参与方净头寸", "compositionTask": "多路径汇入净额计算舱", "cueIds": ["C05"]},
+    {"id": "S05", "title": "结算才移动资金", "purpose": "银行间余额完成交割", "knowledgePoint": "承诺在此变成已结算", "input": "净头寸", "transformation": "结算账户划拨", "output": "资金与账本一致", "compositionTask": "两层账本同步变色并移动余额", "cueIds": ["C06"]},
+    {"id": "S06", "title": "异常进入对账", "purpose": "展示失败路径", "knowledgePoint": "不一致不能伪装成成功", "input": "缺失或冲突记录", "transformation": "拦截、冲正、人工或自动对账", "output": "修正或待处理状态", "compositionTask": "红色异常支路从主隧道分离", "cueIds": ["C07"]},
+    {"id": "S07", "title": "三阶段重建", "purpose": "重建完整因果链", "knowledgePoint": "授权、清算、结算承担不同职责", "input": "交易请求", "transformation": "承诺、计算、交割", "output": "商户到账", "compositionTask": "镜头拉远显示完整三舱路线", "cueIds": ["C08"]}
+  ],
+  "publishing": {
+    "title": "信用卡清算：授权成功为什么还没到账",
+    "description": "把授权、清算、结算拆成一条能追踪的资金与账本状态链。",
+    "topics": ["信用卡", "支付系统", "清算", "金融科普"],
+    "pinnedComment": "你以前把授权成功理解成到账了吗？"
+  }
+}

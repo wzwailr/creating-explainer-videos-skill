@@ -1,0 +1,4 @@
+interface:
+  display_name: "解释型视频制作脚手架"
+  short_description: "调研、脚本、三套视觉模板、确定性渲染、音画同步和发布质检的一体化工作流"
+  default_prompt: "使用 $creating-explainer-videos 创建并执行一个机制解释视频工程；按状态机推进，依据知识结构选择模板，使用真实旁白时间，并停在未完成的人工发布门禁。"

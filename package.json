@@ -1,25 +1,37 @@
 {
-  "name": "creating-ai-principle-videos-skill",
-  "version": "1.1.0",
-  "description": "Product-neutral Agent Skill for producing rigorous Chinese AI-principle explainer videos.",
+  "name": "creating-explainer-videos-skill",
+  "version": "2.0.0",
+  "description": "Executable Agent Skill and scaffold for producing rigorous mechanism and process explainer videos.",
   "type": "module",
   "bin": {
+    "explainer-video-skill": "./bin/explainer-video-skill.mjs",
     "ai-principle-video-skill": "./bin/ai-principle-video-skill.mjs"
   },
   "files": [
     "bin/",
     "lib/",
-    "skill/",
+    "skill/creating-explainer-videos/",
     "skill-manifest.json",
-    "README.md"
+    "examples/",
+    "scripts/build-examples.mjs",
+    "docs/MIGRATION_V2.md",
+    "docs/releases/v2.0.0.md",
+    "README.md",
+    "README.en.md",
+    "CHANGELOG.md",
+    "CONTRIBUTING.md",
+    "SECURITY.md",
+    "LICENSE"
   ],
   "scripts": {
     "test": "node --test test/*.test.mjs",
     "build": "node scripts/build-package.mjs",
     "pack:local": "node scripts/build-package.mjs --pack",
     "pack:zip": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/build-zip.ps1",
+    "audit:packed": "node scripts/audit-tarball.mjs",
+    "examples:verify": "node scripts/build-examples.mjs --verify",
     "smoke:packed": "node scripts/smoke-packed.mjs",
-    "prepublishOnly": "node -e \"throw new Error('Public npm publish requires explicit release approval')\""
+    "prepublishOnly": "npm test && npm run build && npm run examples:verify && python skill/creating-explainer-videos/scripts/test_skill.py && python skill/creating-explainer-videos/scripts/test_extensions.py"
   },
   "engines": {
     "node": ">=18"
@@ -28,8 +40,9 @@
     "codex",
     "agent-skill",
     "skill",
-    "ai-video",
-    "chinese-video",
+    "explainer-video",
+    "educational-video",
+    "motion-design",
     "gsap",
     "hyperframes"
   ],
@@ -37,11 +50,11 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/wzwailr/creating-ai-principle-videos-skill.git"
+    "url": "git+https://github.com/wzwailr/creating-explainer-videos-skill.git"
   },
-  "homepage": "https://github.com/wzwailr/creating-ai-principle-videos-skill#readme",
+  "homepage": "https://github.com/wzwailr/creating-explainer-videos-skill#readme",
   "bugs": {
-    "url": "https://github.com/wzwailr/creating-ai-principle-videos-skill/issues"
+    "url": "https://github.com/wzwailr/creating-explainer-videos-skill/issues"
   },
-  "private": true
+  "private": false
 }

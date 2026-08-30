@@ -1,78 +1,18 @@
 {
   "schemaVersion": 1,
-  "packageVersion": "1.1.0",
-  "skillName": "creating-ai-principle-videos",
+  "packageVersion": "2.0.0",
+  "skillName": "creating-explainer-videos",
   "extensionApiVersion": 1,
   "files": [
     {
       "path": "agents/openai.yaml",
-      "sha256": "de6f05e32cfb893612c9c679b71596a565c021e568e53aa945f23f678b26c305",
-      "size": 321
-    },
-    {
-      "path": "assets/a-paper-tokens.css",
-      "sha256": "b1f7bcaa8e16917b56762b368388c828cb7fd52195ea23b9a7dad9837da78c13",
-      "size": 276
-    },
-    {
-      "path": "assets/c-ink-tokens.css",
-      "sha256": "c45f1ea7746ae4ad07d822cfde475a9af86095ba66b0bb8ba067f5afddd1e5bf",
-      "size": 275
-    },
-    {
-      "path": "assets/cover-shell.template.html",
-      "sha256": "7b8ceacc853ef50c09a0d960d4d3addaaa5d6aa8c0a8f1d626dcfe36e53faddc",
-      "size": 1816
-    },
-    {
-      "path": "assets/cover-spec.template.md",
-      "sha256": "f58ee262d5e8690e586d371ff86775ed1df04dd45d22c6405f98a5a1e60263c5",
-      "size": 509
-    },
-    {
-      "path": "assets/production-brief.template.md",
-      "sha256": "7d8f7b5c8a8534b9dd55519d65446cd98a28ae2853a929b63f5b6cab2d45a58a",
-      "size": 1557
-    },
-    {
-      "path": "assets/publish-notes.template.md",
-      "sha256": "483f0dd2e0473a82e22f2c87d2ca5a4fe88e261e44c06d6a9953a7ec9a0a7f0d",
-      "size": 578
-    },
-    {
-      "path": "assets/release-acceptance.template.md",
-      "sha256": "ceb40ca1a3c7c28b70f5c4ac50f7722f5b4b28f99565124356c32ede9cbbfb01",
-      "size": 1193
-    },
-    {
-      "path": "assets/renderer-shell.template.html",
-      "sha256": "e4e236328c0ac61acc2a13c059497a148be0f53399a0b3f9cd426682aafd691d",
-      "size": 1438
-    },
-    {
-      "path": "assets/visual-direction.template.md",
-      "sha256": "0e60cdfb3d1dae2d43558c0a997dab0f83bd30458961c8082c35bbc8411c2b46",
-      "size": 1105
-    },
-    {
-      "path": "extensions/ai-primary-research/extension.json",
-      "sha256": "9346fd34a60cbc3dcd87610fe3ecf8b248e59fcd5f6bf6d5b4f957af6dc5e172",
-      "size": 452
-    },
-    {
-      "path": "extensions/ai-primary-research/profile.json",
-      "sha256": "00e37743f18c9bd1384e593ee53fa9daf4c0cebfb2fcce6d263a9aea8bdbed02",
-      "size": 456
-    },
-    {
-      "path": "extensions/ai-primary-research/reference.md",
-      "sha256": "bd1674890dc32476000a7feaa1250600c437055fba40ad977a56a6bafb2b3369",
-      "size": 578
+      "sha256": "d482f712aba4d5acdc4b5dfffceccd9b5e8b4df2655e11df17c6bc8d2ef6a6b6",
+      "size": 415
     },
     {
       "path": "extensions/douyin-release/extension.json",
-      "sha256": "71409bc6dad6b81d75422897aabe3ecf238f3443c1e3e7f000d889dae0729ae8",
-      "size": 448
+      "sha256": "1824bb3fc7280e463e37a9d2a04e6899899775c43e775c57845c6d630bbea55a",
+      "size": 522
     },
     {
       "path": "extensions/douyin-release/profile.json",
@@ -91,23 +31,23 @@
     },
     {
       "path": "extensions/ink-explainer/extension.json",
-      "sha256": "f90baa8223c28d84aed9e9be8ac78aa70064ac1fec84f2807016f1546fd1b86f",
-      "size": 455
+      "sha256": "46b1f97228b58bbae8a8b580e1ec4e7c96f1ba5ccf060a9b223df5bc023b2c5a",
+      "size": 484
     },
     {
       "path": "extensions/ink-explainer/profile.json",
-      "sha256": "1901f28e245c5babfbddbf6f8ec0b2e81bbfe2fa78e35f0225a0e2a78dcd9deb",
-      "size": 382
+      "sha256": "b8be021bc3436121f0f3c5385f105f012074b3468604486199955b2de072c319",
+      "size": 377
     },
     {
       "path": "extensions/ink-explainer/reference.md",
-      "sha256": "61ac5e78568545d107057f26218c8468cd6cb95fd1abd832f55834e971163b1d",
-      "size": 486
+      "sha256": "027b0fc19cdb256104a9433ed7c26c29d1125dd899fd1dbfc53e8131ef5c9bf9",
+      "size": 480
     },
     {
       "path": "extensions/neutral-technical-zh/extension.json",
-      "sha256": "172bb30a1d248a16117f4a62e2665b3f0b62aca9f2f5d7dbb33672e43f706836",
-      "size": 428
+      "sha256": "924f7c473e01089f7203fb13ebd3ba73e07caa7dfd14a21caef3fd5caefa9e9e",
+      "size": 463
     },
     {
       "path": "extensions/neutral-technical-zh/profile.json",
@@ -126,23 +66,58 @@
     },
     {
       "path": "extensions/paper-theatre/extension.json",
-      "sha256": "3fbc749763b28c7679275f4d5e3bd08b80e3dffebe2a674b7fc9686395bde889",
-      "size": 465
+      "sha256": "89670ffade67a2f1d1daf485c6b130e94e7bc1c7a29336d87f30344dee1b9bf7",
+      "size": 481
     },
     {
       "path": "extensions/paper-theatre/profile.json",
-      "sha256": "7a1b8378fc42449ec4482be3c87ff0af1f06822c771191e532d198f1a38bb318",
-      "size": 397
+      "sha256": "165d00a9dbb4426e65898fb1f5c72455744d0062ce9d48c751c304bfb282cee1",
+      "size": 392
     },
     {
       "path": "extensions/paper-theatre/reference.md",
-      "sha256": "a0c1ed3d97e36fdf12fc975e26b7fa89a62ea94652928dffc781bcfa39a0ed4c",
-      "size": 403
+      "sha256": "5b8d16b181c0293ebbc161ae0d6ac13928a069d7c311b601770d8e311dd132bf",
+      "size": 397
+    },
+    {
+      "path": "extensions/primary-source-research/extension.json",
+      "sha256": "c0ec963c3508c948dd218c4cec7e45dc930c98374989970a4e0a28f04d89470b",
+      "size": 498
+    },
+    {
+      "path": "extensions/primary-source-research/profile.json",
+      "sha256": "4775ebac3d1ab2c03f56cff8c91f96e854414a44dad57019194b140aa8e88f39",
+      "size": 489
+    },
+    {
+      "path": "extensions/primary-source-research/reference.md",
+      "sha256": "cf103684bbc15939c9e1e20a4ce5ac17fe06927f7c744a71b5ae0105b2557c94",
+      "size": 586
+    },
+    {
+      "path": "extensions/spatial-chamber/assets/style-tokens.css",
+      "sha256": "6b4f76b9176c1bd95f7d8f3eddecfdcce6d73fc96b00693307bae4a3a2a76611",
+      "size": 185
+    },
+    {
+      "path": "extensions/spatial-chamber/extension.json",
+      "sha256": "2c3997be4622627c86f0e379b29d2093bcf74e1e6e7528f89e080dad3e97cbaf",
+      "size": 518
+    },
+    {
+      "path": "extensions/spatial-chamber/profile.json",
+      "sha256": "69c592e52324e4c98112993af656348a13a9ad08c84611f0ebd0c102bdc03bad",
+      "size": 518
+    },
+    {
+      "path": "extensions/spatial-chamber/reference.md",
+      "sha256": "2a651c3c22aa8ba2e2fa98b47257d2aeedaf82aae320af24d97cc6da880431e0",
+      "size": 593
     },
     {
       "path": "extensions/strict-release-qc/extension.json",
-      "sha256": "e7f25842e24ff9755a66eb5e6e9b7f05bc21abd1f7a99b969760cca4afe1040f",
-      "size": 412
+      "sha256": "78b55ec1200104afff11f2c24a461d8de76d80fd021c22c2726c802243ecf202",
+      "size": 523
     },
     {
       "path": "extensions/strict-release-qc/profile.json",
@@ -155,69 +130,204 @@
       "size": 411
     },
     {
-      "path": "references/baseline-test.md",
-      "sha256": "47c0149f0c828786157f834a3a85bbfccede52041ef5a48320c48c9193c3447f",
-      "size": 1292
+      "path": "presets/ai-principle-series/preset.json",
+      "sha256": "ba6be774bfee5ac4b031206ca25bc63e3d4e7d4aecaa8d69914af91ea1f576f5",
+      "size": 775
+    },
+    {
+      "path": "presets/general-mechanism/preset.json",
+      "sha256": "65e14fb36032977abb730fa416a4316a8a365fb736500f2b854621d25d473589",
+      "size": 672
+    },
+    {
+      "path": "references/agent-forward-validation.md",
+      "sha256": "58b251918e0d1f5f0744b3b65758f9f0c571c12e5197db460fa318b21b9ad592",
+      "size": 967
     },
     {
       "path": "references/content-and-script-contract.md",
-      "sha256": "6ffc1a0ee91d2e344db69301d91cd695e9cd455c62149e0d5c800211c50b8855",
-      "size": 4169
+      "sha256": "f6df434c913a6d65596ed547b36aa8c0a4744478c17af6f4270873a6450c06c2",
+      "size": 3553
     },
     {
       "path": "references/engineering-pipeline.md",
-      "sha256": "5c7e29674ad557a5c9bcbaf653031125bb66a15be6930d517ef3e8bc3fae8e87",
-      "size": 5346
+      "sha256": "1ac665232693f0bdaa96a216d43a2ffc93f0689be54a5bdedb7e685d9ae99906",
+      "size": 3249
     },
     {
       "path": "references/extension-api.md",
-      "sha256": "f7b2984a8e31b1ea4d56c1c0c2c44f399913c015e6094f15b705530900adacc1",
-      "size": 2512
+      "sha256": "a44932f9bf6f5b9c91eb4849ce8739ddf0000ff675e0318285e247f9fbe04435",
+      "size": 2923
     },
     {
       "path": "references/install-and-portability.md",
-      "sha256": "09457cb2243ffd217fb4bbb8c50231baa033a620e03782b4f2b1f9741b264f64",
-      "size": 4211
+      "sha256": "40296a842e42f70931482257eb44e1c116da8adfd950c56535f2e641c8bf11ab",
+      "size": 2915
     },
     {
       "path": "references/release-qc-and-publishing.md",
-      "sha256": "dc74ab9a27a15721a7d7b7665b0366049f735fc13b39446cff58d205331c42ec",
-      "size": 4048
+      "sha256": "9f251a2d8306099953abbdd62693dfc3f9dc55419142e9e75ed3a9799511886c",
+      "size": 3352
     },
     {
       "path": "references/visual-systems-and-motion.md",
-      "sha256": "b0e2a6d411ecac9f4b59930f4163af2dfabb471f33b3e4d5b1a27bda893ab66b",
-      "size": 5987
+      "sha256": "245bdef3f9a79e0a02ba9b71a615e3507245b36256bce52524716931bba4a1dd",
+      "size": 1971
+    },
+    {
+      "path": "references/visual-template-collection.md",
+      "sha256": "81b9c1247c9a1693ce5efd9645ccfb67dcab66ef6642346e5fe165bd8dd9c0e9",
+      "size": 11238
+    },
+    {
+      "path": "runtime/cli.mjs",
+      "sha256": "26f23b32e6f262adfd112a628bc5860b948eb93b741db3c94aab0498f2eb5c6c",
+      "size": 8488
+    },
+    {
+      "path": "runtime/constants.mjs",
+      "sha256": "3fa8b22ef69c1e79a30409725b7ece3c81dc2aef9c72ec5eab67f2ce98011086",
+      "size": 564
+    },
+    {
+      "path": "runtime/extensions.mjs",
+      "sha256": "05b49f3f6cd39d2c05f937c1cb36e8df0942ed5b17c1990cda6329a08ca3e4a0",
+      "size": 4347
+    },
+    {
+      "path": "runtime/gates.mjs",
+      "sha256": "e5a3ccb6be75cfd0b5ef1d03c400fd92309a2443b5863f03fa9a0956a4a6eb4b",
+      "size": 7631
+    },
+    {
+      "path": "runtime/json.mjs",
+      "sha256": "cf34ecf5e7b5af2601edf3b7069a1366139a06032e25d28e7600844701fa7577",
+      "size": 1264
+    },
+    {
+      "path": "runtime/media.mjs",
+      "sha256": "2e1b6d0aaac96531f7361dbb18f1d6ec68525b33adbc831b2a0128aef227f074",
+      "size": 10352
+    },
+    {
+      "path": "runtime/narration.mjs",
+      "sha256": "e82b41a068cdfb7c18be646aeaa8e2ed876685bb3c1e62c0e02495fe95cabdef",
+      "size": 3129
+    },
+    {
+      "path": "runtime/process.mjs",
+      "sha256": "a1cdf0ddda6a59c0ca0cfb988d44a4971884f3aa0864d30654ab4a30cc549929",
+      "size": 1401
+    },
+    {
+      "path": "runtime/project.mjs",
+      "sha256": "9c2bc2c578e5f504f9f9ef94e7621b85b4f6e657f16c1f629dfb6cd26ddf3b51",
+      "size": 7988
+    },
+    {
+      "path": "runtime/renderer.mjs",
+      "sha256": "4000edeea0759bcbd06dce5d16437918b2556724d42d16d3a819982d2cf8fc88",
+      "size": 9238
+    },
+    {
+      "path": "runtime/state.mjs",
+      "sha256": "19b7961337797394ad235d7a5268573540e0b196ecf5edcc28a9e6b26ff0a5af",
+      "size": 8512
+    },
+    {
+      "path": "runtime/templates.mjs",
+      "sha256": "80ca556e16700bfffc2898887d38ca20eeddabdc5f26dd4f47d4f7998b738ea8",
+      "size": 5787
+    },
+    {
+      "path": "runtime/toolchain.mjs",
+      "sha256": "94e188f93b149beac27d86e7eb54d9b4cb22269c6638b9f5f294aa52a50886ad",
+      "size": 5450
+    },
+    {
+      "path": "scripts/explainer-video.mjs",
+      "sha256": "e4fa1837e61e43e91347fc8416b7f2569cd5f5ffe2d539a75aac858f1e999c6d",
+      "size": 261
     },
     {
       "path": "scripts/extension_catalog.py",
-      "sha256": "c7056f449dcfd39bee3f10b4cfd8c899c58e90d565b245ccaa498e9c3ac40501",
-      "size": 5605
-    },
-    {
-      "path": "scripts/scaffold_episode.py",
-      "sha256": "e672fe8a863488895cad195b00cde26eff8a786430d7f1a2ce77c6e581c6f674",
-      "size": 13310
+      "sha256": "ff25d640fe0d26a841025f2670733bd3ff7617650f1a351bbed55d23058f3b69",
+      "size": 6639
     },
     {
       "path": "scripts/test_extensions.py",
-      "sha256": "527079b5341d5fb26342c8d8eb45ebdf11fbd21c06789fe153acd7a04026b982",
-      "size": 3645
+      "sha256": "846d8a8f397c6479f02e15f8ee7911d0d6e7b9c7e42c7f1979de55eede1f988b",
+      "size": 1532
     },
     {
       "path": "scripts/test_skill.py",
-      "sha256": "21ddcb7ce13da5062e9e982a2a7c76b79785a792e4b0bc22e9e79e1eb59746db",
-      "size": 5474
-    },
-    {
-      "path": "scripts/validate_episode.py",
-      "sha256": "34b2b03d6fa020739875f3146cd9f5180755026a45ef56afa863bb87b3a7765d",
-      "size": 20585
+      "sha256": "ab6aa2399426ce9e523a343694ae48adcdc110daba6d871e32434098690e7566",
+      "size": 2646
     },
     {
       "path": "SKILL.md",
-      "sha256": "cd5991b986a939601d4effa9037069a32d542a54477b196b312eaf9963dc2b31",
-      "size": 8098
+      "sha256": "8b21502826091a086fceeaef25934ad8f01c6b90249ef7a788b5ea3a229e9b23",
+      "size": 7773
+    },
+    {
+      "path": "templates/ink-explainer/cover.css",
+      "sha256": "e6e21bd7f39a6051016846644ea0dfdeca241f13bc1846895f420461acebe4d7",
+      "size": 855
+    },
+    {
+      "path": "templates/ink-explainer/motion.mjs",
+      "sha256": "eb736408ffd20c8577e1e0bd6648eea9a7320651538a9661c39f225d2abc62b8",
+      "size": 1501
+    },
+    {
+      "path": "templates/ink-explainer/scene.css",
+      "sha256": "32c18f0e8fc475fc7e283211197aa8315833815f48f79fa7b3106d6b4ba75d1f",
+      "size": 2379
+    },
+    {
+      "path": "templates/ink-explainer/template.json",
+      "sha256": "1637c84a854e45dcb45b351f210c2cbd4780d3eece671010d9440cd3358a5875",
+      "size": 1784
+    },
+    {
+      "path": "templates/paper-theatre/cover.css",
+      "sha256": "46e428eee45638a20271cf7a7408de11b0ef191b0427b992549094dd1103507f",
+      "size": 825
+    },
+    {
+      "path": "templates/paper-theatre/motion.mjs",
+      "sha256": "f37ec2da4d4837b873af10de943a05499f5babd76bb2a27d7952aa3b12daf6fd",
+      "size": 899
+    },
+    {
+      "path": "templates/paper-theatre/scene.css",
+      "sha256": "532eca66fbba703b4ecb60cbf5582a3601d27d98c28004c16c1bda13741e5841",
+      "size": 2273
+    },
+    {
+      "path": "templates/paper-theatre/template.json",
+      "sha256": "737d7750b8bd6586404f4a27c4a6ce9ec8e94dfbe81a4c91bc01a19df3f07567",
+      "size": 1576
+    },
+    {
+      "path": "templates/spatial-chamber/cover.css",
+      "sha256": "a2a87b4a14aab88adab7bffbb3a62afa5b7246211236d8cb4286bfae098c9c98",
+      "size": 1121
+    },
+    {
+      "path": "templates/spatial-chamber/motion.mjs",
+      "sha256": "a9b8ccbeecffc401f83faaa99a44c0a357b36959f4137def1631ed62d3313967",
+      "size": 1805
+    },
+    {
+      "path": "templates/spatial-chamber/scene.css",
+      "sha256": "0c702601c73caf38f004b41b7927d47abb659b7d27bd3d4d61671051c410c5a2",
+      "size": 2775
+    },
+    {
+      "path": "templates/spatial-chamber/template.json",
+      "sha256": "b6888fbfb570c08ce512ceeac0f64fed6dea018d6154ace55de25f3c87a53793",
+      "size": 1788
     }
   ]
 }
