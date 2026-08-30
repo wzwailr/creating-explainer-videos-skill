@@ -28,12 +28,12 @@ jobs:
         env:
           PYTHONDONTWRITEBYTECODE: "1"
           PYTHONUTF8: "1"
-        run: python skill/creating-ai-principle-videos/scripts/test_skill.py
+        run: python skill/creating-explainer-videos/scripts/test_skill.py
       - name: Validate extensions
         env:
           PYTHONDONTWRITEBYTECODE: "1"
           PYTHONUTF8: "1"
-        run: python skill/creating-ai-principle-videos/scripts/test_extensions.py
+        run: python skill/creating-explainer-videos/scripts/test_extensions.py
       - run: npm run build
 
   package-windows:
@@ -45,4 +45,5 @@ jobs:
           node-version: 22
       - run: npm run pack:local
       - run: npm run pack:zip
+      - run: npm run audit:packed -- .\dist\creating-explainer-videos-skill-2.0.0.tgz
       - run: npm run smoke:packed -- .\dist\creating-explainer-videos-skill-2.0.0.tgz
