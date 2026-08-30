@@ -14,6 +14,8 @@
     "skill-manifest.json",
     "examples/",
     "scripts/build-examples.mjs",
+    "scripts/run-tests.mjs",
+    "test/",
     "docs/MIGRATION_V2.md",
     "docs/releases/v2.0.0.md",
     "README.md",
@@ -24,7 +26,7 @@
     "LICENSE"
   ],
   "scripts": {
-    "test": "node --test test/*.test.mjs",
+    "test": "node scripts/run-tests.mjs",
     "build": "node scripts/build-package.mjs",
     "pack:local": "node scripts/build-package.mjs --pack",
     "pack:zip": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/build-zip.ps1",
