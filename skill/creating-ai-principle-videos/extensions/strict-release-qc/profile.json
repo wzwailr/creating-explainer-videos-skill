@@ -1,0 +1,9 @@
+{
+  "blackDetectSeconds": 0.2,
+  "freezeDetectSeconds": 6.5,
+  "silenceDetectSeconds": 0.6,
+  "durationToleranceSeconds": 0.35,
+  "requiredHumanPasses": ["muted-visual", "audio-only", "normal-watch"],
+  "candidateState": "release_candidate_pending_human_listen",
+  "publishState": "passed"
+}

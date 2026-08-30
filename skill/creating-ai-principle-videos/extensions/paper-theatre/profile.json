@@ -1,0 +1,12 @@
+{
+  "style": "paper",
+  "styleName": "A · Paper Theatre 纸艺编辑剧场",
+  "tokenAsset": "assets/style-tokens.css",
+  "motionPlugins": ["DrawSVGPlugin", "MorphSVGPlugin", "Flip", "CustomEase"],
+  "coverGrammar": "top-left-series-cluster-clean-top-right",
+  "fontRoles": {
+    "displayZh": "钉钉进步体 Regular",
+    "latinAndNumbers": "DingTalk Sans",
+    "caption": "Noto Sans SC"
+  }
+}

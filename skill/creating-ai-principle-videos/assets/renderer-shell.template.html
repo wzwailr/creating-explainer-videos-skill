@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>S{{SEASON}}E{{EPISODE_PADDED}} {{TOPIC}}</title>
+  <link rel="stylesheet" href="assets/style-tokens.css">
+  <style>
+    * { box-sizing: border-box; }
+    html, body { margin: 0; width: {{WIDTH}}px; height: {{HEIGHT}}px; overflow: hidden; }
+    body { background: var(--sheet); color: var(--ink); }
+    .composition { position: relative; width: {{WIDTH}}px; height: {{HEIGHT}}px; overflow: hidden; }
+    .caption { position: absolute; left: 8%; right: 8%; bottom: 5%; min-height: 86px; display: grid; place-items: center; padding: 18px 28px; border: 4px solid var(--ink); background: var(--caption-bg); font: 700 32px/1.35 "Noto Sans SC", sans-serif; z-index: 50; }
+  </style>
+</head>
+<body>
+  <main class="composition" data-composition-id="{{SLUG}}" data-width="{{WIDTH}}" data-height="{{HEIGHT}}">
+    <!-- Implement episode-specific scene DOM and SVG from the semantic cue contract. -->
+    <div class="caption" aria-live="off"></div>
+  </main>
+  <script src="assets/gsap.min.js"></script>
+  <script>
+    const timeline = gsap.timeline({ paused: true });
+    // Add actions at measured narration cue starts; do not use runtime randomness.
+    window.__timelines = window.__timelines || {};
+    window.__timelines["{{SLUG}}"] = timeline;
+    timeline.pause(0);
+  </script>
+</body>
+</html>
+

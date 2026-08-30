@@ -1,0 +1,14 @@
+{
+  "apiVersion": 1,
+  "id": "neutral-technical-zh",
+  "type": "voice",
+  "version": "1.0.0",
+  "displayName": "中文中性技术讲师",
+  "description": "Natural, clear Mandarin teaching voice profile for technical mechanisms.",
+  "entrypoints": {
+    "reference": "reference.md",
+    "profile": "profile.json",
+    "assets": []
+  },
+  "capabilities": ["voice.tts-profile", "voice.pronunciation", "voice.caption-identity"]
+}

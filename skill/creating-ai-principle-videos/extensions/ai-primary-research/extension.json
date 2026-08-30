@@ -1,0 +1,14 @@
+{
+  "apiVersion": 1,
+  "id": "ai-primary-research",
+  "type": "research",
+  "version": "1.0.0",
+  "displayName": "AI 原理一手资料调研",
+  "description": "Primary-source evidence profile for AI mechanisms and engineering boundaries.",
+  "entrypoints": {
+    "reference": "reference.md",
+    "profile": "profile.json",
+    "assets": []
+  },
+  "capabilities": ["research.primary-sources", "research.fact-table", "research.current-verification"]
+}

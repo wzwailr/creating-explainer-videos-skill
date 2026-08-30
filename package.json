@@ -1,0 +1,47 @@
+{
+  "name": "creating-ai-principle-videos-skill",
+  "version": "1.1.0",
+  "description": "Product-neutral Agent Skill for producing rigorous Chinese AI-principle explainer videos.",
+  "type": "module",
+  "bin": {
+    "ai-principle-video-skill": "./bin/ai-principle-video-skill.mjs"
+  },
+  "files": [
+    "bin/",
+    "lib/",
+    "skill/",
+    "skill-manifest.json",
+    "README.md"
+  ],
+  "scripts": {
+    "test": "node --test test/*.test.mjs",
+    "build": "node scripts/build-package.mjs",
+    "pack:local": "node scripts/build-package.mjs --pack",
+    "pack:zip": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/build-zip.ps1",
+    "smoke:packed": "node scripts/smoke-packed.mjs",
+    "prepublishOnly": "node -e \"throw new Error('Public npm publish requires explicit release approval')\""
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "keywords": [
+    "codex",
+    "agent-skill",
+    "skill",
+    "ai-video",
+    "chinese-video",
+    "gsap",
+    "hyperframes"
+  ],
+  "author": "wzwailr",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wzwailr/creating-ai-principle-videos-skill.git"
+  },
+  "homepage": "https://github.com/wzwailr/creating-ai-principle-videos-skill#readme",
+  "bugs": {
+    "url": "https://github.com/wzwailr/creating-ai-principle-videos-skill/issues"
+  },
+  "private": true
+}

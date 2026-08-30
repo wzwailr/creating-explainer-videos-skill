@@ -1,0 +1,14 @@
+{
+  "providerClass": "configurable-tts",
+  "language": "zh-CN",
+  "voiceId": "configure-on-host",
+  "role": "neutral-technical-teacher",
+  "rate": "+10%",
+  "pitch": "+0Hz",
+  "captionSource": "same-as-tts",
+  "pronunciationPolicy": {
+    "codeIdentifiers": "keep-on-screen-speak-naturally",
+    "underscore": "forbidden-in-spoken-text",
+    "abbreviations": "record-and-listen-before-timing-lock"
+  }
+}

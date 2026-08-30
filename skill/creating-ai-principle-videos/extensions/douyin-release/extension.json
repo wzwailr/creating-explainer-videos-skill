@@ -1,0 +1,14 @@
+{
+  "apiVersion": 1,
+  "id": "douyin-release",
+  "type": "publishing",
+  "version": "1.0.0",
+  "displayName": "抖音发布包",
+  "description": "Douyin title, independent cover hierarchy, copy, topics, and pinned-comment profile.",
+  "entrypoints": {
+    "reference": "reference.md",
+    "profile": "profile.json",
+    "assets": []
+  },
+  "capabilities": ["publishing.title", "publishing.cover", "publishing.copy", "publishing.pinned-comment"]
+}

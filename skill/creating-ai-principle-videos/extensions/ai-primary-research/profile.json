@@ -1,0 +1,11 @@
+{
+  "sourcePriority": [
+    "original-research-paper",
+    "official-documentation",
+    "official-repository-or-model-card"
+  ],
+  "communityRole": "discovery-or-counterexample-only",
+  "evidenceFields": ["claim", "source", "sourceType", "verifiedAt", "teachingSimplification", "visualExpression"],
+  "currentVerification": "required-for-versioned-APIs-products-benchmarks-and-prices",
+  "illustrativeNumbers": "label-as-teaching-example-not-benchmark"
+}

@@ -1,0 +1,12 @@
+{
+  "platform": "douyin",
+  "titlePattern": "主题：具体问题或核心结论",
+  "coverRules": [
+    "series-at-top-left",
+    "season-episode-immediately-after-series",
+    "exact-topic-visible",
+    "top-right-clean",
+    "phone-preview-required"
+  ],
+  "deliverables": ["title", "description", "topics", "pinned-comment", "video-path", "cover-path", "phone-cover-preview"]
+}
