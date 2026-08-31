@@ -38,12 +38,14 @@ Read [content-and-script-contract.md](references/content-and-script-contract.md)
 
 - Explain `input -> internal state changes -> output`, including why each step follows.
 - Include one worked example and one relevant boundary, cost, control, or failure chain.
+- Give every mechanism item and worked example a stable `id`. Every canonical narration cue must declare `mechanismRefs`; validation requires complete input/change/output/example coverage plus at least one boundary or failure reference.
 - Treat duration, scene count, and word count as depth alarms, never padding targets.
 - Keep the public topic no broader than the mechanism actually taught.
 - For a series, the opening sentence connects the previous output to this exact topic; the final sentence previews the next exact question. For a standalone video, open with the exact question and close with the reusable conclusion.
 - Store one canonical spoken string. Captions and TTS must be character-identical after normalization.
 - Remove `\_`, snake_case underscores, Markdown syntax, and other characters a TTS engine may pronounce literally. Keep technical spelling in a separate on-screen label.
 - Bind every cue's narration, visible title, mechanism label, focus, action, and handoff to the same local claim.
+- Production timing validation rejects caption/TTS drift and an average cue duration below 2.2 seconds. Split the mechanism differently instead of compressing several state changes into a rapid sequence.
 
 Use primary evidence for mechanism facts. Keep source, source type, verification date, simplification, and planned visual expression in the evidence table. Community sources may expose confusion or edge cases but do not establish the mechanism by themselves.
 
@@ -74,6 +76,8 @@ explainer-video-skill visual preview <project-dir> --output <preview.html> --jso
 
 `build` and `render` regenerate renderer HTML, so do not hide topic logic in a hand-edited generated page. A legacy project without a visual program may use the generic scaffold for compatibility, but the fallback is not finished visual direction. Never present it as a high-fidelity topic video merely because it renders.
 
+The compiler, not the Agent, supplies the template-native DOM and motion bridge. It maps visual roles to semantic tones, routes connectors between object edges, adds direction markers, and emits the selected template fingerprint. Do not replace these with hand-built generic cards. Every connector requires a cue-bound `draw` action; every cue requires a semantic action; text-bearing elements must remain above the caption safe area.
+
 Use DingTalk JinBuTi/DingTalk Sans for display roles when locally licensed and installed, and Noto Sans SC or a tested CJK fallback for captions. Never package font binaries or commercial GSAP plugins without redistribution rights. Every premium plugin needs the fallback declared by its template.
 
 ## Narration, timing, and render
@@ -99,7 +103,7 @@ Real measured narration timing is the only final animation clock. Use determinis
 
 When changing the renderer or media toolchain in this repository, run `npm run smoke:render` so a real browser render, cover capture, audio mux, ffprobe inspection, and media audit exercise the integration path.
 
-Generate a dedicated cover, not a random frame. The cover must state the exact topic and remain readable in a phone-size preview. Series/season/episode labels are preset rules, not core-package branding.
+Generate a dedicated cover, not a random frame. For a completed visual program, the cover is derived from the same topic objects, roles, and routes as the video; the generic input/change/output cover is scaffold-only. The cover must state the exact topic and remain readable in a phone-size preview. Series/season/episode labels are preset rules, not core-package branding.
 
 ## QC and release boundary
 
@@ -110,7 +114,7 @@ explainer-video-skill audit <project-dir> --json
 explainer-video-skill package <project-dir> --json
 ```
 
-Automated checks must include full decode, media specifications, black/freeze/silence diagnostics, representative frames, warning frames, overflow/layout inspection, cover preview, and artifact hashes. Automation may only write `release_candidate_pending_human_listen`.
+Automated checks must include template-native structure, full decode, media specifications, black/freeze/silence diagnostics, one encoded representative frame per sampled cue, a populated timeline contact sheet, overflow/layout inspection, topic-derived cover evidence, and artifact hashes. Automation may only write `release_candidate_pending_human_listen`.
 
 Complete three human passes on the exact hashed candidate: muted visual, audio-only, and normal watch. Record title/narration/caption/focus mismatches, clipping, unreadable text, accidental symbol speech, timing drift, dead motion, repeated composition, dirty transitions, and mixing defects with timestamps.
 
@@ -130,4 +134,4 @@ Read [install-and-portability.md](references/install-and-portability.md) for npm
 
 ## Stop conditions
 
-Stop and report the exact blocker when facts are unverified, the topic promise is broader than the explanation, canonical narration is not fixed, real audio timing is missing, title/card/narration/focus diverge, text clips or overflows, the selected template does not express the mechanism, media decode fails, licensed assets are unresolved, or human review is incomplete.
+Stop and report the exact blocker when facts are unverified, mechanism IDs are not covered by narration, the topic promise is broader than the explanation, canonical narration is not fixed, real audio timing is missing, cue cadence is over-compressed, title/card/narration/focus diverge, text clips or enters the caption safe area, the selected template fingerprint is absent, a connector lacks a semantic route action, media decode fails, licensed assets are unresolved, or human review is incomplete.

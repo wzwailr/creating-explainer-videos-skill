@@ -15,11 +15,12 @@ Prove:
 - title, label, narration, caption, focus, and action alignment;
 - real timing for every cue;
 - local deterministic renderer and dedicated cover;
+- selected template fingerprint, native motion selectors, and topic-derived cover structure;
 - no scan-line/sweep substitute motion;
 - no overflow, clipping, offscreen focus, overlap, excessive occlusion, or contrast blocker;
 - full MP4 decode and required video/audio specifications;
 - black/freeze/silence diagnostics with human-readable timestamps;
-- artifact hashes, representative frames, warning frames, phone preview, and contact sheet.
+- artifact hashes, encoded cue-sampled frames, warning frames, phone preview, and a timeline-filled contact sheet.
 
 Run:
 
@@ -34,7 +35,7 @@ Detection thresholds triage suspicious ranges; they do not decide artistic accep
 
 ## 3. Visual evidence
 
-Inspect first/final frames, one stable frame per scene, every cue boundary that changes composition, every warning range, longest title/caption/identifier/formula, full cover, phone cover, and contact sheet. Inspect the encoded MP4 because browser screenshots cannot prove fallback fonts, final compositing, compression, or transition debris.
+The audit extracts an encoded representative frame from each sampled cue and builds a six- or twelve-frame timeline sheet instead of sampling only every five seconds. Inspect first/final frames, one stable frame per scene, every cue boundary that changes composition, every warning range, longest title/caption/identifier/formula, full cover, phone cover, and contact sheet. Inspect the encoded MP4 because browser screenshots cannot prove fallback fonts, final compositing, compression, or transition debris.
 
 ## 4. Human three-pass review
 

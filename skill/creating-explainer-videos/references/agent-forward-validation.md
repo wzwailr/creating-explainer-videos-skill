@@ -7,10 +7,13 @@ Record whether each run:
 - calls `doctor`, `status`, `next`, and `validate`;
 - chooses a template from the knowledge structure and explains the choice;
 - completes the mechanism/evidence contract before implementing scenes;
+- assigns stable mechanism IDs and maps them into canonical narration cues;
 - produces a runnable renderer and dedicated cover;
+- emits the selected template fingerprint, native motion selectors, semantic tones, and edge-routed connectors;
 - normalizes canonical narration and imports measured timing;
 - keeps captions identical to narration;
 - runs media/visual evidence checks;
+- produces encoded cue-sampled frames and a timeline-filled contact sheet;
 - reports missing tools and paid-provider boundaries honestly;
 - stops at `human_listen` until a named reviewer assesses the exact artifact hash.
 

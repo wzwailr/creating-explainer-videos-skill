@@ -61,9 +61,9 @@ Executable provider adapters remain in the reviewed runtime or an explicitly has
 - Generate and listen to the narration master through the selected provider. Synthetic `fixture-tts` audio is test-only and cannot satisfy production timing.
 - `narration import-timing` imports authoritative cue starts/durations.
 - `visual validate`, `visual compile`, and `visual preview` verify the bounded topic program described in [visual-program-dsl.md](visual-program-dsl.md).
-- `build` regenerates `renderer/index.html` and `renderer/cover.html` from project contracts, including a complete visual program when present.
+- `build` regenerates `renderer/index.html` and `renderer/cover.html` from project contracts, including template-native stages, semantic tones, edge-routed connectors, and a topic-derived cover when the visual program is complete.
 - `render` invokes HyperFrames through argument arrays with a pinned version.
-- `mux` combines the visual candidate and real narration through FFmpeg.
+- `mux` combines the visual candidate and real narration through FFmpeg and applies a `-16 LUFS`, `-1.5 dBTP` short-video normalization target before AAC encoding.
 
 Use paused timelines, absolute cue anchors, deterministic selectors, fixed SVG viewBoxes, local assets, and seekable state. Do not use runtime randomness, wall-clock timers, uncontrolled CSS animation, or remote network assets in render pages.
 
@@ -75,7 +75,7 @@ Narration is primary. Duck music under speech; use effects only for meaningful c
 
 ## 6. Cover
 
-The normal build renders `renderer/cover.html` independently. Do not overwrite a designed cover with a video frame. Produce the full cover and phone preview from the same contract and check the intended font actually loaded.
+The normal build renders `renderer/cover.html` independently from the first completed topic scene. Do not overwrite a designed cover with a video frame or restore the scaffold-only input/change/output diagram. Cover capture uses a temporary isolated browser profile that is removed after capture. Produce the full cover and phone preview from the same contract and check the intended font actually loaded.
 
 ## 7. Reproducibility
 

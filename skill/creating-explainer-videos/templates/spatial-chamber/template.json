@@ -1,6 +1,6 @@
 {
   "id": "spatial-chamber",
-  "version": "2.0.0",
+  "version": "2.2.0",
   "displayName": "Spatial Chamber / 空间数据舱",
   "description": "Perspective depth, signal tunnels, path motion, spatial reconfiguration, and high-impact system views.",
   "domFingerprint": "perspective-chamber-tunnel-and-depth-lanes",

@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { mkdtemp, mkdir, readFile, rm, writeFile } from "node:fs/promises";
+import { access, mkdtemp, mkdir, readFile, rm, writeFile } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 
@@ -10,6 +10,8 @@ import {
   contactSheetFilter,
   createPublishingPackage,
   hyperframesRenderCommand,
+  muxAudio,
+  representativeFramePlan,
   renderCover,
   renderVideo,
 } from "../skill/creating-explainer-videos/runtime/media.mjs";
@@ -33,8 +35,23 @@ test("render command pins HyperFrames and emits an explicit output", () => {
 });
 
 test("contact sheet filter emits a frame for short videos and a tiled overview for longer videos", () => {
-  assert.equal(contactSheetFilter(1.2), "thumbnail,scale=480:-1");
-  assert.equal(contactSheetFilter(30), "fps=1/5,scale=480:-1,tile=4x3");
+  assert.match(contactSheetFilter(1.2), /tile=3x2:nb_frames=6/);
+  assert.match(contactSheetFilter(9.874), /tile=4x3:nb_frames=12/);
+  assert.match(contactSheetFilter(30), /tile=4x3:nb_frames=12/);
+  assert.doesNotMatch(contactSheetFilter(9.874), /fps=1\/5/);
+});
+
+test("representative frame planning preserves every narration cue", () => {
+  const cues = Array.from({ length: 13 }, (_, index) => ({
+    id: `C${String(index + 1).padStart(2, "0")}`,
+    start: index * 2.5,
+    duration: 2.5,
+  }));
+
+  const plan = representativeFramePlan({ cues }, 32.5);
+
+  assert.equal(plan.length, 13);
+  assert.deepEqual(plan.map((item) => item.id), cues.map((cue) => cue.id));
 });
 
 test("render invokes an argument-array adapter from the renderer directory", async () => {
@@ -59,6 +76,23 @@ test("render invokes an argument-array adapter from the renderer directory", asy
   assert.equal(result.output, path.join(root, "renders", "visual.mp4"));
 });
 
+test("audio mux applies a short-video loudness target before AAC encoding", async () => {
+  const root = path.join(await mkdtemp(path.join(os.tmpdir(), "explainer-audio-mux-")), "demo");
+  await createProject({ destination: root, title: "Demo", topic: "Flow", template: "paper-theatre" });
+  await writeFile(path.join(root, "renders", "visual.mp4"), "video", "utf8");
+  await writeFile(path.join(root, ".publish", "narration.wav"), "audio", "utf8");
+  let invocation;
+
+  await muxAudio(root, { runner: async (command, args) => {
+    invocation = { command, args };
+    return { status: 0, stdout: "", stderr: "" };
+  } });
+
+  assert.equal(invocation.command, "ffmpeg");
+  assert.ok(invocation.args.includes("-af"));
+  assert.match(invocation.args[invocation.args.indexOf("-af") + 1], /loudnorm=I=-16:LRA=7:TP=-1\.5/);
+});
+
 test("cover render waits until an asynchronously flushed screenshot is non-empty", async () => {
   const tempRoot = await mkdtemp(path.join(os.tmpdir(), "explainer-cover-flush-"));
   const root = path.join(tempRoot, "demo");
@@ -78,6 +112,7 @@ test("cover render waits until an asynchronously flushed screenshot is non-empty
 
   assert.equal(result.output, output);
   assert.equal(await readFile(output, "utf8"), "real-screenshot");
+  await assert.rejects(() => access(path.join(root, ".publish", "cover-browser-profile")));
 });
 
 test("automated audit records candidate status only and publishing package hashes artifacts", async () => {
@@ -119,7 +154,7 @@ test("audit treats detected black intervals as a failed automated check", async 
     contactSheetPollInterval: 5,
     runner: async (command, args) => {
       if (command === "ffprobe") return { status: 0, stdout: probeFixture(), stderr: "" };
-      if (args.includes("blackdetect=d=0.5:pix_th=0.1")) return { status: 0, stdout: "", stderr: "black_start:1 black_end:2" };
+      if (args.includes("blackdetect=d=0.5:pix_th=0.02:pic_th=0.995")) return { status: 0, stdout: "", stderr: "black_start:1 black_end:2" };
       return { status: 0, stdout: "", stderr: "" };
     },
   });
@@ -127,4 +162,29 @@ test("audit treats detected black intervals as a failed automated check", async 
   assert.equal(report.automatedPassed, false);
   assert.equal(report.checks.find((item) => item.name === "black-frames").status, "failed");
   assert.equal(report.releaseDecision, "release_candidate_pending_human_listen");
+});
+
+test("audit rejects a selected template that rendered without its native structure", async () => {
+  const tempRoot = await mkdtemp(path.join(os.tmpdir(), "explainer-media-template-"));
+  const root = path.join(tempRoot, "demo");
+  await createProject({ destination: root, title: "Demo", topic: "Flow", template: "spatial-chamber" });
+  await writeFile(path.join(root, "renders", "candidate.mp4"), "fixture-video", "utf8");
+  await writeFile(path.join(root, "renders", "cover.png"), "fixture-cover", "utf8");
+  await writeFile(path.join(root, "renderer", "index.html"), '<body class="spatial-chamber"><div class="visual-node">Flow</div></body>', "utf8");
+  const report = await auditMedia(root, {
+    contactSheetTimeout: 100,
+    contactSheetPollInterval: 5,
+    runner: async (command, args) => {
+      if (command === "ffprobe") return { status: 0, stdout: probeFixture(), stderr: "" };
+      const output = args.at(-1);
+      if (typeof output === "string" && output.endsWith(".png")) {
+        await mkdir(path.dirname(output), { recursive: true });
+        await writeFile(output, "frame", "utf8");
+      }
+      return { status: 0, stdout: "", stderr: "" };
+    },
+  });
+
+  assert.equal(report.automatedPassed, false);
+  assert.equal(report.checks.find((item) => item.name === "template-structure").status, "failed");
 });

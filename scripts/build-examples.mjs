@@ -73,7 +73,7 @@ function inkVisualScene(scene) {
       { id: "transmitted-wave", type: "node", label: scene.output, role: "probability", frame: { x: .69, y: .34, width: .25, height: .18 } },
       { id: "enter-barrier", type: "connector", from: "incoming-wave", to: "shape-barrier", route: "curve", role: "wave" },
       { id: "leave-barrier", type: "connector", from: "shape-barrier", to: "transmitted-wave", route: "curve", role: "wave" },
-      { id: "knowledge", type: "annotation", text: scene.knowledgePoint, target: "shape-barrier", role: "proof", frame: { x: .2, y: .79, width: .6, height: .1 } },
+      { id: "knowledge", type: "annotation", text: scene.knowledgePoint, target: "shape-barrier", role: "proof", frame: { x: .2, y: .72, width: .6, height: .1 } },
     ],
     actions: cueActions(scene, targets),
   };

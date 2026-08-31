@@ -98,9 +98,18 @@ test("real timing builds a deterministic template renderer and dedicated cover",
   assert.match(html, /@font-face[^}]+src:local\("Noto Sans SC"\)/);
   assert.match(html, /id="caption-C01"/);
   assert.match(html, /刷卡成功只代表授权通过。/);
+  assert.match(html, /data-template-fingerprint="perspective-chamber-tunnel-and-depth-lanes"/);
+  assert.match(html, /data-motion="depth"/);
+  assert.match(html, /data-signal-path/);
+  assert.match(html, /target\.style\.opacity=progress>0\?'1':'0'/);
+  assert.match(html, /progress>=\.98\?pathElement\.dataset\.markerEnd:'none'/);
+  assert.match(html, /if\(localTime<action\.start&&action\.kind!=='appear'&&action\.kind!=='draw'&&action\.kind!=='replace'\)continue/);
   assert.doesNotMatch(html, /scan-line|cue-sweep|full-canvas-sweep/);
   assert.match(coverHtml, /信用卡清算/);
   assert.match(coverHtml, /series-cluster/);
+  assert.match(coverHtml, /授权通过/);
+  assert.match(coverHtml, /清分与结算/);
+  assert.doesNotMatch(coverHtml, />输入<|>内部变化<|>输出</);
 });
 
 test("renderer consumes topic visual elements and cue-relative actions deterministically", async () => {

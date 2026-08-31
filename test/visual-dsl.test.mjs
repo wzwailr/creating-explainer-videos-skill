@@ -81,6 +81,14 @@ test("a topic visual program compiles escaped semantic markup and measured cue a
   assert.match(result.markupByScene.S01, /data-visual-element-id="attention"/);
   assert.match(result.markupByScene.S01, /&lt;script&gt;alert\(1\)&lt;\/script&gt;/);
   assert.doesNotMatch(result.markupByScene.S01, /<script>alert/);
+  assert.match(result.markupByScene.S01, /data-template-fingerprint="perspective-chamber-tunnel-and-depth-lanes"/);
+  assert.match(result.markupByScene.S01, /class="[^"]*chamber-stage[^"]*"/);
+  assert.match(result.markupByScene.S01, /data-motion="depth"/);
+  assert.match(result.markupByScene.S01, /data-signal-path/);
+  assert.match(result.markupByScene.S01, /data-signal-dot/);
+  assert.match(result.markupByScene.S01, /marker-end="url\(#arrow-attention\)"/);
+  assert.match(result.markupByScene.S01, /data-marker-end="url\(#arrow-attention\)"/);
+  assert.match(result.markupByScene.S01, /M 280\.00 390\.00 C [^\"]+ 640\.00 390\.00/);
   assert.deepEqual(
     result.actionsByScene.S01.map(({ kind, start, duration }) => ({ kind, start, duration })),
     [
@@ -89,6 +97,20 @@ test("a topic visual program compiles escaped semantic markup and measured cue a
       { kind: "focus", start: 3.5, duration: .5 },
     ],
   );
+});
+
+test("semantic roles produce visible state tones without requiring custom CSS", async () => {
+  const program = validProgram();
+  program.scenes[0].elements[0].role = "current-green";
+  program.scenes[0].elements[0].label = "当前相位 · 绿";
+  program.scenes[0].elements[1].role = "yellow-transition";
+  program.scenes[0].elements[1].label = "黄灯变化";
+  const root = await createProgramProject(program);
+
+  const result = await compileVisualProgram(root);
+
+  assert.match(result.markupByScene.S01, /role-current-green tone-success/);
+  assert.match(result.markupByScene.S01, /role-yellow-transition tone-warning/);
 });
 
 test("visual validation rejects malformed geometry, references, paths, cues, and actions", () => {
@@ -142,6 +164,34 @@ test("visual validation rejects malformed geometry, references, paths, cues, and
       name: "unsupported action",
       mutate(program) { program.scenes[0].actions[0].kind = "run-script"; },
       code: "unsupported-action-kind",
+    },
+    {
+      name: "caption safe area overlap",
+      mutate(program) { program.scenes[0].elements[0].frame = { x: .08, y: .84, width: .2, height: .14 }; },
+      code: "caption-occlusion-risk",
+    },
+    {
+      name: "text container too small",
+      mutate(program) { program.scenes[0].elements[0].frame = { x: .08, y: .3, width: .05, height: .04 }; },
+      code: "unreadable-frame",
+    },
+    {
+      name: "cue without semantic action",
+      mutate(program) { program.scenes[0].actions = program.scenes[0].actions.filter((action) => action.cueId !== "C02"); },
+      code: "uncovered-cue-action",
+    },
+    {
+      name: "spatial scene without mechanism path",
+      mutate(program) {
+        program.scenes[0].elements = program.scenes[0].elements.filter((element) => !["attention", "weight"].includes(element.id));
+        program.scenes[0].actions = program.scenes[0].actions.filter((action) => !["attention"].includes(action.target));
+      },
+      code: "template-mechanism-missing",
+    },
+    {
+      name: "connector without routed draw action",
+      mutate(program) { program.scenes[0].actions = program.scenes[0].actions.filter((action) => action.target !== "attention"); },
+      code: "connector-action-missing",
     },
   ];
 

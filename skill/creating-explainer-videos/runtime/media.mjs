@@ -1,4 +1,5 @@
-import { access, mkdir, readFile, rm, stat } from "node:fs/promises";
+import { access, mkdir, mkdtemp, readFile, rm, stat } from "node:fs/promises";
+import os from "node:os";
 import path from "node:path";
 import { pathToFileURL } from "node:url";
 
@@ -88,8 +89,7 @@ export async function renderCover(projectRoot, options = {}) {
     ? { status: "available", path: options.browserPath }
     : await findBrowser({ browser: options.browser, exists: options.exists });
   if (browser.status !== "available") throw new Error("a working Chrome or Edge browser is required to render the cover");
-  const profile = path.join(root, ".publish", "cover-browser-profile");
-  await mkdir(profile, { recursive: true });
+  const profile = await mkdtemp(path.join(options.profileRoot || os.tmpdir(), "explainer-cover-profile-"));
   await rm(output, { force: true });
   const args = [
     "--headless=new",
@@ -101,17 +101,21 @@ export async function renderCover(projectRoot, options = {}) {
     `--screenshot=${output}`,
     pathToFileURL(source).href,
   ];
-  const result = await runChecked(browser.path, args, {
-    cwd: path.join(root, "renderer"),
-    runner: options.runner,
-    timeout: options.timeout || 120_000,
-    label: "cover render",
-  });
-  const screenshot = await waitForNonEmptyFile(output, {
-    timeout: options.screenshotTimeout,
-    pollInterval: options.screenshotPollInterval,
-  });
-  return { source, output, browser, result, bytes: screenshot.size };
+  try {
+    const result = await runChecked(browser.path, args, {
+      cwd: path.join(root, "renderer"),
+      runner: options.runner,
+      timeout: options.timeout || 120_000,
+      label: "cover render",
+    });
+    const screenshot = await waitForNonEmptyFile(output, {
+      timeout: options.screenshotTimeout,
+      pollInterval: options.screenshotPollInterval,
+    });
+    return { source, output, browser, result, bytes: screenshot.size };
+  } finally {
+    await rm(profile, { recursive: true, force: true, maxRetries: 3, retryDelay: 50 }).catch(() => {});
+  }
 }
 
 export async function muxAudio(projectRoot, options = {}) {
@@ -134,6 +138,8 @@ export async function muxAudio(projectRoot, options = {}) {
     "1:a:0",
     "-c:v",
     "copy",
+    "-af",
+    "loudnorm=I=-16:LRA=7:TP=-1.5",
     "-c:a",
     "aac",
     "-ar",
@@ -174,10 +180,57 @@ function streamSummary(probe) {
   };
 }
 
+const TEMPLATE_STRUCTURE = Object.freeze({
+  "paper-theatre": {
+    fingerprint: "paper-stage-layer-stack-and-cutouts",
+    motion: 'data-motion="paper"',
+  },
+  "spatial-chamber": {
+    fingerprint: "perspective-chamber-tunnel-and-depth-lanes",
+    motion: 'data-motion="depth"',
+    connector: "data-signal-path",
+  },
+  "ink-explainer": {
+    fingerprint: "ruled-board-rough-strokes-and-teacher-notes",
+    motion: 'data-motion="note"',
+    connector: 'data-motion="draw"',
+  },
+});
+
+function templateStructureCheck(project, visualProgram, rendererHtml, coverHtml) {
+  if (Number(project?.schemaVersion || 1) < 2) return { valid: true, legacy: true, missing: [] };
+  const expected = TEMPLATE_STRUCTURE[project?.template];
+  const missing = [];
+  if (!visualProgram?.complete) missing.push("complete visual-program.json");
+  if (!expected) missing.push(`known template adapter for ${project?.template}`);
+  if (expected && !rendererHtml.includes(`data-template-fingerprint="${expected.fingerprint}"`)) missing.push(expected.fingerprint);
+  if (expected && !rendererHtml.includes(expected.motion)) missing.push(expected.motion);
+  const hasConnectors = (visualProgram?.scenes ?? []).some((scene) => (scene.elements ?? []).some((element) => element.type === "connector"));
+  if (expected?.connector && hasConnectors && !rendererHtml.includes(expected.connector)) missing.push(expected.connector);
+  if (visualProgram?.complete && !coverHtml.includes('data-cover-source="visual-program"')) missing.push("topic-derived cover visual");
+  return { valid: missing.length === 0, legacy: false, missing };
+}
+
+export function representativeFramePlan(cueDocument, duration) {
+  const rows = (cueDocument?.cues ?? []).filter((cue) => Number.isFinite(Number(cue.start)) && Number(cue.duration) > 0);
+  const candidates = rows.length ? rows.map((cue) => ({
+    id: String(cue.id || "cue").replace(/[^A-Za-z0-9-]+/g, "-") || "cue",
+    time: Math.min(Math.max(.02, Number(cue.start) + Number(cue.duration) * .65), Math.max(.02, Number(duration) - .04)),
+  })) : Array.from({ length: Math.min(6, Math.max(1, Math.ceil(Number(duration) || 1))) }, (_, index, all) => ({
+    id: `timeline-${String(index + 1).padStart(2, "0")}`,
+    time: Math.max(.02, (Number(duration) || 1) * (index + .5) / all.length),
+  }));
+  return candidates;
+}
+
 export function contactSheetFilter(duration) {
-  return Number(duration) < 5
-    ? "thumbnail,scale=480:-1"
-    : "fps=1/5,scale=480:-1,tile=4x3";
+  const seconds = Math.max(.1, Number(duration) || .1);
+  const short = seconds < 5;
+  const sampleCount = short ? 6 : 12;
+  const grid = short ? "3x2" : "4x3";
+  const width = short ? 640 : 480;
+  const fps = (sampleCount / seconds).toFixed(6);
+  return `fps=${fps},scale=${width}:-1,tile=${grid}:nb_frames=${sampleCount}:padding=4:margin=4:color=0x111111`;
 }
 
 export async function auditMedia(projectRoot, options = {}) {
@@ -199,9 +252,27 @@ export async function auditMedia(projectRoot, options = {}) {
   }
   const media = streamSummary(probe);
   const checks = [];
+  try {
+    const [project, visualProgram, rendererHtml, coverHtml] = await Promise.all([
+      readJson(path.join(root, "project.json")),
+      readJson(path.join(root, "visual-program.json")),
+      readFile(path.join(root, "renderer", "index.html"), "utf8"),
+      readFile(path.join(root, "renderer", "cover.html"), "utf8"),
+    ]);
+    const structure = templateStructureCheck(project, visualProgram, rendererHtml, coverHtml);
+    checks.push({
+      name: "template-structure",
+      status: structure.valid ? "passed" : "failed",
+      template: project.template,
+      missing: structure.missing,
+      legacy: structure.legacy,
+    });
+  } catch (error) {
+    checks.push({ name: "template-structure", status: "failed", diagnostic: error.message });
+  }
   const commands = [
     ["full-decode", ["-v", "error", "-i", candidate, "-f", "null", "-"]],
-    ["black-frames", ["-hide_banner", "-i", candidate, "-vf", "blackdetect=d=0.5:pix_th=0.1", "-an", "-f", "null", "-"]],
+    ["black-frames", ["-hide_banner", "-i", candidate, "-vf", "blackdetect=d=0.5:pix_th=0.02:pic_th=0.995", "-an", "-f", "null", "-"]],
     ["frozen-frames", ["-hide_banner", "-i", candidate, "-vf", "freezedetect=n=0.003:d=1.5", "-an", "-f", "null", "-"]],
     ["unexpected-silence", ["-hide_banner", "-i", candidate, "-af", "silencedetect=n=-45dB:d=0.7", "-vn", "-f", "null", "-"]],
   ];
@@ -218,6 +289,28 @@ export async function auditMedia(projectRoot, options = {}) {
     } catch (error) {
       checks.push({ name, status: "failed", diagnostic: error.message });
     }
+  }
+  try {
+    const cueDocument = await readJson(path.join(root, "script", "cues.json"));
+    const framePlan = representativeFramePlan(cueDocument, media.duration);
+    const frames = [];
+    const indexWidth = Math.max(2, String(framePlan.length).length);
+    for (const [index, sample] of framePlan.entries()) {
+      const output = path.join(root, "qc", "frames", `${String(index + 1).padStart(indexWidth, "0")}-${sample.id}.png`);
+      await rm(output, { force: true });
+      await runChecked("ffmpeg", [
+        "-y", "-v", "error", "-ss", sample.time.toFixed(3), "-i", candidate,
+        "-frames:v", "1", "-vf", "scale=960:-1", output,
+      ], { runner: options.runner, cwd: root, label: `representative frame ${sample.id}` });
+      const information = await waitForNonEmptyFile(output, {
+        timeout: options.representativeFrameTimeout ?? 2_000,
+        pollInterval: options.representativeFramePollInterval ?? 50,
+      });
+      frames.push({ path: path.relative(root, output).split(path.sep).join("/"), time: sample.time, bytes: information.size });
+    }
+    checks.push({ name: "representative-frames", status: frames.length ? "passed" : "failed", frames });
+  } catch (error) {
+    checks.push({ name: "representative-frames", status: "failed", diagnostic: error.message });
   }
   const contactSheet = path.join(root, "qc", "contact-sheet.png");
   try {

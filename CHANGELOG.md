@@ -2,6 +2,32 @@
 
 All notable changes are documented here.
 
+## [2.2.0] - 2026-08-31
+
+### Fixed
+
+- Connected the topic Visual DSL to each selected template's native DOM and motion grammar instead of applying only template colors to generic cards.
+- Made Spatial Chamber animate every signal path and signal dot, not only the first route.
+- Routed connectors between node boundaries and added arrow markers so relation lines no longer cross the center of text cards by default.
+- Applied semantic visual states for success, warning, danger, input, controller, and metric roles.
+- Built covers from the first completed topic scene instead of a hard-coded generic flow.
+- Normalized muxed narration to approximately -16 LUFS and isolated temporary browser profiles outside project output.
+- Tuned black-frame detection for intentionally dark templates while retaining a strict near-black frame threshold.
+- Hid connector routes, signal dots, and endpoint markers until their cue-bound draw action begins; endpoint arrows appear only when the route is complete.
+- Prevented later exit, move, focus, and pulse actions from overriding an element before their scheduled start.
+
+### Added
+
+- Static visual-program guards for caption-safe-area intrusion, unreadably small frames, missing cue actions, disconnected spatial mechanisms, and connectors without timed drawing.
+- Stable mechanism IDs and cue-level `mechanismRefs`, with narration coverage validation for core mechanism objects and at least one boundary or failure condition.
+- Cue-by-cue canonical/caption/TTS identity checks and a 2.2-second minimum average cue duration.
+- Automated native-template fingerprint checks, topic-cover checks, one representative image per narration cue, and denser short/long contact sheets.
+- A topic-specific real-render smoke fixture that exercises semantic states, multiple routes, native Spatial Chamber structure, cover capture, audio mux, and media audit.
+
+### Release boundary
+
+- Structural and media QC prevent known generic-scaffold regressions, but they do not establish factual accuracy, teaching quality, pronunciation quality, or human release approval.
+
 ## [2.1.0] - 2026-08-31
 
 ### Added

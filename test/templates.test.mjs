@@ -11,6 +11,7 @@ import {
   templatePreview,
   validateTemplate,
 } from "../skill/creating-explainer-videos/runtime/templates.mjs";
+import { createMotionController as createSpatialMotionController } from "../skill/creating-explainer-videos/templates/spatial-chamber/motion.mjs";
 
 const skillRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "skill", "creating-explainer-videos");
 
@@ -40,6 +41,27 @@ test("spatial chamber preserves depth/path semantics and licensed-plugin fallbac
   assert.equal(template.manifest.fallbacks.MotionPathPlugin, "svg-path-sampling");
   assert.equal(template.manifest.fallbacks.DrawSVGPlugin, "stroke-dashoffset");
   assert.match(await readFile(path.join(template.root, "scene.css"), "utf8"), /perspective/);
+});
+
+test("spatial chamber animates every compiled signal route", () => {
+  const dots = [{ style: {} }, { style: {} }];
+  const paths = dots.map((dot, index) => ({
+    getTotalLength: () => 100,
+    getPointAtLength: (distance) => ({ x: distance, y: index * 20 }),
+    parentElement: { querySelector: () => dot },
+    style: {},
+  }));
+  const root = {
+    querySelector: (selector) => selector === "[data-signal-path]" ? paths[0] : selector === "[data-signal-dot]" ? dots[0] : null,
+    querySelectorAll: (selector) => selector === "[data-motion='depth']" ? [] : selector === "[data-signal-path]" ? paths : [],
+  };
+
+  const controller = createSpatialMotionController({ root, duration: 1, gsap: null });
+  controller.seek(.5);
+
+  assert.equal(dots[0].style.transform, "translate(50px,0px)");
+  assert.equal(dots[1].style.transform, "translate(50px,20px)");
+  assert.notEqual(paths[1].style.strokeDashoffset, undefined);
 });
 
 test("template installs only declared assets and produces a preview", async () => {

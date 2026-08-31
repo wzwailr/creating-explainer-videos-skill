@@ -25,6 +25,8 @@ The public topic must cover exactly what the video teaches. If the mechanism exp
 5. one relevant failure, boundary, cost, or control;
 6. a reconstruction that lets the viewer restate the chain.
 
+Every input, internal change, output, boundary, failure, and worked example has a stable string `id`. These IDs are the executable coverage contract, not editorial notes.
+
 Use `1700–2200` Chinese characters, `30–45` cues, `10–11` scenes, and `300–420` seconds as a deep-video baseline when the brief calls for a full lesson. They are depth alarms rather than mandatory padding. A shorter result needs a written completeness rationale; a longer result needs a pacing and platform rationale.
 
 ## 3. Evidence table
@@ -42,10 +44,12 @@ id, title, knowledgePoint, input, transformation, output, compositionTask
 Every row in `script/narration.json` and `script/cues.json` needs:
 
 ```text
-id, sceneId, text, focus, from, action, to, handoff
+id, sceneId, text, focus, visualEvent, mechanismRefs
 ```
 
-`text` is the canonical TTS and caption string. Cue start and duration are added only from measured audio. The visible scene title, active mechanism label, narration, caption, and animation focus must answer the same local question.
+`mechanismRefs` lists the stable IDs actually explained by that cue. Across canonical narration it must cover every input, internal change, output, the worked example, and at least one relevant boundary or failure. `text` is the canonical TTS and caption string. Cue start and duration are added only from measured audio. The visible scene title, active mechanism label, narration, caption, and animation focus must answer the same local question.
+
+`script/cues.json` must preserve the canonical string exactly as both `caption` and `tts`. The production gate rejects an average measured cue duration below 2.2 seconds; expand or regroup the explanation instead of accelerating the voice or compressing unrelated actions.
 
 ## 5. Writing rules
 

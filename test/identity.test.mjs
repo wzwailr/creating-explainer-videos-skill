@@ -20,7 +20,7 @@ test("package exposes the generic primary command and legacy alias", async () =>
   const pkg = JSON.parse(await readFile(path.join(packageRoot, "package.json"), "utf8"));
 
   assert.equal(pkg.name, "creating-explainer-videos-skill");
-  assert.equal(pkg.version, "2.1.0");
+  assert.equal(pkg.version, "2.2.0");
   assert.equal(pkg.engines.node, ">=22");
   assert.equal(pkg.private, false);
   assert.equal(pkg.bin["explainer-video-skill"], "./bin/explainer-video-skill.mjs");

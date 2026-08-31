@@ -15,7 +15,7 @@ test("manifest verifies the exact packaged skill and detects tampering", async (
 
   const manifest = await createSkillManifest({
     skillRoot,
-    packageVersion: "2.1.0",
+    packageVersion: "2.2.0",
   });
   const manifestPath = path.join(root, "skill-manifest.json");
   await writeFile(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`, "utf8");

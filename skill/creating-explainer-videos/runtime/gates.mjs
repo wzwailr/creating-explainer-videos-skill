@@ -60,22 +60,67 @@ export async function validateStageEvidence(root, stage, state) {
     if (mechanism && (!mechanism.workedExample || typeof mechanism.workedExample !== "object")) {
       errors.push("mechanism-map.workedExample is required");
     }
+    for (const field of ["input", "internalChanges", "output", "boundaries", "failures"]) {
+      for (const [index, item] of (mechanism?.[field] ?? []).entries()) {
+        if (!present(item?.id)) errors.push(`mechanism-map.${field}[${index}].id must be a non-empty string`);
+      }
+    }
+    if (mechanism?.workedExample && !present(mechanism.workedExample.id)) errors.push("mechanism-map.workedExample.id must be a non-empty string");
   } else if (stage === "mechanism_map") {
     const narration = await json(root, "script/narration.json", errors);
+    const mechanism = await json(root, "mechanism-map.json", errors);
     if (narration && narration.complete !== true) errors.push("script/narration.json complete must be true");
     if (narration && !nonEmptyArray(narration.canonicalText)) errors.push("narration.canonicalText must contain cues");
+    const knownRefs = new Set([
+      ...(mechanism?.input ?? []),
+      ...(mechanism?.internalChanges ?? []),
+      ...(mechanism?.output ?? []),
+      ...(mechanism?.boundaries ?? []),
+      ...(mechanism?.failures ?? []),
+      mechanism?.workedExample,
+    ].filter(Boolean).map((item) => item.id).filter(present));
+    const coveredRefs = new Set();
     for (const [index, cue] of (narration?.canonicalText ?? []).entries()) {
       requireFields(cue, ["id", "sceneId", "text", "focus", "visualEvent"], `narration.canonicalText[${index}]`, errors);
       if (String(cue.text ?? "").includes("_")) errors.push(`narration cue ${cue.id || index} contains an underscore`);
+      if (!nonEmptyArray(cue.mechanismRefs)) errors.push(`narration cue ${cue.id || index} mechanismRefs must contain mechanism ids`);
+      for (const reference of cue.mechanismRefs ?? []) {
+        if (!knownRefs.has(reference)) errors.push(`narration cue ${cue.id || index} mechanismRefs contains unknown id ${reference}`);
+        else coveredRefs.add(reference);
+      }
+    }
+    const requiredRefs = [
+      ...(mechanism?.input ?? []),
+      ...(mechanism?.internalChanges ?? []),
+      ...(mechanism?.output ?? []),
+      mechanism?.workedExample,
+    ].filter(Boolean).map((item) => item.id).filter(present);
+    for (const reference of requiredRefs) {
+      if (!coveredRefs.has(reference)) errors.push(`canonical narration does not cover required mechanism id ${reference}`);
+    }
+    const boundaryOrFailureRefs = [...(mechanism?.boundaries ?? []), ...(mechanism?.failures ?? [])].map((item) => item.id).filter(present);
+    if (boundaryOrFailureRefs.length && !boundaryOrFailureRefs.some((reference) => coveredRefs.has(reference))) {
+      errors.push("canonical narration must cover at least one boundary or failure mechanism id");
     }
   } else if (stage === "narration_and_cues") {
     await nonEmptyFile(root, ".publish/narration.wav", errors);
     const timing = await json(root, ".publish/narration-timing.json", errors);
     const cues = await json(root, "script/cues.json", errors);
+    const narration = await json(root, "script/narration.json", errors);
     if (timing && (timing.source !== "measured" || !nonEmptyArray(timing.cues))) errors.push("narration timing must be measured and contain cues");
     if (timing?.testOnly === true) errors.push("test-only narration cannot satisfy real audio timing");
     if (cues && (cues.complete !== true || cues.timingSource !== "measured" || !nonEmptyArray(cues.cues))) {
       errors.push("script/cues.json must be complete and measured");
+    }
+    const canonicalById = new Map((narration?.canonicalText ?? []).map((cue) => [cue.id, cue.text]));
+    for (const cue of cues?.cues ?? []) {
+      if (cue.caption !== cue.tts || cue.tts !== canonicalById.get(cue.id)) {
+        errors.push(`cue ${cue.id || "unknown"} caption and TTS must equal canonical narration`);
+      }
+    }
+    if (nonEmptyArray(cues?.cues)) {
+      const averageCueDuration = cues.cues.reduce((sum, cue) => sum + Number(cue.duration || 0), 0) / cues.cues.length;
+      if (averageCueDuration < 2.2) errors.push(`average cue duration ${averageCueDuration.toFixed(3)}s is below the 2.2s explanation floor`);
     }
   } else if (stage === "real_audio_timing") {
     const designDocuments = {};

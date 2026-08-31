@@ -20,7 +20,8 @@ Use the bounded schema instead of editing generated renderer HTML. `build` and `
 3. Choose a layout from the knowledge structure: `flow`, `network`, `compare`, `stack`, `timeline`, or explicit `free` geometry.
 4. Define real topic objects, relationships, boundaries, and annotations. Labels such as `INPUT`, `CHANGE`, `OUTPUT`, `步骤一`, or repeated unlabeled cards are not topic visuals.
 5. Bind actions to the cue that explains the visible change.
-6. Validate, compile, and preview before rendering.
+6. Give state-bearing elements a semantic `tone` when the role name is not self-explanatory.
+7. Validate, compile, and preview before rendering.
 
 ```powershell
 explainer-video-skill visual validate <project-dir> --json
@@ -99,7 +100,11 @@ All non-connector frames use normalized `x`, `y`, `width`, and `height` values. 
 | `asset` | `id`, `src`, `alt`, `frame` | Licensed local SVG, PNG, JPEG, or WebP inside project `assets/` |
 | `annotation` | `id`, `text`, `target`, `role`, `frame` | Claim, boundary, correction, or callout tied to an element |
 
+The optional `tone` field accepts `default`, `info`, `process`, `success`, `warning`, `danger`, `accent`, or `muted`. When omitted, the compiler infers a tone from common role and label terms such as input, controller, success/green, warning/yellow, and danger/red. Explicit `tone` is preferred for domain-specific states.
+
 IDs start with a letter and contain letters, digits, or hyphens. Connector and annotation references remain inside their scene. Text is escaped by the compiler.
+
+Text-bearing frames must encode to at least 140×64 pixels and stay above normalized `y = 0.86`, which is reserved for the default caption region. A `spatial-chamber` scene with multiple mechanism objects requires at least one visible connector. Every cue owns at least one action, and every connector owns a cue-bound `draw` action.
 
 Assets use a path relative to `assets/`, for example `diagrams/router.svg`. URLs, data URIs, absolute paths, traversal, inline scripts, and remote render dependencies are rejected.
 
@@ -126,6 +131,8 @@ The visual program defines knowledge; templates define presentation.
 - `paper-theatre`: give roles to evidence cards, physical objects, sorting regions, editorial notes, and before/after results.
 - `spatial-chamber`: give roles to lanes, chambers, queues, signals, state stores, and branches.
 - `ink-explainer`: give roles to formulas, barriers, proof steps, corrections, curves, and boundary annotations.
+
+The compiler emits the selected template's native stage, motion attributes, primitives, and fingerprint. It also attaches connectors to object boundaries rather than centers, adds direction markers, and maps semantic tones to visible state colors. If the fingerprint or native motion selectors are absent, automated QC fails even when the MP4 decodes.
 
 The same element types can render under every template, but identical coordinates and identical action sequences across every scene usually indicate decorative templating rather than visual reasoning.
 

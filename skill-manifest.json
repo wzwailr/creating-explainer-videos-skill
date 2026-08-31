@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "packageVersion": "2.1.0",
+  "packageVersion": "2.2.0",
   "skillName": "creating-explainer-videos",
   "extensionApiVersion": 1,
   "files": [
@@ -141,18 +141,18 @@
     },
     {
       "path": "references/agent-forward-validation.md",
-      "sha256": "58b251918e0d1f5f0744b3b65758f9f0c571c12e5197db460fa318b21b9ad592",
-      "size": 967
+      "sha256": "23f94f837b9db0a6dbab6c064e70f6a7313bd11c255e9d194b1a3a529d87c799",
+      "size": 1230
     },
     {
       "path": "references/content-and-script-contract.md",
-      "sha256": "f6df434c913a6d65596ed547b36aa8c0a4744478c17af6f4270873a6450c06c2",
-      "size": 3553
+      "sha256": "670bae8ec0899bff84c2c9204bac650edec52ec0a81c8bee5ab6dc40c565facc",
+      "size": 4215
     },
     {
       "path": "references/engineering-pipeline.md",
-      "sha256": "f73a57d74cee70a90c66cdb37698e597f4dd9f1100122baa250d941100e32776",
-      "size": 4964
+      "sha256": "aa6eb0d044111a3abbc61683396ac36af255efc965754bcc608195e841bb1e7b",
+      "size": 5323
     },
     {
       "path": "references/extension-api.md",
@@ -166,13 +166,13 @@
     },
     {
       "path": "references/release-qc-and-publishing.md",
-      "sha256": "9f251a2d8306099953abbdd62693dfc3f9dc55419142e9e75ed3a9799511886c",
-      "size": 3352
+      "sha256": "2c9ab56c7df754bcd78b2b8fa4b08800ea33a2e95c213f936ae88c9ca819c54b",
+      "size": 3635
     },
     {
       "path": "references/visual-program-dsl.md",
-      "sha256": "e14bed6124e0b8dd621d09238963bcfeb6392bde5ed9726a60746fdcd177b983",
-      "size": 6299
+      "sha256": "e46dbc63d631c1fd853d71869b8bbb30c7a8d968a5945f8c89486dc51a914cc9",
+      "size": 7404
     },
     {
       "path": "references/visual-systems-and-motion.md",
@@ -206,8 +206,8 @@
     },
     {
       "path": "runtime/gates.mjs",
-      "sha256": "8b924ce4a8de358598a41ecf5343a8583dee186db67dd0f8463c6c9b10c192a4",
-      "size": 8795
+      "sha256": "b39294718f921b77527dccc64e4546ae989d169654aaafb29e1b3167a08eebcf",
+      "size": 11521
     },
     {
       "path": "runtime/json.mjs",
@@ -216,8 +216,8 @@
     },
     {
       "path": "runtime/media.mjs",
-      "sha256": "a97a9d671c78335f984d97299b5b2d9d04efe10016b6f8d30dfb6c06519f7506",
-      "size": 11672
+      "sha256": "114ef910e656f1a91f11a472e5e609e05a281f0291b67347a61ce83cf4989179",
+      "size": 16555
     },
     {
       "path": "runtime/narration.mjs",
@@ -236,8 +236,8 @@
     },
     {
       "path": "runtime/renderer.mjs",
-      "sha256": "e54d5458b693e76700b1cbbf373b966ec17c76ddc4eafd780760e223e218edeb",
-      "size": 14060
+      "sha256": "2d7b18dbf744f1387c3a358b061feddf2baa1f6a976b62ec4416ae0e455d2377",
+      "size": 16269
     },
     {
       "path": "runtime/state.mjs",
@@ -256,8 +256,8 @@
     },
     {
       "path": "runtime/visual-dsl.mjs",
-      "sha256": "df5383016b13e202df379f99cee23909bce57b06cde03240bf78535767079a80",
-      "size": 16551
+      "sha256": "dc8b3effa4d24284e39030aea63a00fd647372e9e43cee35dafe89b7801b795e",
+      "size": 22567
     },
     {
       "path": "runtime/voice-adapters.mjs",
@@ -286,8 +286,8 @@
     },
     {
       "path": "SKILL.md",
-      "sha256": "c3ecae877263d7c5f3a4e967421c9e075ab279022a79a8382d2a58691c9dc4c3",
-      "size": 9922
+      "sha256": "eee4cfff047e23208eb2681951c7c13810dcece249a24d3c5fef2071b33c5ba1",
+      "size": 11187
     },
     {
       "path": "templates/ink-explainer/cover.css",
@@ -336,8 +336,8 @@
     },
     {
       "path": "templates/spatial-chamber/motion.mjs",
-      "sha256": "a9b8ccbeecffc401f83faaa99a44c0a357b36959f4137def1631ed62d3313967",
-      "size": 1805
+      "sha256": "b49908937d8c16ac1c3b8419687f470f58ced5e2de20d90eafc8be43fa4697af",
+      "size": 1979
     },
     {
       "path": "templates/spatial-chamber/scene.css",
@@ -346,7 +346,7 @@
     },
     {
       "path": "templates/spatial-chamber/template.json",
-      "sha256": "b6888fbfb570c08ce512ceeac0f64fed6dea018d6154ace55de25f3c87a53793",
+      "sha256": "20c160b9711ecc1e516db1ae6c2870dc6733638f3425dca4106f4cd5dbcbb5d0",
       "size": 1788
     }
   ]

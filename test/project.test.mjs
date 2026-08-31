@@ -207,3 +207,104 @@ test("fixture narration cannot satisfy the real-audio stage gate", async () => {
   assert.equal(gate.valid, false);
   assert.match(gate.errors.join("\n"), /test-only narration cannot satisfy real audio timing/);
 });
+
+test("narration must map the complete mechanism chain into spoken cues", async () => {
+  const tempRoot = await mkdtemp(path.join(os.tmpdir(), "explainer-mechanism-coverage-"));
+  const root = path.join(tempRoot, "project");
+  await createProject({ destination: root, title: "状态机", topic: "状态如何改变", template: "ink-explainer" });
+  await writeJsonAtomic(path.join(root, "mechanism-map.json"), {
+    schemaVersion: 1,
+    complete: true,
+    input: [{ id: "input-01", text: "请求" }],
+    internalChanges: [{ id: "change-01", text: "规则匹配" }],
+    output: [{ id: "output-01", text: "结果" }],
+    boundaries: [{ id: "boundary-01", text: "无规则时拒绝" }],
+    failures: [{ id: "failure-01", text: "规则冲突" }],
+    workedExample: { id: "example-01", label: "一次请求", steps: ["进入", "匹配", "输出"] },
+  });
+  const narrationPath = path.join(root, "script", "narration.json");
+  const baseCue = {
+    id: "C01",
+    sceneId: "S01",
+    text: "请求经过规则匹配后得到结果，无规则时拒绝。",
+    focus: "state-route",
+    visualEvent: "请求穿过规则并得到结果",
+  };
+  await writeJsonAtomic(narrationPath, { schemaVersion: 1, canonicalText: [baseCue], complete: true });
+
+  const missing = await validateStageEvidence(root, "mechanism_map", { stage: "mechanism_map" });
+  assert.equal(missing.valid, false);
+  assert.match(missing.errors.join("\n"), /mechanismRefs/);
+
+  await writeJsonAtomic(narrationPath, {
+    schemaVersion: 1,
+    canonicalText: [{ ...baseCue, mechanismRefs: ["input-01", "change-01", "output-01", "boundary-01", "example-01"] }],
+    complete: true,
+  });
+  const covered = await validateStageEvidence(root, "mechanism_map", { stage: "mechanism_map" });
+  assert.equal(covered.valid, true, covered.errors.join("\n"));
+});
+
+test("real timing gate rejects caption and TTS drift", async () => {
+  const root = path.join(await mkdtemp(path.join(os.tmpdir(), "explainer-caption-drift-")), "project");
+  await createProject({ destination: root, title: "同步", topic: "字幕与旁白同步", template: "paper-theatre" });
+  await writeFile(path.join(root, ".publish", "narration.wav"), "audio", "utf8");
+  await writeJsonAtomic(path.join(root, ".publish", "narration-timing.json"), {
+    schemaVersion: 1,
+    source: "measured",
+    duration: 2.5,
+    cues: [{ id: "C01", start: 0, duration: 2.5 }],
+  });
+  await writeJsonAtomic(path.join(root, "script", "narration.json"), {
+    schemaVersion: 1,
+    complete: true,
+    canonicalText: [{ id: "C01", sceneId: "S01", text: "旁白原文。", focus: "sync", visualEvent: "同步出现" }],
+  });
+  await writeJsonAtomic(path.join(root, "script", "cues.json"), {
+    schemaVersion: 1,
+    timingSource: "measured",
+    complete: true,
+    duration: 2.5,
+    cues: [{ id: "C01", sceneId: "S01", start: 0, duration: 2.5, caption: "字幕改写。", tts: "旁白原文。" }],
+  });
+
+  const gate = await validateStageEvidence(root, "narration_and_cues", { stage: "narration_and_cues" });
+  assert.equal(gate.valid, false);
+  assert.match(gate.errors.join("\n"), /caption and TTS must equal canonical narration/);
+});
+
+test("real timing gate rejects an over-compressed scene cadence", async () => {
+  const root = path.join(await mkdtemp(path.join(os.tmpdir(), "explainer-cue-density-")), "project");
+  await createProject({ destination: root, title: "机制", topic: "五步机制", template: "spatial-chamber" });
+  await writeFile(path.join(root, ".publish", "narration.wav"), "audio", "utf8");
+  const cues = Array.from({ length: 5 }, (_, index) => ({
+    id: `C0${index + 1}`,
+    sceneId: `S0${index + 1}`,
+    start: index * 1.8,
+    duration: 1.8,
+    caption: `第${index + 1}步。`,
+    tts: `第${index + 1}步。`,
+  }));
+  await writeJsonAtomic(path.join(root, ".publish", "narration-timing.json"), {
+    schemaVersion: 1,
+    source: "measured",
+    duration: 9,
+    cues: cues.map(({ id, start, duration }) => ({ id, start, duration })),
+  });
+  await writeJsonAtomic(path.join(root, "script", "narration.json"), {
+    schemaVersion: 1,
+    complete: true,
+    canonicalText: cues.map((cue) => ({ id: cue.id, sceneId: cue.sceneId, text: cue.tts, focus: cue.id, visualEvent: `展示${cue.id}` })),
+  });
+  await writeJsonAtomic(path.join(root, "script", "cues.json"), {
+    schemaVersion: 1,
+    timingSource: "measured",
+    complete: true,
+    duration: 9,
+    cues,
+  });
+
+  const gate = await validateStageEvidence(root, "narration_and_cues", { stage: "narration_and_cues" });
+  assert.equal(gate.valid, false);
+  assert.match(gate.errors.join("\n"), /average cue duration/);
+});
