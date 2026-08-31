@@ -47,7 +47,7 @@ export function buildCaptionCues(narration, timing) {
   });
 }
 
-export async function importNarrationTiming(projectRoot, timingSource) {
+export async function importNarrationTiming(projectRoot, timingSource, metadata = {}) {
   const root = path.resolve(projectRoot);
   const narrationDocument = await readJson(path.join(root, "script", "narration.json"));
   const timing = typeof timingSource === "string"
@@ -59,8 +59,16 @@ export async function importNarrationTiming(projectRoot, timingSource) {
   const timingDocument = {
     schemaVersion: 1,
     source: "measured",
+    testOnly: metadata.testOnly === true,
+    adapter: metadata.adapter || null,
     duration,
-    cues: cues.map(({ id, start, duration: cueDuration }) => ({ id, start, duration: cueDuration })),
+    cues: cues.map(({ id, start, duration: cueDuration }, index) => ({
+      id,
+      start,
+      duration: cueDuration,
+      ...(timing[index]?.speechDuration === undefined ? {} : { speechDuration: Number(timing[index].speechDuration) }),
+      ...(timing[index]?.gapAfter === undefined ? {} : { gapAfter: Number(timing[index].gapAfter) }),
+    })),
   };
   const cuesDocument = {
     schemaVersion: 1,

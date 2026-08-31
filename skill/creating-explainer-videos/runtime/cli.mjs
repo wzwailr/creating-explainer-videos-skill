@@ -29,6 +29,12 @@ import {
   loadVisualProgram,
   validateVisualProgram,
 } from "./visual-dsl.mjs";
+import {
+  doctorVoiceAdapter,
+  listVoiceAdapters,
+  recoverNarration,
+  synthesizeNarration,
+} from "./voice-adapters.mjs";
 
 const PROJECT_COMMANDS = new Set(["new", "status", "next", "validate", "release", "templates", "visual", "narration", "build", "cover", "render", "mux", "audit", "package", "doctor"]);
 
@@ -37,7 +43,7 @@ export function isProjectCommand(command) {
 }
 
 function extractFlags(args) {
-  const options = { positional: [], json: false, force: false, completeListen: false };
+  const options = { positional: [], json: false, force: false, completeListen: false, allowNetwork: false, authorizeProviderCost: false };
   const valueFlags = new Set([
     "--title",
     "--topic",
@@ -57,12 +63,19 @@ function extractFlags(args) {
     "--quality",
     "--workers",
     "--browser-path",
+    "--adapter",
+    "--voice",
+    "--rate",
+    "--pitch",
+    "--adapter-config",
   ]);
   for (let index = 0; index < args.length; index += 1) {
     const item = args[index];
     if (item === "--json") options.json = true;
     else if (item === "--force") options.force = true;
     else if (item === "--complete-listen") options.completeListen = true;
+    else if (item === "--allow-network") options.allowNetwork = true;
+    else if (item === "--authorize-provider-cost") options.authorizeProviderCost = true;
     else if (valueFlags.has(item)) {
       const value = args[index + 1];
       if (!value || value.startsWith("--")) throw new Error(`${item} requires a value`);
@@ -184,7 +197,24 @@ export async function runProjectCli(argv, io = {}) {
     const [subcommand, projectRoot] = options.positional;
     const root = path.resolve(projectRoot || process.cwd());
     let result;
-    if (subcommand === "prepare") {
+    if (subcommand === "adapters") {
+      result = listVoiceAdapters();
+    } else if (subcommand === "doctor") {
+      result = await doctorVoiceAdapter(root, { adapter: options.adapter, adapterConfig: options.adapterConfig });
+    } else if (subcommand === "synthesize" || subcommand === "recover") {
+      const synthesisOptions = {
+        adapter: options.adapter,
+        voice: options.voice,
+        rate: options.rate,
+        pitch: options.pitch,
+        adapterConfig: options.adapterConfig,
+        allowNetwork: options.allowNetwork,
+        authorizeProviderCost: options.authorizeProviderCost,
+      };
+      result = subcommand === "recover"
+        ? await recoverNarration(root, synthesisOptions)
+        : await synthesizeNarration(root, synthesisOptions);
+    } else if (subcommand === "prepare") {
       const narrationPath = path.join(root, "script", "narration.json");
       const document = await readJson(narrationPath);
       document.canonicalText = (document.canonicalText ?? []).map((row) => ({ ...row, text: normalizeSpokenText(row.text) }));
@@ -194,10 +224,10 @@ export async function runProjectCli(argv, io = {}) {
       if (!options.timing) throw new Error("narration import-timing requires --timing FILE");
       result = await importNarrationTiming(root, options.timing);
     } else {
-      throw new Error("narration supports prepare or import-timing");
+      throw new Error("narration supports adapters, doctor, prepare, synthesize, recover, or import-timing");
     }
     print(result, options.json, output);
-    return { exitCode: 0, result };
+    return { exitCode: result?.status && !new Set(["available", "configured"]).has(result.status) ? 1 : 0, result };
   }
 
   if (command === "build") {

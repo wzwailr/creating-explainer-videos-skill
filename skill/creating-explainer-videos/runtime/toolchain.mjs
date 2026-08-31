@@ -3,6 +3,8 @@ import { access } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 
+import { doctorVoiceAdapter } from "./voice-adapters.mjs";
+
 export const MINIMUM_NODE_MAJOR = 22;
 
 async function defaultExists(filePath) {
@@ -117,15 +119,25 @@ export async function doctor(options = {}) {
     path.join(projectRoot, ".publish", "tts-adapter.json"),
     path.join(projectRoot, "toolchain", "tts-adapter.json"),
   ], exists);
+  const voiceAdapters = await Promise.all([
+    doctorVoiceAdapter(projectRoot, { adapter: "edge-tts", runner }),
+    doctorVoiceAdapter(projectRoot, { adapter: "fixture-tts", runner }),
+  ]);
   const gsap = gsapPath
     ? { status: "available", path: gsapPath, fallback: "template-core-controller" }
     : { status: "degraded", path: null, fallback: "template-core-controller" };
   const fonts = fontPath
     ? { status: "available", detectedPath: fontPath, fallback: ["Microsoft YaHei", "sans-serif"] }
     : { status: "degraded", detectedPath: null, fallback: ["Microsoft YaHei", "sans-serif"] };
+  const edgeTts = voiceAdapters.find((adapter) => adapter.id === "edge-tts");
+  const hostStatus = ttsAdapter
+    ? { id: "host-command", status: "configured", adapterPath: ttsAdapter, invoked: false }
+    : { id: "host-command", status: "missing", adapterPath: null, invoked: false };
   const tts = ttsAdapter
-    ? { status: "configured", adapterPath: ttsAdapter, invoked: false }
-    : { status: "missing", adapterPath: null, invoked: false };
+    ? { status: "configured", adapterPath: ttsAdapter, invoked: false, adapters: [...voiceAdapters, hostStatus] }
+    : edgeTts?.status === "available"
+      ? { status: "available", adapterPath: null, invoked: false, adapters: [...voiceAdapters, hostStatus] }
+      : { status: "missing", adapterPath: null, invoked: false, adapters: [...voiceAdapters, hostStatus] };
   return {
     schemaVersion: 1,
     node,
@@ -141,7 +153,7 @@ export async function doctor(options = {}) {
     readyFor: {
       scaffold: true,
       deterministicPreview: true,
-      realNarration: tts.status === "configured",
+      realNarration: tts.status === "configured" || edgeTts?.status === "available",
       render: node.status === "available"
         && browser.status === "available"
         && ffmpeg.status === "available"

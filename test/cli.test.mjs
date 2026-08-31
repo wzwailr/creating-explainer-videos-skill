@@ -166,3 +166,35 @@ test("CLI returns structured visual validation failures", async () => {
   assert.equal(result.valid, false);
   assert.equal(result.errors.some((error) => error.code === "missing-element-reference"), true);
 });
+
+test("CLI lists, diagnoses, synthesizes, and recovers narration adapters", async () => {
+  const tempRoot = await mkdtemp(path.join(os.tmpdir(), "explainer-narration-cli-"));
+  const projectRoot = path.join(tempRoot, "project");
+  await createVisualCliProject(projectRoot);
+
+  const adapters = spawnSync(process.execPath, [cli, "narration", "adapters", "--json"], { encoding: "utf8" });
+  const doctor = spawnSync(process.execPath, [cli, "narration", "doctor", projectRoot, "--adapter", "fixture-tts", "--json"], { encoding: "utf8" });
+  const synthesized = spawnSync(process.execPath, [cli, "narration", "synthesize", projectRoot, "--adapter", "fixture-tts", "--json"], { encoding: "utf8" });
+  const recovered = spawnSync(process.execPath, [cli, "narration", "recover", projectRoot, "--adapter", "fixture-tts", "--json"], { encoding: "utf8" });
+
+  assert.equal(adapters.status, 0, adapters.stderr || adapters.stdout);
+  assert.deepEqual(JSON.parse(adapters.stdout).map((adapter) => adapter.id), ["edge-tts", "fixture-tts", "host-command"]);
+  assert.equal(doctor.status, 0, doctor.stderr || doctor.stdout);
+  assert.equal(JSON.parse(doctor.stdout).invoked, false);
+  assert.equal(synthesized.status, 0, synthesized.stderr || synthesized.stdout);
+  assert.equal(JSON.parse(synthesized.stdout).providerCalls, 1);
+  assert.equal(recovered.status, 0, recovered.stderr || recovered.stdout);
+  assert.equal(JSON.parse(recovered.stdout).providerCalls, 0);
+  assert.equal(JSON.parse(recovered.stdout).reusedCues, 1);
+});
+
+test("CLI blocks an uncached network voice adapter before provider execution", async () => {
+  const tempRoot = await mkdtemp(path.join(os.tmpdir(), "explainer-network-tts-cli-"));
+  const projectRoot = path.join(tempRoot, "project");
+  await createVisualCliProject(projectRoot);
+
+  const result = spawnSync(process.execPath, [cli, "narration", "synthesize", projectRoot, "--adapter", "edge-tts", "--json"], { encoding: "utf8" });
+
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /--allow-network/);
+});

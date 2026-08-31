@@ -24,6 +24,8 @@ test("doctor distinguishes available, missing, optional, and degraded tools", as
   assert.equal(result.readyFor.scaffold, true);
   assert.equal(result.readyFor.render, false);
   assert.equal(result.paidProviderCalled, false);
+  assert.equal(result.tts.adapters.some((adapter) => adapter.id === "edge-tts"), true);
+  assert.equal(result.tts.adapters.every((adapter) => adapter.invoked === false), true);
 });
 
 test("doctor reports a render-ready configured project without exposing provider secrets", async () => {
@@ -42,6 +44,7 @@ test("doctor reports a render-ready configured project without exposing provider
   assert.equal(result.hyperframes.networkRequiredOnFirstRun, true);
   assert.equal(result.gsap.status, "available");
   assert.equal(result.tts.status, "configured");
+  assert.equal(result.readyFor.realNarration, true);
   assert.doesNotMatch(JSON.stringify(result), /token|api[_-]?key|secret/i);
 });
 
