@@ -23,7 +23,7 @@ export async function createRealRenderFixture(projectRoot) {
     destination: root,
     title: "真实渲染验证",
     topic: "输入经过机制产生输出",
-    template: "spatial-chamber",
+    template: "paper-theatre",
     preset: "general-mechanism",
   });
   await writeJsonAtomic(path.join(root, "project.json"), {
@@ -32,7 +32,7 @@ export async function createRealRenderFixture(projectRoot) {
     title: "真实渲染验证",
     topic: "输入经过机制产生输出",
     preset: "general-mechanism",
-    template: "spatial-chamber",
+    template: "paper-theatre",
     language: "zh-CN",
     platform: "short-video",
     frame: { width: 1920, height: 1080, fps: 12 },
@@ -59,7 +59,7 @@ export async function createRealRenderFixture(projectRoot) {
   });
   await writeJsonAtomic(path.join(root, "scene-spec.json"), {
     schemaVersion: 1,
-    template: "spatial-chamber",
+    template: "paper-theatre",
     complete: true,
     scenes: [{
       id: "S01",

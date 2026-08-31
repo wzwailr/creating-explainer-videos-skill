@@ -16,6 +16,7 @@ test("real render fixture uses a measured short cue and generated production ren
   const scenes = JSON.parse(await readFile(path.join(root, "scene-spec.json"), "utf8"));
 
   assert.equal(fixture.duration, 1.2);
+  assert.equal(project.template, "paper-theatre");
   assert.deepEqual(project.frame, { width: 1920, height: 1080, fps: 12 });
   assert.equal(cues.timingSource, "measured-audio");
   assert.equal(cues.complete, true);
