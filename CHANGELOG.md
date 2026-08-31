@@ -2,6 +2,17 @@
 
 All notable changes are documented here.
 
+## [2.2.1] - 2026-08-31
+
+### Fixed
+
+- Resolved npm tarball and Python wheel names from `package.json` in CI instead of pinning a previous release number.
+- Raised the freeze diagnostic window from 1.5 to 2.5 seconds so deliberate low-motion explanatory scenes are not rejected while sustained frozen output still fails automated QC.
+
+### Release integrity
+
+- Supersedes 2.2.0 as the recommended installation because the original 2.2.0 GitHub CI run exposed the two cross-platform release issues above.
+
 ## [2.2.0] - 2026-08-31
 
 ### Fixed

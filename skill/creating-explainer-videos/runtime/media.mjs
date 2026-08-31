@@ -273,7 +273,7 @@ export async function auditMedia(projectRoot, options = {}) {
   const commands = [
     ["full-decode", ["-v", "error", "-i", candidate, "-f", "null", "-"]],
     ["black-frames", ["-hide_banner", "-i", candidate, "-vf", "blackdetect=d=0.5:pix_th=0.02:pic_th=0.995", "-an", "-f", "null", "-"]],
-    ["frozen-frames", ["-hide_banner", "-i", candidate, "-vf", "freezedetect=n=0.003:d=1.5", "-an", "-f", "null", "-"]],
+    ["frozen-frames", ["-hide_banner", "-i", candidate, "-vf", "freezedetect=n=0.003:d=2.5", "-an", "-f", "null", "-"]],
     ["unexpected-silence", ["-hide_banner", "-i", candidate, "-af", "silencedetect=n=-45dB:d=0.7", "-vn", "-f", "null", "-"]],
   ];
   for (const [name, args] of commands) {

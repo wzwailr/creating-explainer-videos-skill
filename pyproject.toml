@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "creating-explainer-videos-skill"
-version = "2.2.0"
+version = "2.2.1"
 description = "Executable Agent Skill and scaffold for producing rigorous mechanism and process explainer videos."
 readme = "README.md"
 requires-python = ">=3.9"

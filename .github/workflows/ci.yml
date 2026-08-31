@@ -75,8 +75,16 @@ jobs:
           node-version: 22
       - run: npm run pack:local
       - run: npm run pack:zip
-      - run: npm run audit:packed -- .\dist\creating-explainer-videos-skill-2.1.0.tgz
-      - run: npm run smoke:packed -- .\dist\creating-explainer-videos-skill-2.1.0.tgz
+      - name: Audit packed npm artifact
+        shell: pwsh
+        run: |
+          $version = node -p "require('./package.json').version"
+          npm run audit:packed -- ".\dist\creating-explainer-videos-skill-$version.tgz"
+      - name: Smoke-test packed npm artifact
+        shell: pwsh
+        run: |
+          $version = node -p "require('./package.json').version"
+          npm run smoke:packed -- ".\dist\creating-explainer-videos-skill-$version.tgz"
 
   package-python:
     strategy:
@@ -96,4 +104,7 @@ jobs:
       - run: python -m build --no-isolation --sdist --wheel --outdir dist/pypi
       - run: python -m twine check dist/pypi/*
       - run: python scripts/audit_python_dist.py dist/pypi/*
-      - run: python scripts/smoke_pypi_package.py dist/pypi/creating_explainer_videos_skill-2.1.0-py3-none-any.whl
+      - name: Smoke-test Python wheel
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          python scripts/smoke_pypi_package.py "dist/pypi/creating_explainer_videos_skill-$VERSION-py3-none-any.whl"

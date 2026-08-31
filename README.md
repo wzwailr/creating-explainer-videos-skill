@@ -18,14 +18,14 @@
 推荐使用 `pipx` 安装独立 CLI：
 
 ```powershell
-pipx install creating-explainer-videos-skill==2.2.0
+pipx install creating-explainer-videos-skill==2.2.1
 explainer-video-skill --version
 ```
 
 也可以安装到当前 Python 环境：
 
 ```powershell
-python -m pip install creating-explainer-videos-skill==2.2.0
+python -m pip install creating-explainer-videos-skill==2.2.1
 explainer-video-skill --version
 ```
 
@@ -34,7 +34,7 @@ Python 入口可在没有 Node.js 时完成 Skill 的安装、更新、校验、
 需要 npm 形式时，可从 npm Registry 安装：
 
 ```powershell
-npm install --global creating-explainer-videos-skill@2.2.0
+npm install --global creating-explainer-videos-skill@2.2.1
 ```
 
 也可以使用 GitHub Release 中同一标签构建并校验过的 tarball。用 `npm view creating-explainer-videos-skill version --registry=https://registry.npmjs.org/` 核验 Registry 的实时公开版本。
@@ -168,11 +168,11 @@ python skill\creating-explainer-videos\scripts\test_skill.py
 python skill\creating-explainer-videos\scripts\test_extensions.py
 npm run pack:local
 npm run pack:zip
-npm run smoke:packed -- .\dist\creating-explainer-videos-skill-2.2.0.tgz
+npm run smoke:packed -- .\dist\creating-explainer-videos-skill-2.2.1.tgz
 python -m build --sdist --wheel --outdir .\dist\pypi
 python -m twine check .\dist\pypi\*
 python .\scripts\audit_python_dist.py .\dist\pypi\*
-python .\scripts\smoke_pypi_package.py .\dist\pypi\creating_explainer_videos_skill-2.2.0-py3-none-any.whl
+python .\scripts\smoke_pypi_package.py .\dist\pypi\creating_explainer_videos_skill-2.2.1-py3-none-any.whl
 ```
 
 CI 覆盖 Windows/Linux、Node.js 22/24 和 Python 分发，并在 Linux + Chrome + FFmpeg 上真正执行 HyperFrames 逐帧渲染、封面截图、音频生成、合成、ffprobe 和媒体质检。发布前还会分别从实际 npm `.tgz` 与 Python wheel 隔离安装，验证主/旧命令、项目脚手架、模板集、Skill 安装/校验/升级/回滚/卸载和全局命令。
@@ -181,4 +181,4 @@ CI 覆盖 Windows/Linux、Node.js 22/24 和 Python 分发，并在 Linux + Chrom
 
 原创代码和文档采用 [MIT License](LICENSE)。字体、GSAP 商业插件、音乐、音效、图片、视频和供应商凭据不在包内。付费或异步生成必须显式授权、保存任务 ID、先查询既有任务再决定是否重试。
 
-详见 [安全策略](SECURITY.md)、[贡献指南](CONTRIBUTING.md)、[更新记录](CHANGELOG.md) 和 [v2.2.0 Release Notes](docs/releases/v2.2.0.md)。
+详见 [安全策略](SECURITY.md)、[贡献指南](CONTRIBUTING.md)、[更新记录](CHANGELOG.md) 和 [v2.2.1 Release Notes](docs/releases/v2.2.1.md)。

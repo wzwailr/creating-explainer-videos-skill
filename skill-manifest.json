@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "packageVersion": "2.2.0",
+  "packageVersion": "2.2.1",
   "skillName": "creating-explainer-videos",
   "extensionApiVersion": 1,
   "files": [
@@ -216,7 +216,7 @@
     },
     {
       "path": "runtime/media.mjs",
-      "sha256": "114ef910e656f1a91f11a472e5e609e05a281f0291b67347a61ce83cf4989179",
+      "sha256": "5ff60a7706b7e23a183af8df6cc92f936ad1d16502053fe851396f98b36325df",
       "size": 16555
     },
     {

@@ -20,7 +20,7 @@ test("package exposes the generic primary command and legacy alias", async () =>
   const pkg = JSON.parse(await readFile(path.join(packageRoot, "package.json"), "utf8"));
 
   assert.equal(pkg.name, "creating-explainer-videos-skill");
-  assert.equal(pkg.version, "2.2.0");
+  assert.equal(pkg.version, "2.2.1");
   assert.equal(pkg.engines.node, ">=22");
   assert.equal(pkg.private, false);
   assert.equal(pkg.bin["explainer-video-skill"], "./bin/explainer-video-skill.mjs");
@@ -33,6 +33,15 @@ test("generic skill is the primary packaged skill", async () => {
   assert.equal(await exists(skillFile), true);
   const text = await readFile(skillFile, "utf8");
   assert.match(text, /^---[\s\S]*?name:\s*creating-explainer-videos\s*$/m);
+});
+
+test("CI resolves package artifact names from package.json instead of a release literal", async () => {
+  const workflow = await readFile(path.join(packageRoot, ".github", "workflows", "ci.yml"), "utf8");
+
+  assert.match(workflow, /require\('\.\/package\.json'\)\.version/);
+  assert.match(workflow, /creating-explainer-videos-skill-\$version\.tgz/);
+  assert.match(workflow, /creating_explainer_videos_skill-\$VERSION-py3-none-any\.whl/);
+  assert.doesNotMatch(workflow, /creating[-_]explainer[-_]videos[-_]skill-2\.\d+\.\d+/);
 });
 
 test("SKILL routes agents through executable state and the complete template collection", async () => {

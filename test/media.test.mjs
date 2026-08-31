@@ -164,6 +164,26 @@ test("audit treats detected black intervals as a failed automated check", async 
   assert.equal(report.releaseDecision, "release_candidate_pending_human_listen");
 });
 
+test("audit treats a sustained frozen interval as a failed automated check", async () => {
+  const tempRoot = await mkdtemp(path.join(os.tmpdir(), "explainer-media-freeze-"));
+  const root = path.join(tempRoot, "demo");
+  await createProject({ destination: root, title: "Demo", topic: "Flow", template: "spatial-chamber" });
+  await writeFile(path.join(root, "renders", "candidate.mp4"), "fixture-video", "utf8");
+  await writeFile(path.join(root, "renders", "cover.png"), "fixture-cover", "utf8");
+  const report = await auditMedia(root, {
+    contactSheetTimeout: 20,
+    contactSheetPollInterval: 5,
+    runner: async (command, args) => {
+      if (command === "ffprobe") return { status: 0, stdout: probeFixture(), stderr: "" };
+      if (args.includes("freezedetect=n=0.003:d=2.5")) return { status: 0, stdout: "", stderr: "freeze_start:1 freeze_duration:3" };
+      return { status: 0, stdout: "", stderr: "" };
+    },
+  });
+
+  assert.equal(report.automatedPassed, false);
+  assert.equal(report.checks.find((item) => item.name === "frozen-frames").status, "failed");
+});
+
 test("audit rejects a selected template that rendered without its native structure", async () => {
   const tempRoot = await mkdtemp(path.join(os.tmpdir(), "explainer-media-template-"));
   const root = path.join(tempRoot, "demo");

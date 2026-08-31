@@ -11,14 +11,14 @@ It combines an executable production scaffold with default quality safeguards. V
 Recommended isolated CLI installation:
 
 ```powershell
-pipx install creating-explainer-videos-skill==2.2.0
+pipx install creating-explainer-videos-skill==2.2.1
 explainer-video-skill --version
 ```
 
 Or install into the current Python environment:
 
 ```powershell
-python -m pip install creating-explainer-videos-skill==2.2.0
+python -m pip install creating-explainer-videos-skill==2.2.1
 ```
 
 Python lifecycle commands work without Node.js. Project creation, template preview, rendering, and media commands execute the bundled canonical JavaScript runtime and require Node.js 22+.
@@ -26,7 +26,7 @@ Python lifecycle commands work without Node.js. Project creation, template previ
 Install the npm package from the public Registry:
 
 ```powershell
-npm install --global creating-explainer-videos-skill@2.2.0
+npm install --global creating-explainer-videos-skill@2.2.1
 ```
 
 The GitHub Release also provides the audited tarball built from the same tag. Verify the live Registry version with `npm view creating-explainer-videos-skill version --registry=https://registry.npmjs.org/`.
@@ -89,4 +89,4 @@ The package does not redistribute fonts, premium GSAP plugins, music, sound effe
 
 CI covers Node.js 22/24 and performs a real Linux + Chrome + FFmpeg render, cover capture, audio mux, ffprobe inspection, and media audit.
 
-See the [Chinese README](README.md), [visual DSL](skill/creating-explainer-videos/references/visual-program-dsl.md), [voice adapter protocol](skill/creating-explainer-videos/references/voice-adapter-protocol.md), [visual collection](skill/creating-explainer-videos/references/visual-template-collection.md), [extension API](skill/creating-explainer-videos/references/extension-api.md), [v2 migration](docs/MIGRATION_V2.md), and [release notes](docs/releases/v2.2.0.md).
+See the [Chinese README](README.md), [visual DSL](skill/creating-explainer-videos/references/visual-program-dsl.md), [voice adapter protocol](skill/creating-explainer-videos/references/voice-adapter-protocol.md), [visual collection](skill/creating-explainer-videos/references/visual-template-collection.md), [extension API](skill/creating-explainer-videos/references/extension-api.md), [v2 migration](docs/MIGRATION_V2.md), and [release notes](docs/releases/v2.2.1.md).
