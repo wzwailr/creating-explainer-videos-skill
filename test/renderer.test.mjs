@@ -82,3 +82,78 @@ test("real timing builds a deterministic template renderer and dedicated cover",
   assert.match(coverHtml, /信用卡清算/);
   assert.match(coverHtml, /series-cluster/);
 });
+
+test("renderer consumes topic visual elements and cue-relative actions deterministically", async () => {
+  const tempRoot = await mkdtemp(path.join(os.tmpdir(), "explainer-topic-renderer-"));
+  const root = path.join(tempRoot, "self-attention");
+  await createProject({
+    destination: root,
+    title: "三个 Token 的自注意力",
+    topic: "三个 token 如何按注意力权重互相路由信息",
+    template: "spatial-chamber",
+  });
+  await writeJsonAtomic(path.join(root, "script", "narration.json"), {
+    schemaVersion: 1,
+    canonicalText: [
+      { id: "C01", sceneId: "S01", text: "先让三个 token 各自生成查询和键。" },
+      { id: "C02", sceneId: "S01", text: "查询与每个键打分后，权重决定信息汇入多少。" },
+    ],
+    complete: true,
+  });
+  await writeJsonAtomic(path.join(root, "scene-spec.json"), {
+    schemaVersion: 1,
+    template: "spatial-chamber",
+    complete: true,
+    scenes: [{ id: "S01", title: "三路注意力", purpose: "展示三 token 的路由", cueIds: ["C01", "C02"] }],
+  });
+  await writeJsonAtomic(path.join(root, "visual-program.json"), {
+    schemaVersion: 1,
+    template: "spatial-chamber",
+    complete: true,
+    scenes: [{
+      id: "S01",
+      cueIds: ["C01", "C02"],
+      layout: "network",
+      elements: [
+        { id: "token-a", type: "node", label: "Token A", role: "token", frame: { x: .08, y: .28, width: .2, height: .18 } },
+        { id: "token-b", type: "node", label: "Token B", role: "token", frame: { x: .4, y: .28, width: .2, height: .18 } },
+        { id: "route-ab", type: "connector", from: "token-a", to: "token-b", route: "curve", role: "attention" },
+        { id: "score", type: "annotation", text: "权重 0.72", target: "route-ab", role: "metric", frame: { x: .31, y: .5, width: .2, height: .1 } },
+      ],
+      actions: [
+        { cueId: "C01", target: "token-a", kind: "appear", at: 0, duration: .25 },
+        { cueId: "C02", target: "route-ab", kind: "draw", at: 0, duration: .5 },
+        { cueId: "C02", target: "token-b", kind: "focus", at: .5, duration: .5 },
+      ],
+    }],
+  });
+  await importNarrationTiming(root, [
+    { id: "C01", start: 0, duration: 2 },
+    { id: "C02", start: 2, duration: 3 },
+  ]);
+
+  const first = await buildRenderer(root);
+  const second = await buildRenderer(root);
+  const html = await readFile(first.path, "utf8");
+
+  assert.equal(first.html, second.html);
+  assert.equal(first.visualProgram, true);
+  assert.match(html, /data-visual-element-id="token-a"/);
+  assert.match(html, /data-visual-element-id="route-ab"/);
+  assert.match(html, /权重 0.72/);
+  assert.match(html, /const visualActions=/);
+  assert.match(html, /applyVisualActions/);
+  assert.doesNotMatch(html, /<script>alert/);
+  assert.doesNotMatch(html, />INPUT<|>CHANGE<|>OUTPUT</);
+});
+
+test("renderer keeps the v2.0 generic scaffold when no visual program exists", async () => {
+  const tempRoot = await mkdtemp(path.join(os.tmpdir(), "explainer-legacy-renderer-"));
+  const root = path.join(tempRoot, "legacy");
+  await createProject({ destination: root, title: "旧项目", topic: "旧项目仍可构建", template: "ink-explainer" });
+
+  const result = await buildRenderer(root);
+
+  assert.equal(result.visualProgram, false);
+  assert.match(result.html, /derivation-board/);
+});

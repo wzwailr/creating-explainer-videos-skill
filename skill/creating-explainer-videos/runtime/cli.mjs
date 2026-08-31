@@ -1,4 +1,5 @@
 import path from "node:path";
+import { writeFile } from "node:fs/promises";
 
 import { readJson, writeJsonAtomic } from "./json.mjs";
 import {
@@ -23,8 +24,13 @@ import {
   getTemplate,
   templatePreview,
 } from "./templates.mjs";
+import {
+  compileVisualProgram,
+  loadVisualProgram,
+  validateVisualProgram,
+} from "./visual-dsl.mjs";
 
-const PROJECT_COMMANDS = new Set(["new", "status", "next", "validate", "release", "templates", "narration", "build", "cover", "render", "mux", "audit", "package", "doctor"]);
+const PROJECT_COMMANDS = new Set(["new", "status", "next", "validate", "release", "templates", "visual", "narration", "build", "cover", "render", "mux", "audit", "package", "doctor"]);
 
 export function isProjectCommand(command) {
   return PROJECT_COMMANDS.has(command);
@@ -129,6 +135,49 @@ export async function runProjectCli(argv, io = {}) {
     }
     print(result, options.json, output);
     return { exitCode: Array.isArray(result) && result.some((item) => !item.valid) ? 1 : 0, result };
+  }
+
+  if (command === "visual") {
+    const [subcommand, projectRoot] = options.positional;
+    const root = path.resolve(projectRoot || process.cwd());
+    const program = await loadVisualProgram(root);
+    const [project, sceneDocument, cueDocument] = await Promise.all([
+      readJson(path.join(root, "project.json")),
+      readJson(path.join(root, "scene-spec.json")),
+      readJson(path.join(root, "script", "cues.json")),
+    ]);
+    const validation = program
+      ? validateVisualProgram(program, { projectRoot: root, project, sceneDocument, cueDocument })
+      : { valid: false, errors: [{ code: "missing-visual-program", path: "visual-program.json", message: "visual-program.json is required" }], warnings: [] };
+    let result;
+    if (subcommand === "validate") {
+      result = validation;
+    } else if (subcommand === "compile") {
+      if (!validation.valid) result = validation;
+      else {
+        const compiled = await compileVisualProgram(root);
+        result = {
+          valid: true,
+          scenes: compiled.scenes.length,
+          elements: compiled.scenes.reduce((total, scene) => total + scene.elements.length, 0),
+          actions: compiled.scenes.reduce((total, scene) => total + scene.actions.length, 0),
+          warnings: compiled.warnings,
+        };
+      }
+    } else if (subcommand === "preview") {
+      if (!options.output) throw new Error("visual preview requires --output FILE");
+      if (!validation.valid) result = validation;
+      else {
+        const renderer = await buildRenderer(root);
+        const target = path.resolve(options.output);
+        await writeFile(target, renderer.html, "utf8");
+        result = { valid: true, output: target, scenes: renderer.scenes.length, actions: Object.values((await compileVisualProgram(root)).actionsByScene).flat().length };
+      }
+    } else {
+      throw new Error("visual supports validate, compile, or preview");
+    }
+    print(result, options.json, output);
+    return { exitCode: result.valid ? 0 : 1, result };
   }
 
   if (command === "narration") {
