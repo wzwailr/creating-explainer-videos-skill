@@ -48,6 +48,10 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+      - name: Install FFmpeg
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes ffmpeg
       - run: node --version
       - run: google-chrome --version
       - run: ffmpeg -version
