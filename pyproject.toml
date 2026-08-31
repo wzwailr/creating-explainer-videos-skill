@@ -1,0 +1,67 @@
+[build-system]
+requires = ["hatchling>=1.26,<2"]
+build-backend = "hatchling.build"
+
+[project]
+name = "creating-explainer-videos-skill"
+version = "2.0.0"
+description = "Executable Agent Skill and scaffold for producing rigorous mechanism and process explainer videos."
+readme = "README.md"
+requires-python = ">=3.9"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [
+  { name = "wzwailr" },
+]
+keywords = [
+  "agent-skill",
+  "explainer-video",
+  "educational-video",
+  "motion-design",
+  "gsap",
+]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Environment :: Console",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3 :: Only",
+  "Topic :: Multimedia :: Video",
+]
+dependencies = []
+
+[project.scripts]
+explainer-video-skill = "creating_explainer_videos_skill.cli:main"
+ai-principle-video-skill = "creating_explainer_videos_skill.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/wzwailr/creating-explainer-videos-skill"
+Repository = "https://github.com/wzwailr/creating-explainer-videos-skill"
+Issues = "https://github.com/wzwailr/creating-explainer-videos-skill/issues"
+Changelog = "https://github.com/wzwailr/creating-explainer-videos-skill/blob/main/CHANGELOG.md"
+
+[tool.hatch.build.targets.wheel]
+packages = ["python_src/creating_explainer_videos_skill"]
+
+[tool.hatch.build.targets.wheel.force-include]
+"skill/creating-explainer-videos" = "creating_explainer_videos_skill/assets/creating-explainer-videos"
+"skill-manifest.json" = "creating_explainer_videos_skill/assets/skill-manifest.json"
+
+[tool.hatch.build.targets.sdist]
+include = [
+  "/python_src",
+  "/python_tests",
+  "/skill/creating-explainer-videos",
+  "/skill-manifest.json",
+  "/scripts/audit_python_dist.py",
+  "/scripts/smoke_pypi_package.py",
+  "/docs/superpowers/specs/2026-08-31-pypi-distribution-design.md",
+  "/docs/superpowers/plans/2026-08-31-pypi-distribution.md",
+  "/pyproject.toml",
+  "/README.md",
+  "/README.en.md",
+  "/CHANGELOG.md",
+  "/SECURITY.md",
+  "/LICENSE",
+]

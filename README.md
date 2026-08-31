@@ -1,7 +1,7 @@
 # Explainer Video Skill
 
 [![CI](https://github.com/wzwailr/creating-explainer-videos-skill/actions/workflows/ci.yml/badge.svg)](https://github.com/wzwailr/creating-explainer-videos-skill/actions/workflows/ci.yml)
-[![npm](https://img.shields.io/npm/v/creating-explainer-videos-skill)](https://www.npmjs.com/package/creating-explainer-videos-skill)
+[![PyPI](https://img.shields.io/pypi/v/creating-explainer-videos-skill)](https://pypi.org/project/creating-explainer-videos-skill/)
 [![Release](https://img.shields.io/github/v/release/wzwailr/creating-explainer-videos-skill)](https://github.com/wzwailr/creating-explainer-videos-skill/releases)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
@@ -13,17 +13,26 @@
 
 ## 一键使用
 
-临时运行：
+推荐使用 `pipx` 安装独立 CLI：
 
 ```powershell
-npx --yes --package creating-explainer-videos-skill@2 explainer-video-skill --version
+pipx install creating-explainer-videos-skill==2.0.0
+explainer-video-skill --version
 ```
 
-全局安装：
+也可以安装到当前 Python 环境：
 
 ```powershell
-npm install --global creating-explainer-videos-skill@2
+python -m pip install creating-explainer-videos-skill==2.0.0
 explainer-video-skill --version
+```
+
+Python 入口可在没有 Node.js 时完成 Skill 的安装、更新、校验、回滚、卸载和扩展列表。创建视频工程、模板预览、渲染和媒体命令使用包内同一套 JavaScript runtime，需要 Node.js 18+。
+
+需要 npm 形式时，可直接安装 GitHub Release 中经过验证的 tarball：
+
+```powershell
+npm install --global https://github.com/wzwailr/creating-explainer-videos-skill/releases/download/v2.0.0/creating-explainer-videos-skill-2.0.0.tgz
 ```
 
 安装到 Codex：
@@ -127,15 +136,20 @@ explainer-video-skill package ".\my-video" --json
 ```powershell
 npm test
 npm run examples:verify
+python -m unittest discover -s python_tests -v
 $env:PYTHONUTF8='1'
 python skill\creating-explainer-videos\scripts\test_skill.py
 python skill\creating-explainer-videos\scripts\test_extensions.py
 npm run pack:local
 npm run pack:zip
 npm run smoke:packed -- .\dist\creating-explainer-videos-skill-2.0.0.tgz
+python -m build --sdist --wheel --outdir .\dist\pypi
+python -m twine check .\dist\pypi\*
+python .\scripts\audit_python_dist.py .\dist\pypi\*
+python .\scripts\smoke_pypi_package.py .\dist\pypi\creating_explainer_videos_skill-2.0.0-py3-none-any.whl
 ```
 
-CI 覆盖 Windows/Linux 与 Node.js 18/22。发布前还会从实际 `.tgz` 隔离安装，验证主/旧命令、项目脚手架、模板集、Skill 安装/校验/升级/回滚/卸载和全局命令。
+CI 覆盖 Windows/Linux、Node.js 18/22 和 Python 分发。发布前会分别从实际 npm `.tgz` 与 Python wheel 隔离安装，验证主/旧命令、项目脚手架、模板集、Skill 安装/校验/升级/回滚/卸载和全局命令。
 
 ## 许可证与安全边界
 

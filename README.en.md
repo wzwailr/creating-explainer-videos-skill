@@ -6,9 +6,25 @@ This is not a Markdown-only prompt pack. It ships a production state machine, JS
 
 ## Install
 
+Recommended isolated CLI installation:
+
 ```powershell
-npx --yes --package creating-explainer-videos-skill@2 explainer-video-skill --version
-npm install --global creating-explainer-videos-skill@2
+pipx install creating-explainer-videos-skill==2.0.0
+explainer-video-skill --version
+```
+
+Or install into the current Python environment:
+
+```powershell
+python -m pip install creating-explainer-videos-skill==2.0.0
+```
+
+Python lifecycle commands work without Node.js. Project creation, template preview, rendering, and media commands execute the bundled canonical JavaScript runtime and require Node.js 18+.
+
+The verified npm tarball is also available from the GitHub Release:
+
+```powershell
+npm install --global https://github.com/wzwailr/creating-explainer-videos-skill/releases/download/v2.0.0/creating-explainer-videos-skill-2.0.0.tgz
 ```
 
 Install the Skill into Codex or another folder-based Agent host:

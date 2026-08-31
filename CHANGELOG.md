@@ -21,6 +21,7 @@ All notable changes are documented here.
 - Declarative presets, permission-listed extensions, immutable hash metadata, and legacy research ID alias.
 - Credit-card clearing and quantum-tunneling non-AI fixtures.
 - Windows/Linux and Node.js 18/22 CI plus packed npx/global install smoke tests.
+- PyPI wheel/source distribution with a dependency-free Python lifecycle CLI, bundled canonical Skill assets, Node.js runtime delegation, archive security audit, and clean-environment smoke test.
 
 ### Security and licensing
 
