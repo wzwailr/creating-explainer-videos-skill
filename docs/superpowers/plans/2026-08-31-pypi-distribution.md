@@ -101,6 +101,6 @@ def test_project_command_reports_node_18_requirement(self):
 
 - [x] **Step 1: Document `pipx`/`pip` installation, Node.js boundary, dual-registry identity, and public verification commands.**
 - [x] **Step 2: Run all Python tests, existing Node tests, Skill validators, build, `twine check`, archive audit, and clean-wheel smoke test.**
-- [ ] **Step 3: Upload only the verified wheel and source distribution to production PyPI without exposing the token.**
-- [ ] **Step 4: Install `creating-explainer-videos-skill==2.0.0` from public PyPI in a fresh environment and repeat the smoke checks.**
-- [ ] **Step 5: Commit and push the verified source changes, then update the GitHub repository homepage/release links if publication succeeds.**
+- [x] **Step 3: Upload only the verified wheel and source distribution to production PyPI without exposing the token.**
+- [x] **Step 4: Install `creating-explainer-videos-skill==2.0.0` from public PyPI in a fresh environment and repeat the smoke checks.**
+- [x] **Step 5: Commit and push the verified source changes, then update the GitHub repository homepage/release links if publication succeeds.**
