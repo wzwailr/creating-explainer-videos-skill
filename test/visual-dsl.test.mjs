@@ -153,3 +153,32 @@ test("visual validation rejects malformed geometry, references, paths, cues, and
     assert.equal(result.errors.some((error) => error.code === fixture.code), true, `${fixture.name}: ${JSON.stringify(result.errors)}`);
   }
 });
+
+test("visual validation requires every scene specification to have a visual scene", () => {
+  const projectContext = context();
+  projectContext.sceneDocument.scenes.push({ id: "S02", cueIds: [] });
+
+  const result = validateVisualProgram(validProgram(), projectContext);
+
+  assert.equal(result.valid, false);
+  assert.equal(result.errors.some((error) => error.code === "missing-visual-scene" && error.path === "scenes.S02"), true);
+});
+
+test("visual validation rejects a scene made only from generic placeholder labels", () => {
+  const program = validProgram();
+  program.scenes[0].elements = [
+    { id: "input", type: "node", label: "INPUT", role: "input", frame: { x: .05, y: .3, width: .2, height: .2 } },
+    { id: "change", type: "node", label: "CHANGE", role: "process", frame: { x: .4, y: .3, width: .2, height: .2 } },
+    { id: "output", type: "node", label: "OUTPUT", role: "output", frame: { x: .75, y: .3, width: .2, height: .2 } },
+  ];
+  program.scenes[0].actions = [
+    { cueId: "C01", target: "input", kind: "appear", at: 0, duration: .25 },
+    { cueId: "C02", target: "change", kind: "focus", at: 0, duration: .5 },
+    { cueId: "C02", target: "output", kind: "appear", at: .5, duration: .5 },
+  ];
+
+  const result = validateVisualProgram(program, context());
+
+  assert.equal(result.valid, false);
+  assert.equal(result.errors.some((error) => error.code === "generic-topic-visual"), true);
+});

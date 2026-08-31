@@ -1,5 +1,5 @@
 export const SKILL_NAME = "creating-explainer-videos";
-export const PROJECT_SCHEMA_VERSION = 1;
+export const PROJECT_SCHEMA_VERSION = 2;
 export const STATE_SCHEMA_VERSION = 1;
 
 export const STAGES = Object.freeze([
@@ -24,4 +24,3 @@ export const RELEASE_DECISIONS = Object.freeze([
   "release_candidate_pending_human_listen",
   "passed",
 ]);
-

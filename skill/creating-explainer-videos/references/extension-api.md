@@ -1,6 +1,6 @@
 # Declarative extension API
 
-Extensions change one production dimension without modifying the core state machine. Supported types are `visual`, `voice`, `research`, `qc`, and `publishing`. Executable render adapters remain part of the reviewed runtime; v1 extensions cannot run arbitrary code.
+Extensions change one production dimension without modifying the core state machine. Supported types are `visual`, `voice`, `research`, `qc`, and `publishing`. Executable render and voice adapters remain part of the reviewed runtime or an explicitly hash-trusted host configuration; v1 extensions cannot run arbitrary code.
 
 ## Directory and manifest
 
@@ -59,6 +59,8 @@ The legacy research ID `ai-primary-research` resolves to `primary-source-researc
 4. Run `explainer-video-skill list-extensions --json`.
 5. Test path traversal, missing entrypoints, permission syntax, manifest/profile hashes, install, update, and rollback.
 6. For a visual extension, also implement and validate its executable template under `templates/<id>/`; a profile alone does not create motion.
+
+A voice extension can select language, role, rate, pitch, pronunciation, and caption policy. It cannot name a command that the runtime executes. To add executable synthesis, implement a reviewed runtime adapter or configure the versioned [host voice-adapter protocol](voice-adapter-protocol.md) with an explicit executable SHA-256. Extension selection never counts as network or provider-cost authorization.
 
 ## Presets
 

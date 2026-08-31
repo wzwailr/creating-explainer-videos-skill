@@ -20,7 +20,7 @@ test("package exposes the generic primary command and legacy alias", async () =>
   const pkg = JSON.parse(await readFile(path.join(packageRoot, "package.json"), "utf8"));
 
   assert.equal(pkg.name, "creating-explainer-videos-skill");
-  assert.equal(pkg.version, "2.0.1");
+  assert.equal(pkg.version, "2.1.0");
   assert.equal(pkg.engines.node, ">=22");
   assert.equal(pkg.private, false);
   assert.equal(pkg.bin["explainer-video-skill"], "./bin/explainer-video-skill.mjs");
@@ -46,7 +46,10 @@ test("SKILL routes agents through executable state and the complete template col
     "ink-explainer",
     "human_listen",
     "Node.js 22+",
-    "theme-specific visuals",
+    "visual validate",
+    "narration synthesize",
+    "visual-program-dsl.md",
+    "voice-adapter-protocol.md",
     "smoke:render",
   ]) {
     assert.match(text, new RegExp(term.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));

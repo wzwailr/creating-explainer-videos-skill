@@ -177,14 +177,24 @@ function allowedToolsFor(stage) {
 }
 
 function commandsFor(stage) {
+  if (stage === "narration_and_cues") {
+    return [
+      "explainer-video-skill narration synthesize <PROJECT_DIR> --adapter edge-tts --allow-network",
+      "explainer-video-skill narration import-timing <PROJECT_DIR> --timing <TIMING_FILE>",
+    ];
+  }
+  if (stage === "scene_spec") {
+    return [
+      "explainer-video-skill visual validate <PROJECT_DIR>",
+      "explainer-video-skill build",
+    ];
+  }
   const command = {
     discovery: "validate discovery",
     brief: "validate brief",
     evidence: "validate evidence",
     mechanism_map: "validate mechanism_map",
-    narration_and_cues: "narration prepare",
     real_audio_timing: "narration import-timing",
-    scene_spec: "build",
     runnable_renderer: "render",
     render: "audit",
     automated_qc: "validate human_listen",

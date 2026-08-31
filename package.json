@@ -1,6 +1,6 @@
 {
   "name": "creating-explainer-videos-skill",
-  "version": "2.0.1",
+  "version": "2.1.0",
   "description": "Executable Agent Skill and scaffold for producing rigorous mechanism and process explainer videos.",
   "type": "module",
   "bin": {
@@ -20,6 +20,7 @@
     "docs/MIGRATION_V2.md",
     "docs/releases/v2.0.0.md",
     "docs/releases/v2.0.1.md",
+    "docs/releases/v2.1.0.md",
     "README.md",
     "README.en.md",
     "CHANGELOG.md",

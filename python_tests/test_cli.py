@@ -39,7 +39,7 @@ class CliContractTests(unittest.TestCase):
         result = run_cli("--version", path="")
 
         self.assertEqual(result.returncode, 0, result.stderr)
-        self.assertEqual(result.stdout.strip(), "2.0.1")
+        self.assertEqual(result.stdout.strip(), "2.1.0")
 
     def test_help_works_without_node(self) -> None:
         result = run_cli("--help", path="")

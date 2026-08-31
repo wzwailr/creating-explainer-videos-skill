@@ -27,7 +27,7 @@ export async function createRealRenderFixture(projectRoot) {
     preset: "general-mechanism",
   });
   await writeJsonAtomic(path.join(root, "project.json"), {
-    schemaVersion: 1,
+    schemaVersion: 2,
     slug: "real-render-smoke",
     title: "真实渲染验证",
     topic: "输入经过机制产生输出",
@@ -66,6 +66,27 @@ export async function createRealRenderFixture(projectRoot) {
       title: "真实渲染链路",
       purpose: "验证浏览器逐帧渲染、音频合成和媒体质检",
       cueIds: ["C01"],
+    }],
+  });
+  await writeJsonAtomic(path.join(root, "visual-program.json"), {
+    schemaVersion: 1,
+    template: "paper-theatre",
+    complete: true,
+    scenes: [{
+      id: "S01",
+      layout: "flow",
+      cueIds: ["C01"],
+      elements: [
+        { id: "request", type: "node", role: "input", label: "请求进入规则引擎", frame: { x: .08, y: .33, width: .28, height: .24 } },
+        { id: "result", type: "node", role: "output", label: "规则匹配后输出结果", frame: { x: .64, y: .33, width: .28, height: .24 } },
+        { id: "match", type: "connector", role: "mechanism", from: "request", to: "result", route: "curve" },
+      ],
+      actions: [
+        { cueId: "C01", target: "request", kind: "appear", at: 0, duration: .2 },
+        { cueId: "C01", target: "match", kind: "draw", at: .2, duration: .35 },
+        { cueId: "C01", target: "result", kind: "appear", at: .55, duration: .25 },
+        { cueId: "C01", target: "result", kind: "focus", at: .8, duration: .2 },
+      ],
     }],
   });
   await buildRenderer(root);

@@ -25,6 +25,22 @@ test("transition validation accepts only the adjacent stage with required eviden
   assert.equal(validateTransition("discovery", "brief", []).valid, false);
 });
 
+test("next action exposes real narration and visual-program commands", () => {
+  const narration = nextAction(
+    { ...createInitialState({ slug: "demo" }), stage: "narration_and_cues" },
+    new Set(["script/narration.json", "script/cues.json"]),
+  );
+  const scenes = nextAction(
+    { ...createInitialState({ slug: "demo" }), stage: "scene_spec" },
+    new Set(["project.json", "scene-spec.json", "script/cues.json"]),
+  );
+
+  assert.equal(narration.commands.some((command) => command.includes("narration synthesize") && command.includes("edge-tts")), true);
+  assert.equal(narration.commands.some((command) => command.includes("narration import-timing")), true);
+  assert.equal(scenes.commands.some((command) => command.includes("visual validate")), true);
+  assert.equal(scenes.commands.some((command) => command.endsWith(" build")), true);
+});
+
 test("publishing package can enter the final human decision stage without circular evidence", () => {
   assert.equal(validateTransition("publishing_package", "human_release_decision", []).valid, true);
 });

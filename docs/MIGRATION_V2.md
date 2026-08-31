@@ -22,4 +22,10 @@ If the installer finds `creating-ai-principle-videos`, it moves it to a timestam
 
 Existing v1 projects should remain on their locked extension snapshots. Create a v2 project, then deliberately port the brief, evidence, canonical narration, real timing, and scene contracts. Do not copy an old generated renderer and assume it satisfies the v2 state or QC gates.
 
+## v2.0 to v2.1 projects
+
+v2.1 new projects use project schema 2 and add `visual-program.json`. Existing schema-1 projects without that file continue to build with the v2.0 generic renderer. To adopt topic compilation, create a complete visual program with one matching scene per `scene-spec.json` scene, then run `visual validate`, `visual compile`, and `build`.
+
+Existing external narration masters and measured timing remain valid. To adopt executable synthesis, keep the canonical narration, run `narration doctor`, then explicitly authorize the selected adapter. The fixture adapter is test-only; it cannot migrate or replace real narration evidence.
+
 The AI-series workflow remains available as the `ai-principle-series` example preset. It no longer defines package branding or core defaults.

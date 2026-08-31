@@ -7,37 +7,37 @@
 
 一套通用、可安装、可扩展、真正可执行的解释型视频 Agent Skill 与工程脚手架。它适用于机制、流程、系统、科学和技术科普，不绑定某个系列或某类题材。
 
-它不只是几份 Markdown：包内包含生产状态机、项目生成器、旁白规范化、真实音频时轴导入、三套可编程视觉模板、确定性 HTML/SVG/GSAP 渲染器、HyperFrames/FFmpeg 适配、媒体质检、扩展 API、打包工具和非 AI 端到端示例。
+它不只是几份 Markdown：包内包含生产状态机、项目生成器、主题视觉 DSL、可执行 TTS 适配器、旁白缓存与恢复、真实音频测量、三套可编程视觉模板、确定性 HTML/SVG/GSAP 渲染器、HyperFrames/FFmpeg 适配、媒体质检、扩展 API、打包工具和非 AI 端到端示例。
 
-它提供的是可执行生产骨架，不是“输入主题就自动得到顶配成片”的生成器。内置 renderer 负责证明时间轴、媒体链路和通用机制场景可运行；发布级作品仍需要 Agent 按具体知识结构创作主题化 SVG/DOM、镜头动作、合法素材与旁白。
+它提供的是可执行生产骨架，不是“输入主题就自动得到顶配成片”的生成器。Agent 可以用受约束的视觉程序表达具体知识对象、关系与 cue 动作，但仍必须验证事实、视觉表达、素材授权、发音、同步和最终观感。
 
-[English](README.en.md) · [v2 迁移指南](docs/MIGRATION_V2.md) · [视觉模板集](skill/creating-explainer-videos/references/visual-template-collection.md) · [扩展 API](skill/creating-explainer-videos/references/extension-api.md)
+[English](README.en.md) · [v2 迁移指南](docs/MIGRATION_V2.md) · [视觉 DSL](skill/creating-explainer-videos/references/visual-program-dsl.md) · [声音适配器](skill/creating-explainer-videos/references/voice-adapter-protocol.md) · [视觉模板集](skill/creating-explainer-videos/references/visual-template-collection.md) · [扩展 API](skill/creating-explainer-videos/references/extension-api.md)
 
 ## 一键使用
 
 推荐使用 `pipx` 安装独立 CLI：
 
 ```powershell
-pipx install creating-explainer-videos-skill==2.0.1
+pipx install creating-explainer-videos-skill==2.1.0
 explainer-video-skill --version
 ```
 
 也可以安装到当前 Python 环境：
 
 ```powershell
-python -m pip install creating-explainer-videos-skill==2.0.1
+python -m pip install creating-explainer-videos-skill==2.1.0
 explainer-video-skill --version
 ```
 
 Python 入口可在没有 Node.js 时完成 Skill 的安装、更新、校验、回滚、卸载和扩展列表。创建视频工程、模板预览、渲染和媒体命令使用包内同一套 JavaScript runtime，需要 Node.js 22+。
 
-需要 npm 形式时，可直接安装 GitHub Release 中经过验证的 tarball：
+需要 npm 形式时，可从 npm Registry 安装：
 
 ```powershell
-npm install --global https://github.com/wzwailr/creating-explainer-videos-skill/releases/download/v2.0.1/creating-explainer-videos-skill-2.0.1.tgz
+npm install --global creating-explainer-videos-skill@2.1.0
 ```
 
-GitHub Release tarball 是稳定安装路径。若希望从 npm Registry 安装，请先用 `npm view creating-explainer-videos-skill version` 核验该版本已经公开，不把 README 中的命令视为 Registry 发布证明。
+也可以使用 GitHub Release 中同一标签构建并校验过的 tarball。用 `npm view creating-explainer-videos-skill version --registry=https://registry.npmjs.org/` 核验 Registry 的实时公开版本。
 
 安装到 Codex：
 
@@ -70,7 +70,7 @@ explainer-video-skill status --json ".\my-video"
 explainer-video-skill next --json ".\my-video"
 ```
 
-工程会生成 JSON-first 生产合同、状态机、可运行 renderer、独立 cover、模板资产、旁白/cue 文件、媒体/QC/发布目录。Agent 按以下闭环推进：
+工程会生成 JSON-first 生产合同、状态机、`visual-program.json`、可运行 renderer、独立 cover、模板资产、旁白/cue 文件、媒体/QC/发布目录。Agent 按以下闭环推进：
 
 ```text
 status -> next -> 执行真实工作 -> 写入证据 -> validate -> 下一阶段
@@ -97,14 +97,31 @@ brief -> evidence -> mechanism_map -> narration_and_cues
 
 三者是结构和运动语法不同的模板，不是 A/B/C 换色版。每套都包含独立 DOM 指纹、场景 CSS、封面 CSS、时间轴控制器、插件降级和可量化 QC 规则。Spatial Chamber 正式收录了原 B 方案的纵深、路径和空间叙事能力。
 
+主题知识通过同一个受约束的视觉程序进入模板，而不是手改生成后的 HTML：
+
+```powershell
+explainer-video-skill visual validate ".\my-video" --json
+explainer-video-skill visual compile ".\my-video" --json
+explainer-video-skill visual preview ".\my-video" --output ".\preview.html" --json
+```
+
+DSL 支持 group、text、node、shape、connector、本地 asset、annotation，采用归一化几何和 cue 相对动作。远程资源、路径逃逸、任意 HTML/JavaScript 和错误引用会在 build 前被拒绝。v2.0 schema-1 老项目缺少该文件时仍可使用通用 fallback，但不能把 fallback 当成主题化成片。
+
 钉钉进步体/DingTalk Sans 可作为本机显示字体，Noto Sans SC 可作为字幕字体；仓库不分发字体文件。GSAP 商业插件同样不随包分发，每个模板都声明了开源/原生降级路径。
 
 ## 旁白、动画与渲染
 
-字幕与 TTS 来自同一个 canonical 字符串。规范化会移除 `\_`、snake_case 下划线和可能被读成符号名的 Markdown 标记。真实旁白生成后导入测量时轴：
+字幕与 TTS 来自同一个 canonical 字符串。规范化会移除 `\_`、snake_case 下划线和可能被读成符号名的 Markdown 标记。可以让内置适配器生成并测量真实旁白，也可以导入外部测量时轴：
 
 ```powershell
 explainer-video-skill narration prepare ".\my-video" --json
+explainer-video-skill narration adapters --json
+python -m pip install edge-tts
+explainer-video-skill narration doctor ".\my-video" --adapter edge-tts --json
+explainer-video-skill narration synthesize ".\my-video" --adapter edge-tts --voice zh-CN-YunxiNeural --allow-network --json
+# 中断后只恢复无效 cue：
+explainer-video-skill narration recover ".\my-video" --adapter edge-tts --voice zh-CN-YunxiNeural --allow-network --json
+# 或者导入外部真实测量结果：
 explainer-video-skill narration import-timing ".\my-video" --timing ".\timing.json" --json
 explainer-video-skill build ".\my-video" --json
 explainer-video-skill render ".\my-video" --json
@@ -114,13 +131,15 @@ explainer-video-skill audit ".\my-video" --json
 explainer-video-skill package ".\my-video" --json
 ```
 
+`edge-tts` 的未缓存请求需要 `--allow-network`；付费或费用未知的 host adapter 还需要 `--authorize-provider-cost`。每个 cue 按输入/音频哈希缓存，FFmpeg 规范化，ffprobe 回读时长，再重建字幕和动画时间轴。`fixture-tts` 只生成测试音频并被生产门禁拒绝。
+
 最终动画只使用真实测量旁白时间，渲染页使用可暂停、可 seek、确定性的时间轴。禁止用整屏扫描线、长条扫光或无意义粒子代替知识动作。
 
 ## 预设与扩展
 
 `general-mechanism` 是通用默认预设，而且故意不锁定视觉模板。`ai-principle-series` 只是一个经过真实系列验证的示例预设，AI 不是包的产品身份。
 
-扩展 API v1 支持 `visual`、`voice`、`research`、`qc`、`publishing`。扩展是声明式 JSON/文档/可授权资产，包含权限清单和哈希锁，不允许任意 `hooks`、`scripts` 或 `postinstall`。
+扩展 API v1 支持 `visual`、`voice`、`research`、`qc`、`publishing`。扩展是声明式 JSON/文档/可授权资产，包含权限清单和哈希锁，不允许任意 `hooks`、`scripts` 或 `postinstall`。可执行声音适配器属于审核过的 runtime 或显式 SHA-256 信任的 host command，选择 voice profile 不会自动获得进程、网络、凭据或付费权限。
 
 内置扩展：
 
@@ -132,7 +151,7 @@ explainer-video-skill package ".\my-video" --json
 
 ## 示例与验证
 
-包内提供两个非 AI fixture：
+包内提供两个带完整主题视觉程序的非 AI fixture：
 
 - `credit-card-clearing`：Spatial Chamber；
 - `quantum-tunneling`：Ink Explainer。
@@ -147,11 +166,11 @@ python skill\creating-explainer-videos\scripts\test_skill.py
 python skill\creating-explainer-videos\scripts\test_extensions.py
 npm run pack:local
 npm run pack:zip
-npm run smoke:packed -- .\dist\creating-explainer-videos-skill-2.0.1.tgz
+npm run smoke:packed -- .\dist\creating-explainer-videos-skill-2.1.0.tgz
 python -m build --sdist --wheel --outdir .\dist\pypi
 python -m twine check .\dist\pypi\*
 python .\scripts\audit_python_dist.py .\dist\pypi\*
-python .\scripts\smoke_pypi_package.py .\dist\pypi\creating_explainer_videos_skill-2.0.1-py3-none-any.whl
+python .\scripts\smoke_pypi_package.py .\dist\pypi\creating_explainer_videos_skill-2.1.0-py3-none-any.whl
 ```
 
 CI 覆盖 Windows/Linux、Node.js 22/24 和 Python 分发，并在 Linux + Chrome + FFmpeg 上真正执行 HyperFrames 逐帧渲染、封面截图、音频生成、合成、ffprobe 和媒体质检。发布前还会分别从实际 npm `.tgz` 与 Python wheel 隔离安装，验证主/旧命令、项目脚手架、模板集、Skill 安装/校验/升级/回滚/卸载和全局命令。
@@ -160,4 +179,4 @@ CI 覆盖 Windows/Linux、Node.js 22/24 和 Python 分发，并在 Linux + Chrom
 
 原创代码和文档采用 [MIT License](LICENSE)。字体、GSAP 商业插件、音乐、音效、图片、视频和供应商凭据不在包内。付费或异步生成必须显式授权、保存任务 ID、先查询既有任务再决定是否重试。
 
-详见 [安全策略](SECURITY.md)、[贡献指南](CONTRIBUTING.md)、[更新记录](CHANGELOG.md) 和 [v2.0.1 Release Notes](docs/releases/v2.0.1.md)。
+详见 [安全策略](SECURITY.md)、[贡献指南](CONTRIBUTING.md)、[更新记录](CHANGELOG.md) 和 [v2.1.0 Release Notes](docs/releases/v2.1.0.md)。

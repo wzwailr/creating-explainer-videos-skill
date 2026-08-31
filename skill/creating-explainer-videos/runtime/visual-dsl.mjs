@@ -9,6 +9,10 @@ const ACTION_KINDS = new Set(["appear", "exit", "move", "focus", "draw", "pulse"
 const SHAPES = new Set(["rectangle", "circle", "diamond", "line"]);
 const ROUTES = new Set(["line", "curve", "orthogonal"]);
 const ASSET_EXTENSIONS = new Set([".svg", ".png", ".jpg", ".jpeg", ".webp"]);
+const GENERIC_VISUAL_LABELS = new Set([
+  "input", "change", "process", "output", "step", "mechanism",
+  "输入", "变化", "内部变化", "过程", "处理", "输出", "步骤", "机制",
+]);
 
 async function exists(filePath) {
   try {
@@ -38,6 +42,11 @@ function safeToken(value, fallback = "default") {
 
 function validId(value) {
   return typeof value === "string" && /^[A-Za-z][A-Za-z0-9-]*$/.test(value);
+}
+
+function isGenericVisualLabel(value) {
+  const normalized = String(value ?? "").trim().toLowerCase().replace(/\s+/g, " ");
+  return !normalized || GENERIC_VISUAL_LABELS.has(normalized) || /^步骤[一二三四五六七八九十\d]+$/.test(normalized);
 }
 
 function validateFrame(frame, framePath, errors) {
@@ -133,6 +142,13 @@ export function validateVisualProgram(program, context = {}) {
       }
     }
 
+    const visibleLabels = scene.elements
+      .map((element) => element.label ?? element.text ?? element.alt)
+      .filter((value) => typeof value === "string" && value.trim());
+    if (!visibleLabels.length || visibleLabels.every(isGenericVisualLabel)) {
+      errors.push(issue("generic-topic-visual", `${scenePath}.elements`, "scene must show topic-specific objects or claims, not only generic input/process/output placeholders"));
+    }
+
     if (!Array.isArray(scene.actions)) errors.push(issue("missing-actions", `${scenePath}.actions`, "scene actions must be an array"));
     for (const [actionIndex, action] of (scene.actions ?? []).entries()) {
       const actionPath = `${scenePath}.actions[${actionIndex}]`;
@@ -153,6 +169,9 @@ export function validateVisualProgram(program, context = {}) {
         }
       }
     }
+  }
+  for (const sceneId of contextScenes.keys()) {
+    if (!sceneIds.has(sceneId)) errors.push(issue("missing-visual-scene", `scenes.${sceneId}`, `scene ${sceneId} has no visual program`));
   }
   return { valid: errors.length === 0, errors, warnings, program };
 }

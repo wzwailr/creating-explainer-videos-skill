@@ -64,7 +64,15 @@ explainer-video-skill templates inspect ink-explainer --json
 
 Select by knowledge structure, not decoration. A project may combine primitives, but one grammar must remain dominant. Do not copy an old scene and swap text. Do not use full-frame scanning lines, narration-length sweeps, meaningless particles, or repeated cards as substitute motion.
 
-The generated renderer is a generic executable scaffold, not finished visual direction. Before release, replace or extend it with `theme-specific visuals`: subject-specific SVG/DOM primitives, spatial relationships, camera language, and semantic motion derived from the actual mechanism. Never present the starter scene as a high-fidelity finished video merely because it renders successfully.
+Read [visual-program-dsl.md](references/visual-program-dsl.md) after measured timing. New projects require `visual-program.json`: one bounded semantic scene for every scene specification, real topic elements instead of generic labels, and cue-bound actions that show the state change being narrated.
+
+```powershell
+explainer-video-skill visual validate <project-dir> --json
+explainer-video-skill visual compile <project-dir> --json
+explainer-video-skill visual preview <project-dir> --output <preview.html> --json
+```
+
+`build` and `render` regenerate renderer HTML, so do not hide topic logic in a hand-edited generated page. A legacy project without a visual program may use the generic scaffold for compatibility, but the fallback is not finished visual direction. Never present it as a high-fidelity topic video merely because it renders.
 
 Use DingTalk JinBuTi/DingTalk Sans for display roles when locally licensed and installed, and Noto Sans SC or a tested CJK fallback for captions. Never package font binaries or commercial GSAP plugins without redistribution rights. Every premium plugin needs the fallback declared by its template.
 
@@ -74,13 +82,18 @@ Read [engineering-pipeline.md](references/engineering-pipeline.md) before implem
 
 ```powershell
 explainer-video-skill narration prepare <project-dir> --json
-# Produce narration with the selected provider only after any required cost/credential authorization.
+explainer-video-skill narration adapters --json
+explainer-video-skill narration doctor <project-dir> --adapter edge-tts --json
+explainer-video-skill narration synthesize <project-dir> --adapter edge-tts --voice zh-CN-YunxiNeural --allow-network --json
+# Or import already measured timing from an externally generated master.
 explainer-video-skill narration import-timing <project-dir> --timing <measured-timing.json> --json
 explainer-video-skill build <project-dir> --json
 explainer-video-skill render <project-dir> --json
 explainer-video-skill cover <project-dir> --json
 explainer-video-skill mux <project-dir> --audio <narration.wav> --json
 ```
+
+Read [voice-adapter-protocol.md](references/voice-adapter-protocol.md) before synthesis, provider configuration, or recovery. `prepare` only normalizes text; it is not narration generation. `fixture-tts` is test-only and cannot satisfy real-audio evidence. Network calls need `--allow-network`; paid or unknown-cost adapters additionally need `--authorize-provider-cost`. Reuse hash-verified cue cache and use `narration recover` after interruption instead of resubmitting completed cues.
 
 Real measured narration timing is the only final animation clock. Use deterministic paused timelines, local assets, fixed viewBoxes, and explicit cue anchors. Never use runtime randomness, remote assets, wall-clock timers, or estimated timings in a release render.
 
@@ -111,7 +124,7 @@ Never infer `passed` from a render, a provider success, green tests, or file pre
 
 ## Extensions, presets, and portability
 
-Read [extension-api.md](references/extension-api.md) before adding a visual, voice, research, QC, or publishing profile. Extensions are declarative, permission-listed, hash-locked, and cannot run arbitrary hooks. `general-mechanism` is domain-neutral; topic-specific behavior belongs in an explicit preset such as the included `ai-principle-series` example.
+Read [extension-api.md](references/extension-api.md) before adding a visual, voice, research, QC, or publishing profile. Extensions are declarative, permission-listed, hash-locked, and cannot run arbitrary hooks. Executable voice adapters belong to the reviewed runtime or an explicitly hash-trusted host command; selecting a voice extension never grants process, network, credential, or payment authority. `general-mechanism` is domain-neutral; topic-specific behavior belongs in an explicit preset such as the included `ai-principle-series` example.
 
 Read [install-and-portability.md](references/install-and-portability.md) for npm, Codex, other Agent hosts, migration, update, rollback, and asset-license rules.
 

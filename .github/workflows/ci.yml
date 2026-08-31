@@ -22,6 +22,14 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
+      - name: Install FFmpeg on Linux
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes ffmpeg
+      - name: Install FFmpeg on Windows
+        if: runner.os == 'Windows'
+        run: choco install ffmpeg --no-progress --yes
       - run: npm test
       - run: npm run examples:verify
       - name: Validate Skill contract
@@ -67,8 +75,8 @@ jobs:
           node-version: 22
       - run: npm run pack:local
       - run: npm run pack:zip
-      - run: npm run audit:packed -- .\dist\creating-explainer-videos-skill-2.0.1.tgz
-      - run: npm run smoke:packed -- .\dist\creating-explainer-videos-skill-2.0.1.tgz
+      - run: npm run audit:packed -- .\dist\creating-explainer-videos-skill-2.1.0.tgz
+      - run: npm run smoke:packed -- .\dist\creating-explainer-videos-skill-2.1.0.tgz
 
   package-python:
     strategy:
@@ -88,4 +96,4 @@ jobs:
       - run: python -m build --no-isolation --sdist --wheel --outdir dist/pypi
       - run: python -m twine check dist/pypi/*
       - run: python scripts/audit_python_dist.py dist/pypi/*
-      - run: python scripts/smoke_pypi_package.py dist/pypi/creating_explainer_videos_skill-2.0.1-py3-none-any.whl
+      - run: python scripts/smoke_pypi_package.py dist/pypi/creating_explainer_videos_skill-2.1.0-py3-none-any.whl

@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { mkdtemp, mkdir, readFile, writeFile } from "node:fs/promises";
+import { mkdtemp, mkdir, readFile, rm, writeFile } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 
@@ -41,6 +41,10 @@ test("render invokes an argument-array adapter from the renderer directory", asy
   const tempRoot = await mkdtemp(path.join(os.tmpdir(), "explainer-media-render-"));
   const root = path.join(tempRoot, "demo");
   await createProject({ destination: root, title: "Demo", topic: "Flow", template: "paper-theatre" });
+  const legacyProject = JSON.parse(await readFile(path.join(root, "project.json"), "utf8"));
+  legacyProject.schemaVersion = 1;
+  await writeFile(path.join(root, "project.json"), `${JSON.stringify(legacyProject, null, 2)}\n`, "utf8");
+  await rm(path.join(root, "visual-program.json"));
   const calls = [];
   const result = await renderVideo(root, {
     runner: async (command, args, options) => {

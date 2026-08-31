@@ -93,6 +93,7 @@ export async function createProject(options = {}) {
     ["script/cues.json", { schemaVersion: 1, cues: [], timingSource: "unmeasured", complete: false }],
     ["storyboard.json", { schemaVersion: 1, scenes: [], complete: false }],
     ["scene-spec.json", { schemaVersion: 1, template, scenes: [], complete: false }],
+    ["visual-program.json", { schemaVersion: 1, template, scenes: [], complete: false }],
   ]);
   for (const [relativePath, value] of files) {
     await writeJsonAtomic(path.join(root, relativePath), value);
@@ -100,7 +101,7 @@ export async function createProject(options = {}) {
   await writeFile(path.join(root, "brief.md"), briefMarkdown(brief), "utf8");
   await installPresetExtensions(root, preset, template);
   await installTemplate(template, root);
-  await buildRenderer(root);
+  await buildRenderer(root, { allowIncompleteVisual: true });
   await buildCover(root);
   return { root, project, state, createdFiles: [...files.keys(), "extensions.lock.json", "brief.md", "renderer/index.html", "renderer/cover.html"] };
 }

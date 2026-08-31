@@ -19,6 +19,99 @@ async function loadFixture(id) {
   return JSON.parse(await readFile(path.join(fixtureRoot, id, "fixture.json"), "utf8"));
 }
 
+function cueActions(scene, targets) {
+  const firstCue = scene.cueIds[0];
+  const lastCue = scene.cueIds.at(-1);
+  if (firstCue === lastCue) {
+    return [
+      { cueId: firstCue, target: targets.input, kind: "appear", at: 0, duration: .18 },
+      { cueId: firstCue, target: targets.firstLink, kind: "draw", at: .18, duration: .2 },
+      { cueId: firstCue, target: targets.transformation, kind: "focus", at: .38, duration: .2 },
+      { cueId: firstCue, target: targets.secondLink, kind: "draw", at: .58, duration: .2 },
+      { cueId: firstCue, target: targets.output, kind: "appear", at: .78, duration: .22 },
+    ];
+  }
+  return [
+    { cueId: firstCue, target: targets.input, kind: "appear", at: 0, duration: .25 },
+    { cueId: firstCue, target: targets.firstLink, kind: "draw", at: .25, duration: .35 },
+    { cueId: firstCue, target: targets.transformation, kind: "focus", at: .6, duration: .4 },
+    { cueId: lastCue, target: targets.secondLink, kind: "draw", at: 0, duration: .5 },
+    { cueId: lastCue, target: targets.output, kind: "appear", at: .5, duration: .5 },
+  ];
+}
+
+function spatialVisualScene(scene) {
+  const targets = { input: "input", transformation: "change", output: "output", firstLink: "input-change", secondLink: "change-output" };
+  return {
+    id: scene.id,
+    cueIds: scene.cueIds,
+    layout: "network",
+    elements: [
+      { id: "chamber", type: "group", label: scene.title, role: "chamber", frame: { x: .035, y: .09, width: .93, height: .72 } },
+      { id: "input", type: "node", label: scene.input, role: "input", frame: { x: .07, y: .34, width: .23, height: .18 } },
+      { id: "change", type: "node", label: scene.transformation, role: "state", frame: { x: .385, y: .3, width: .23, height: .25 } },
+      { id: "output", type: "node", label: scene.output, role: "output", frame: { x: .7, y: .34, width: .23, height: .18 } },
+      { id: "input-change", type: "connector", from: "input", to: "change", route: "curve", role: "signal" },
+      { id: "change-output", type: "connector", from: "change", to: "output", route: "curve", role: "signal" },
+      { id: "knowledge", type: "annotation", text: scene.knowledgePoint, target: "change", role: "mechanism", frame: { x: .22, y: .63, width: .56, height: .1 } },
+    ],
+    actions: cueActions(scene, targets),
+  };
+}
+
+function inkVisualScene(scene) {
+  const targets = { input: "incoming-wave", transformation: "shape-barrier", output: "transmitted-wave", firstLink: "enter-barrier", secondLink: "leave-barrier" };
+  return {
+    id: scene.id,
+    cueIds: scene.cueIds,
+    layout: "compare",
+    elements: [
+      { id: "scene-title", type: "text", text: scene.title, role: "formula", frame: { x: .12, y: .08, width: .76, height: .11 } },
+      { id: "incoming-wave", type: "node", label: scene.input, role: "wave", frame: { x: .06, y: .34, width: .25, height: .18 } },
+      { id: "shape-barrier", type: "shape", shape: "rectangle", role: "barrier", frame: { x: .415, y: .24, width: .17, height: .38 } },
+      { id: "barrier-label", type: "text", text: scene.transformation, role: "derivation", frame: { x: .37, y: .65, width: .26, height: .1 } },
+      { id: "transmitted-wave", type: "node", label: scene.output, role: "probability", frame: { x: .69, y: .34, width: .25, height: .18 } },
+      { id: "enter-barrier", type: "connector", from: "incoming-wave", to: "shape-barrier", route: "curve", role: "wave" },
+      { id: "leave-barrier", type: "connector", from: "shape-barrier", to: "transmitted-wave", route: "curve", role: "wave" },
+      { id: "knowledge", type: "annotation", text: scene.knowledgePoint, target: "shape-barrier", role: "proof", frame: { x: .2, y: .79, width: .6, height: .1 } },
+    ],
+    actions: cueActions(scene, targets),
+  };
+}
+
+function paperVisualScene(scene) {
+  const targets = { input: "input-card", transformation: "process-card", output: "output-card", firstLink: "first-arrow", secondLink: "second-arrow" };
+  return {
+    id: scene.id,
+    cueIds: scene.cueIds,
+    layout: "flow",
+    elements: [
+      { id: "sheet", type: "group", label: scene.title, role: "sheet", frame: { x: .04, y: .1, width: .92, height: .7 } },
+      { id: "input-card", type: "node", label: scene.input, role: "evidence", frame: { x: .08, y: .32, width: .22, height: .2 } },
+      { id: "process-card", type: "node", label: scene.transformation, role: "process", frame: { x: .39, y: .28, width: .22, height: .28 } },
+      { id: "output-card", type: "node", label: scene.output, role: "result", frame: { x: .7, y: .32, width: .22, height: .2 } },
+      { id: "first-arrow", type: "connector", from: "input-card", to: "process-card", route: "line", role: "arrow" },
+      { id: "second-arrow", type: "connector", from: "process-card", to: "output-card", route: "line", role: "arrow" },
+      { id: "note", type: "annotation", text: scene.knowledgePoint, target: "process-card", role: "note", frame: { x: .22, y: .64, width: .56, height: .11 } },
+    ],
+    actions: cueActions(scene, targets),
+  };
+}
+
+export function buildFixtureVisualProgram(fixture) {
+  const builder = fixture.project.template === "spatial-chamber"
+    ? spatialVisualScene
+    : fixture.project.template === "paper-theatre"
+      ? paperVisualScene
+      : inkVisualScene;
+  return {
+    schemaVersion: 1,
+    template: fixture.project.template,
+    complete: true,
+    scenes: fixture.scenes.map(builder),
+  };
+}
+
 export async function buildExample(id, destination) {
   const fixture = await loadFixture(id);
   const created = await createProject({
@@ -38,6 +131,7 @@ export async function buildExample(id, destination) {
     ["script/narration.json", { schemaVersion: 1, canonicalText: fixture.narration, complete: true }],
     ["storyboard.json", { schemaVersion: 1, scenes: fixture.scenes, complete: true }],
     ["scene-spec.json", { schemaVersion: 1, template: fixture.project.template, scenes: fixture.scenes, complete: true }],
+    ["visual-program.json", buildFixtureVisualProgram(fixture)],
   ]);
   for (const [relativePath, value] of documents) {
     await writeJsonAtomic(path.join(root, relativePath), value);
@@ -82,6 +176,7 @@ export async function buildExample(id, destination) {
       cover: cover.path,
       cues: path.join(root, "script", "cues.json"),
       timing: path.join(root, ".publish", "narration-timing.json"),
+      visualProgram: path.join(root, "visual-program.json"),
       qc: path.join(root, "qc", "fixture-contract.json"),
     },
   };

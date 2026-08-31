@@ -22,7 +22,7 @@ python skill\creating-explainer-videos\scripts\test_skill.py
 python skill\creating-explainer-videos\scripts\test_extensions.py
 npm run build
 npm run pack:local
-npm run smoke:packed -- .\dist\creating-explainer-videos-skill-2.0.1.tgz
+npm run smoke:packed -- .\dist\creating-explainer-videos-skill-2.1.0.tgz
 ```
 
 Run the clean ZIP build on Windows when changing the portable Skill payload. Review `npm pack --dry-run --json` and the unpacked tarball before a release.

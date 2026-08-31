@@ -2,6 +2,7 @@ import { readFile, stat } from "node:fs/promises";
 import path from "node:path";
 
 import { readJson } from "./json.mjs";
+import { validateVisualProgram } from "./visual-dsl.mjs";
 
 function present(value) {
   return typeof value === "string" && value.trim().length > 0;
@@ -72,17 +73,41 @@ export async function validateStageEvidence(root, stage, state) {
     const timing = await json(root, ".publish/narration-timing.json", errors);
     const cues = await json(root, "script/cues.json", errors);
     if (timing && (timing.source !== "measured" || !nonEmptyArray(timing.cues))) errors.push("narration timing must be measured and contain cues");
+    if (timing?.testOnly === true) errors.push("test-only narration cannot satisfy real audio timing");
     if (cues && (cues.complete !== true || cues.timingSource !== "measured" || !nonEmptyArray(cues.cues))) {
       errors.push("script/cues.json must be complete and measured");
     }
   } else if (stage === "real_audio_timing") {
+    const designDocuments = {};
     for (const relativePath of ["scene-spec.json", "storyboard.json"]) {
       const document = await json(root, relativePath, errors);
+      designDocuments[relativePath] = document;
       if (document && document.complete !== true) errors.push(`${relativePath} complete must be true`);
       if (document && !nonEmptyArray(document.scenes)) errors.push(`${relativePath} must contain scenes`);
       for (const [index, scene] of (document?.scenes ?? []).entries()) {
         requireFields(scene, ["id", "title", "knowledgePoint", "input", "transformation", "output", "compositionTask"], `${relativePath}.scenes[${index}]`, errors);
         if (!nonEmptyArray(scene.cueIds)) errors.push(`${relativePath}.scenes[${index}].cueIds must contain cues`);
+      }
+    }
+    const project = await json(root, "project.json", errors);
+    const cueDocument = await json(root, "script/cues.json", errors);
+    const visualPath = path.join(root, "visual-program.json");
+    let visualProgram = null;
+    try {
+      visualProgram = await readJson(visualPath);
+    } catch (error) {
+      if (Number(project?.schemaVersion || 1) >= 2) errors.push(`visual-program.json is unreadable: ${error.message}`);
+    }
+    if (visualProgram) {
+      if (visualProgram.complete !== true) errors.push("visual-program.json complete must be true");
+      else {
+        const validation = validateVisualProgram(visualProgram, {
+          projectRoot: root,
+          project,
+          sceneDocument: designDocuments["scene-spec.json"],
+          cueDocument,
+        });
+        errors.push(...validation.errors.map((item) => `visual-program.json ${item.code} at ${item.path}: ${item.message}`));
       }
     }
   } else if (stage === "scene_spec") {

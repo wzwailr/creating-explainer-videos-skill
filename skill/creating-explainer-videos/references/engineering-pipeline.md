@@ -33,11 +33,14 @@ script/narration.json
 script/cues.json
 storyboard.json
 scene-spec.json
+visual-program.json
 renderer/index.html
 renderer/cover.html
 renderer/template/
 assets/
 .publish/narration-timing.json
+.publish/narration-cache.json
+.publish/narration.wav
 renders/
 qc/frames/
 publish/
@@ -49,14 +52,16 @@ JSON files are machine-authoritative; Markdown files are reviewer views. Do not 
 
 The reference implementation uses Node.js 22+, HTML/CSS/SVG, deterministic GSAP-compatible controllers, HyperFrames 0.8.15, Chrome/Edge, and FFmpeg/ffprobe. These are compatibility pins, not claims about the latest versions. `doctor --json` reports actual host support and fallbacks before render. It reports HyperFrames as `available` when already installed, or `on-demand` when the pinned `npx --yes hyperframes@0.8.15` path can fetch it on first render; diagnosis itself must not download it.
 
-Provider adapters remain explicit. Paid/asynchronous calls require user authorization, task-ID persistence, and status polling before retry; credentials never enter project files or logs.
+Executable provider adapters remain in the reviewed runtime or an explicitly hash-trusted host command. Network calls require explicit authorization, and paid/unknown-cost calls require separate cost authorization. Credentials never enter project files, adapter request JSON, cache metadata, process arguments generated from secrets, or logs. Read [voice-adapter-protocol.md](voice-adapter-protocol.md) for the executable contract.
 
 ## 4. Timing and renderer
 
-- `narration prepare` normalizes canonical text without calling a paid provider.
-- Generate and listen to the narration master through the selected provider.
+- `narration prepare` normalizes canonical text without generating audio.
+- `narration synthesize` invokes an explicitly selected adapter, verifies cue cache, measures audio, and rebuilds timing; `narration recover` selectively resumes the same contract.
+- Generate and listen to the narration master through the selected provider. Synthetic `fixture-tts` audio is test-only and cannot satisfy production timing.
 - `narration import-timing` imports authoritative cue starts/durations.
-- `build` regenerates `renderer/index.html` and `renderer/cover.html` from project contracts.
+- `visual validate`, `visual compile`, and `visual preview` verify the bounded topic program described in [visual-program-dsl.md](visual-program-dsl.md).
+- `build` regenerates `renderer/index.html` and `renderer/cover.html` from project contracts, including a complete visual program when present.
 - `render` invokes HyperFrames through argument arrays with a pinned version.
 - `mux` combines the visual candidate and real narration through FFmpeg.
 

@@ -2,6 +2,30 @@
 
 All notable changes are documented here.
 
+## [2.1.0] - 2026-08-31
+
+### Added
+
+- A bounded `visual-program.json` DSL for topic-specific nodes, text, shapes, connectors, assets, annotations, layouts, and cue-relative actions.
+- Deterministic visual-program compilation into escaped DOM/SVG under Paper Theatre, Spatial Chamber, and Ink Explainer.
+- `visual validate`, `visual compile`, and `visual preview` CLI commands.
+- Executable `edge-tts`, deterministic test-fixture, and hash-trusted host-command voice adapters.
+- Per-cue audio normalization, silence trimming, ffprobe measurement, deterministic gaps, cache hashing, and selective recovery.
+- `narration adapters`, `narration doctor`, `narration synthesize`, and `narration recover` CLI commands.
+- Topic-specific visual programs for the credit-card-clearing and quantum-tunneling fixtures.
+
+### Security and compatibility
+
+- Uncached network synthesis requires explicit network authorization; paid or unknown-cost adapters require separate cost authorization.
+- Host commands require an explicit executable SHA-256, versioned request/response protocol, and confined output.
+- Declarative Extension API v1 remains non-executable.
+- New projects use project schema 2 and require a valid visual program at the scene-design gate; schema-1 projects without that file retain the v2.0 renderer fallback.
+- Synthetic fixture audio is marked test-only and cannot satisfy the production real-audio gate.
+
+### Release boundary
+
+- Topic compilation and provider success are not pedagogical or release approval. Automated evidence still stops at `release_candidate_pending_human_listen`.
+
 ## [2.0.1] - 2026-08-31
 
 ### Fixed

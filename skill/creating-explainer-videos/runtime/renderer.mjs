@@ -77,13 +77,16 @@ function captionMarkup(cue) {
   return `<div id="caption-${escapeHtml(cue.id)}" class="clip caption" data-cue-id="${escapeHtml(cue.id)}" data-start="${Number(cue.start).toFixed(3)}" data-duration="${Number(cue.duration).toFixed(3)}"><div class="caption-inner">${escapeHtml(cue.caption)}</div></div>`;
 }
 
-export async function buildRenderer(projectRoot) {
+export async function buildRenderer(projectRoot, options = {}) {
   const root = path.resolve(projectRoot);
   const rendererRoot = path.join(root, "renderer");
   const project = await readJson(path.join(root, "project.json"));
   const cueDocument = await readJson(path.join(root, "script", "cues.json"));
   const sceneDocument = await readJson(path.join(root, "scene-spec.json"));
   const visualProgram = await loadVisualProgram(root);
+  if (Number(project.schemaVersion || 1) >= 2 && visualProgram?.complete !== true && options.allowIncompleteVisual !== true) {
+    throw new Error("schema v2 project requires a complete visual-program.json before build");
+  }
   const visualCompilation = visualProgram?.complete === true ? await compileVisualProgram(root) : null;
   const cues = resolvedCues(project, cueDocument);
   const scenes = resolvedScenes(project, sceneDocument, cues);

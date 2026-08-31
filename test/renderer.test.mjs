@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { mkdtemp, readFile } from "node:fs/promises";
+import { mkdtemp, readFile, rm } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 
@@ -54,6 +54,26 @@ test("real timing builds a deterministic template renderer and dedicated cover",
     template: "spatial-chamber",
     complete: true,
     scenes: [{ id: "S01", title: "一次支付，三次状态变化", purpose: "展示授权到结算的数据流", cueIds: ["C01", "C02"] }],
+  });
+  await writeJsonAtomic(path.join(root, "visual-program.json"), {
+    schemaVersion: 1,
+    template: "spatial-chamber",
+    complete: true,
+    scenes: [{
+      id: "S01",
+      cueIds: ["C01", "C02"],
+      layout: "flow",
+      elements: [
+        { id: "authorization", type: "node", label: "授权通过", role: "state", frame: { x: .08, y: .3, width: .24, height: .18 } },
+        { id: "settlement", type: "node", label: "清分与结算", role: "state", frame: { x: .68, y: .3, width: .24, height: .18 } },
+        { id: "clearing-route", type: "connector", from: "authorization", to: "settlement", route: "curve", role: "payment" },
+      ],
+      actions: [
+        { cueId: "C01", target: "authorization", kind: "appear", at: 0, duration: .4 },
+        { cueId: "C02", target: "clearing-route", kind: "draw", at: 0, duration: .5 },
+        { cueId: "C02", target: "settlement", kind: "appear", at: .5, duration: .5 },
+      ],
+    }],
   });
   await importNarrationTiming(root, [
     { id: "C01", start: 0, duration: 2.4 },
@@ -151,9 +171,24 @@ test("renderer keeps the v2.0 generic scaffold when no visual program exists", a
   const tempRoot = await mkdtemp(path.join(os.tmpdir(), "explainer-legacy-renderer-"));
   const root = path.join(tempRoot, "legacy");
   await createProject({ destination: root, title: "旧项目", topic: "旧项目仍可构建", template: "ink-explainer" });
+  const project = JSON.parse(await readFile(path.join(root, "project.json"), "utf8"));
+  project.schemaVersion = 1;
+  await writeJsonAtomic(path.join(root, "project.json"), project);
+  await rm(path.join(root, "visual-program.json"));
 
   const result = await buildRenderer(root);
 
   assert.equal(result.visualProgram, false);
   assert.match(result.html, /derivation-board/);
+});
+
+test("renderer refuses an incomplete visual program in a schema v2 project", async () => {
+  const tempRoot = await mkdtemp(path.join(os.tmpdir(), "explainer-v2-renderer-"));
+  const root = path.join(tempRoot, "incomplete");
+  await createProject({ destination: root, title: "新项目", topic: "必须先完成主题视觉", template: "paper-theatre" });
+
+  await assert.rejects(
+    () => buildRenderer(root),
+    /schema v2 project requires a complete visual-program\.json/,
+  );
 });

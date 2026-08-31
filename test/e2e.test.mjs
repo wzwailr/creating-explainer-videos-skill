@@ -27,7 +27,11 @@ for (const fixture of ["credit-card-clearing", "quantum-tunneling"]) {
     assert.equal(await exists(result.paths.renderer), true);
     assert.equal(await exists(result.paths.cover), true);
     assert.equal(await exists(result.paths.cues), true);
+    assert.equal(await exists(result.paths.visualProgram), true);
     assert.match(await readFile(result.paths.renderer, "utf8"), /window\.__explainer/);
+    const visualProgram = JSON.parse(await readFile(result.paths.visualProgram, "utf8"));
+    assert.equal(visualProgram.complete, true);
+    assert.equal(visualProgram.scenes.length, result.fixture.scenes.length);
   });
 }
 
@@ -38,7 +42,13 @@ test("the two non-AI examples exercise different visual structures", async () =>
   const spatialHtml = await readFile(spatial.paths.renderer, "utf8");
   const inkHtml = await readFile(ink.paths.renderer, "utf8");
 
-  assert.match(spatialHtml, /chamber-stage/);
-  assert.match(inkHtml, /derivation-board/);
+  assert.match(spatialHtml, /授权承诺/);
+  assert.match(spatialHtml, /净头寸/);
+  assert.match(spatialHtml, /role-chamber/);
+  assert.match(inkHtml, /势垒/);
+  assert.match(inkHtml, /波函数/);
+  assert.match(inkHtml, /shape-barrier/);
+  assert.doesNotMatch(spatialHtml, />INPUT<|>CHANGE<|>OUTPUT</);
+  assert.doesNotMatch(inkHtml, />输入<|>机制<|>输出</);
   assert.notEqual(spatial.project.template, ink.project.template);
 });
