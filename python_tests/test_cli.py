@@ -7,6 +7,11 @@ import subprocess
 import sys
 import tempfile
 import unittest
+from unittest.mock import patch
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "python_src"))
+
+from creating_explainer_videos_skill import cli
 
 
 REPOSITORY_ROOT = Path(__file__).resolve().parents[1]
@@ -34,7 +39,7 @@ class CliContractTests(unittest.TestCase):
         result = run_cli("--version", path="")
 
         self.assertEqual(result.returncode, 0, result.stderr)
-        self.assertEqual(result.stdout.strip(), "2.0.0")
+        self.assertEqual(result.stdout.strip(), "2.0.1")
 
     def test_help_works_without_node(self) -> None:
         result = run_cli("--help", path="")
@@ -43,11 +48,11 @@ class CliContractTests(unittest.TestCase):
         self.assertIn("Explainer Video Skill installer and scaffold", result.stdout)
         self.assertIn("explainer-video-skill install", result.stdout)
 
-    def test_project_command_reports_node_18_requirement(self) -> None:
+    def test_project_command_reports_node_22_requirement(self) -> None:
         result = run_cli("templates", "list", path="")
 
         self.assertNotEqual(result.returncode, 0)
-        self.assertIn("Node.js 18+", result.stderr)
+        self.assertIn("Node.js 22+", result.stderr)
 
     def test_install_and_verify_work_without_node(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
@@ -60,6 +65,19 @@ class CliContractTests(unittest.TestCase):
             self.assertEqual(json.loads(installed.stdout)["action"], "installed")
             self.assertEqual(verified.returncode, 0, verified.stderr)
             self.assertTrue(json.loads(verified.stdout)["valid"])
+
+    def test_project_commands_reject_node_21(self) -> None:
+        completed = subprocess.CompletedProcess(["node", "--version"], 0, "v21.7.3\n", "")
+
+        with patch.object(cli.shutil, "which", return_value="C:/node.exe"), patch.object(cli.subprocess, "run", return_value=completed):
+            with self.assertRaisesRegex(RuntimeError, r"Node\.js 22\+"):
+                cli._node_executable()
+
+    def test_project_commands_accept_node_22(self) -> None:
+        completed = subprocess.CompletedProcess(["node", "--version"], 0, "v22.10.0\n", "")
+
+        with patch.object(cli.shutil, "which", return_value="C:/node.exe"), patch.object(cli.subprocess, "run", return_value=completed):
+            self.assertEqual(cli._node_executable(), "C:/node.exe")
 
 
 if __name__ == "__main__":

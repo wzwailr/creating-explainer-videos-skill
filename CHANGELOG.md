@@ -2,6 +2,28 @@
 
 All notable changes are documented here.
 
+## [2.0.1] - 2026-08-31
+
+### Fixed
+
+- Raised the executable renderer requirement to Node.js 22+, matching HyperFrames 0.8.15.
+- Made `doctor` distinguish an installed HyperFrames command from the pinned on-demand `npx` path without downloading packages during diagnosis.
+- Added the required HyperFrames composition metadata, deterministic timeline registration, local CJK font declaration, caption identifiers, and safe SVG geometry to generated renderers.
+- Waited for a non-empty browser cover screenshot instead of accepting an early successful process exit.
+- Made short-video contact sheets produce and verify a real output file instead of recording a false pass.
+- Pinned wheel and source-distribution core metadata to 2.4 so current Twine and registry tooling can validate the artifacts.
+
+### Added
+
+- A real Chrome + HyperFrames + FFmpeg + ffprobe render/mux/audit smoke test.
+- A dedicated Linux CI job that exercises the real media pipeline rather than only mocked command adapters.
+- Explicit documentation of the generic scaffold boundary and the Agent's responsibility for topic-specific visual authorship.
+
+### Release integrity
+
+- This release supersedes v2.0.0, whose tag predates later packaging fixes and whose Node.js 18 compatibility claim was incorrect for the pinned renderer.
+- The generic renderer remains a runnable mechanism scaffold, not an automatic substitute for subject-specific visual direction or human release review.
+
 ## [2.0.0] - 2026-08-31
 
 ### Changed

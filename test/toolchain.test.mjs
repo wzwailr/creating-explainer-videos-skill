@@ -29,14 +29,33 @@ test("doctor distinguishes available, missing, optional, and degraded tools", as
 test("doctor reports a render-ready configured project without exposing provider secrets", async () => {
   const result = await doctor({
     projectRoot: "D:/fixture-project",
-    runner: fixtureRunner({ npm: "10.9.0", python: "Python 3.12", ffmpeg: "ffmpeg 7.1", ffprobe: "ffprobe 7.1", hyperframes: "0.8.15" }),
+    nodeVersion: "v22.10.0",
+    runner: fixtureRunner({ npm: "10.9.0", npx: "10.9.0", python: "Python 3.12", ffmpeg: "ffmpeg 7.1", ffprobe: "ffprobe 7.1" }),
     browser: { path: "C:/browser.exe", version: "Browser 1" },
     exists: async (filePath) => /gsap\.min\.js|NotoSansSC|tts-adapter/.test(filePath),
   });
 
   assert.equal(result.readyFor.render, true);
+  assert.equal(result.node.minimumMajor, 22);
+  assert.equal(result.hyperframes.status, "on-demand");
+  assert.equal(result.hyperframes.package, "hyperframes@0.8.15");
+  assert.equal(result.hyperframes.networkRequiredOnFirstRun, true);
   assert.equal(result.gsap.status, "available");
   assert.equal(result.tts.status, "configured");
   assert.doesNotMatch(JSON.stringify(result), /token|api[_-]?key|secret/i);
 });
 
+test("doctor rejects render below Node 22 even when every media tool is installed", async () => {
+  const result = await doctor({
+    nodeVersion: "v21.7.3",
+    runner: fixtureRunner({ npm: "10.9.0", npx: "10.9.0", python: "Python 3.12", ffmpeg: "ffmpeg 7.1", ffprobe: "ffprobe 7.1", hyperframes: "0.8.15" }),
+    browser: { path: "C:/browser.exe", version: "Browser 1" },
+    exists: async () => false,
+  });
+
+  assert.equal(result.node.status, "incompatible");
+  assert.equal(result.node.major, 21);
+  assert.equal(result.node.minimumMajor, 22);
+  assert.equal(result.hyperframes.status, "available");
+  assert.equal(result.readyFor.render, false);
+});

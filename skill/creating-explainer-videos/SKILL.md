@@ -11,6 +11,8 @@ Create a traceable teaching product, not just an MP4. The Agent must drive the e
 
 Use the installed CLI `explainer-video-skill`. From a copied Skill directory use `node <skill-dir>/scripts/explainer-video.mjs` instead. Run `doctor --json` before promising a render.
 
+JavaScript project and media commands require Node.js 22+. The Python lifecycle commands for install, update, verify, rollback, uninstall, and extension listing do not require Node.js.
+
 Create a project only after the exact question, audience, language, platform, and aspect ratio are known:
 
 ```powershell
@@ -62,6 +64,8 @@ explainer-video-skill templates inspect ink-explainer --json
 
 Select by knowledge structure, not decoration. A project may combine primitives, but one grammar must remain dominant. Do not copy an old scene and swap text. Do not use full-frame scanning lines, narration-length sweeps, meaningless particles, or repeated cards as substitute motion.
 
+The generated renderer is a generic executable scaffold, not finished visual direction. Before release, replace or extend it with `theme-specific visuals`: subject-specific SVG/DOM primitives, spatial relationships, camera language, and semantic motion derived from the actual mechanism. Never present the starter scene as a high-fidelity finished video merely because it renders successfully.
+
 Use DingTalk JinBuTi/DingTalk Sans for display roles when locally licensed and installed, and Noto Sans SC or a tested CJK fallback for captions. Never package font binaries or commercial GSAP plugins without redistribution rights. Every premium plugin needs the fallback declared by its template.
 
 ## Narration, timing, and render
@@ -79,6 +83,8 @@ explainer-video-skill mux <project-dir> --audio <narration.wav> --json
 ```
 
 Real measured narration timing is the only final animation clock. Use deterministic paused timelines, local assets, fixed viewBoxes, and explicit cue anchors. Never use runtime randomness, remote assets, wall-clock timers, or estimated timings in a release render.
+
+When changing the renderer or media toolchain in this repository, run `npm run smoke:render` so a real browser render, cover capture, audio mux, ffprobe inspection, and media audit exercise the integration path.
 
 Generate a dedicated cover, not a random frame. The cover must state the exact topic and remain readable in a phone-size preview. Series/season/episode labels are preset rules, not core-package branding.
 

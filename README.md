@@ -9,6 +9,8 @@
 
 它不只是几份 Markdown：包内包含生产状态机、项目生成器、旁白规范化、真实音频时轴导入、三套可编程视觉模板、确定性 HTML/SVG/GSAP 渲染器、HyperFrames/FFmpeg 适配、媒体质检、扩展 API、打包工具和非 AI 端到端示例。
 
+它提供的是可执行生产骨架，不是“输入主题就自动得到顶配成片”的生成器。内置 renderer 负责证明时间轴、媒体链路和通用机制场景可运行；发布级作品仍需要 Agent 按具体知识结构创作主题化 SVG/DOM、镜头动作、合法素材与旁白。
+
 [English](README.en.md) · [v2 迁移指南](docs/MIGRATION_V2.md) · [视觉模板集](skill/creating-explainer-videos/references/visual-template-collection.md) · [扩展 API](skill/creating-explainer-videos/references/extension-api.md)
 
 ## 一键使用
@@ -16,24 +18,26 @@
 推荐使用 `pipx` 安装独立 CLI：
 
 ```powershell
-pipx install creating-explainer-videos-skill==2.0.0
+pipx install creating-explainer-videos-skill==2.0.1
 explainer-video-skill --version
 ```
 
 也可以安装到当前 Python 环境：
 
 ```powershell
-python -m pip install creating-explainer-videos-skill==2.0.0
+python -m pip install creating-explainer-videos-skill==2.0.1
 explainer-video-skill --version
 ```
 
-Python 入口可在没有 Node.js 时完成 Skill 的安装、更新、校验、回滚、卸载和扩展列表。创建视频工程、模板预览、渲染和媒体命令使用包内同一套 JavaScript runtime，需要 Node.js 18+。
+Python 入口可在没有 Node.js 时完成 Skill 的安装、更新、校验、回滚、卸载和扩展列表。创建视频工程、模板预览、渲染和媒体命令使用包内同一套 JavaScript runtime，需要 Node.js 22+。
 
 需要 npm 形式时，可直接安装 GitHub Release 中经过验证的 tarball：
 
 ```powershell
-npm install --global https://github.com/wzwailr/creating-explainer-videos-skill/releases/download/v2.0.0/creating-explainer-videos-skill-2.0.0.tgz
+npm install --global https://github.com/wzwailr/creating-explainer-videos-skill/releases/download/v2.0.1/creating-explainer-videos-skill-2.0.1.tgz
 ```
+
+GitHub Release tarball 是稳定安装路径。若希望从 npm Registry 安装，请先用 `npm view creating-explainer-videos-skill version` 核验该版本已经公开，不把 README 中的命令视为 Registry 发布证明。
 
 安装到 Codex：
 
@@ -135,6 +139,7 @@ explainer-video-skill package ".\my-video" --json
 
 ```powershell
 npm test
+npm run smoke:render
 npm run examples:verify
 python -m unittest discover -s python_tests -v
 $env:PYTHONUTF8='1'
@@ -142,17 +147,17 @@ python skill\creating-explainer-videos\scripts\test_skill.py
 python skill\creating-explainer-videos\scripts\test_extensions.py
 npm run pack:local
 npm run pack:zip
-npm run smoke:packed -- .\dist\creating-explainer-videos-skill-2.0.0.tgz
+npm run smoke:packed -- .\dist\creating-explainer-videos-skill-2.0.1.tgz
 python -m build --sdist --wheel --outdir .\dist\pypi
 python -m twine check .\dist\pypi\*
 python .\scripts\audit_python_dist.py .\dist\pypi\*
-python .\scripts\smoke_pypi_package.py .\dist\pypi\creating_explainer_videos_skill-2.0.0-py3-none-any.whl
+python .\scripts\smoke_pypi_package.py .\dist\pypi\creating_explainer_videos_skill-2.0.1-py3-none-any.whl
 ```
 
-CI 覆盖 Windows/Linux、Node.js 18/22 和 Python 分发。发布前会分别从实际 npm `.tgz` 与 Python wheel 隔离安装，验证主/旧命令、项目脚手架、模板集、Skill 安装/校验/升级/回滚/卸载和全局命令。
+CI 覆盖 Windows/Linux、Node.js 22/24 和 Python 分发，并在 Linux + Chrome + FFmpeg 上真正执行 HyperFrames 逐帧渲染、封面截图、音频生成、合成、ffprobe 和媒体质检。发布前还会分别从实际 npm `.tgz` 与 Python wheel 隔离安装，验证主/旧命令、项目脚手架、模板集、Skill 安装/校验/升级/回滚/卸载和全局命令。
 
 ## 许可证与安全边界
 
 原创代码和文档采用 [MIT License](LICENSE)。字体、GSAP 商业插件、音乐、音效、图片、视频和供应商凭据不在包内。付费或异步生成必须显式授权、保存任务 ID、先查询既有任务再决定是否重试。
 
-详见 [安全策略](SECURITY.md)、[贡献指南](CONTRIBUTING.md)、[更新记录](CHANGELOG.md) 和 [v2.0.0 Release Notes](docs/releases/v2.0.0.md)。
+详见 [安全策略](SECURITY.md)、[贡献指南](CONTRIBUTING.md)、[更新记录](CHANGELOG.md) 和 [v2.0.1 Release Notes](docs/releases/v2.0.1.md)。

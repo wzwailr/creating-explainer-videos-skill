@@ -1,4 +1,4 @@
-import { access, mkdir, readFile } from "node:fs/promises";
+import { access, mkdir, readFile, rm, stat } from "node:fs/promises";
 import path from "node:path";
 import { pathToFileURL } from "node:url";
 
@@ -13,6 +13,22 @@ async function exists(filePath) {
     return true;
   } catch {
     return false;
+  }
+}
+
+async function waitForNonEmptyFile(filePath, options = {}) {
+  const timeout = Number(options.timeout ?? 10_000);
+  const pollInterval = Number(options.pollInterval ?? 50);
+  const deadline = Date.now() + timeout;
+  while (true) {
+    try {
+      const information = await stat(filePath);
+      if (information.isFile() && information.size > 0) return information;
+    } catch (error) {
+      if (error.code !== "ENOENT") throw error;
+    }
+    if (Date.now() >= deadline) throw new Error(`browser returned without producing a non-empty screenshot: ${filePath}`);
+    await new Promise((resolve) => setTimeout(resolve, Math.min(pollInterval, Math.max(1, deadline - Date.now()))));
   }
 }
 
@@ -74,6 +90,7 @@ export async function renderCover(projectRoot, options = {}) {
   if (browser.status !== "available") throw new Error("a working Chrome or Edge browser is required to render the cover");
   const profile = path.join(root, ".publish", "cover-browser-profile");
   await mkdir(profile, { recursive: true });
+  await rm(output, { force: true });
   const args = [
     "--headless=new",
     "--disable-gpu",
@@ -90,7 +107,11 @@ export async function renderCover(projectRoot, options = {}) {
     timeout: options.timeout || 120_000,
     label: "cover render",
   });
-  return { source, output, browser, result };
+  const screenshot = await waitForNonEmptyFile(output, {
+    timeout: options.screenshotTimeout,
+    pollInterval: options.screenshotPollInterval,
+  });
+  return { source, output, browser, result, bytes: screenshot.size };
 }
 
 export async function muxAudio(projectRoot, options = {}) {
@@ -153,6 +174,12 @@ function streamSummary(probe) {
   };
 }
 
+export function contactSheetFilter(duration) {
+  return Number(duration) < 5
+    ? "thumbnail,scale=480:-1"
+    : "fps=1/5,scale=480:-1,tile=4x3";
+}
+
 export async function auditMedia(projectRoot, options = {}) {
   const root = path.resolve(projectRoot);
   const candidate = await chooseCandidate(root, options.video);
@@ -170,6 +197,7 @@ export async function auditMedia(projectRoot, options = {}) {
   } catch (error) {
     throw new Error(`ffprobe returned invalid JSON: ${error.message}`);
   }
+  const media = streamSummary(probe);
   const checks = [];
   const commands = [
     ["full-decode", ["-v", "error", "-i", candidate, "-f", "null", "-"]],
@@ -193,16 +221,20 @@ export async function auditMedia(projectRoot, options = {}) {
   }
   const contactSheet = path.join(root, "qc", "contact-sheet.png");
   try {
-    await runChecked("ffmpeg", ["-y", "-v", "error", "-i", candidate, "-vf", "fps=1/5,scale=480:-1,tile=4x3", "-frames:v", "1", contactSheet], {
+    await rm(contactSheet, { force: true });
+    await runChecked("ffmpeg", ["-y", "-v", "error", "-i", candidate, "-vf", contactSheetFilter(media.duration), "-frames:v", "1", "-update", "1", contactSheet], {
       runner: options.runner,
       cwd: root,
       label: "contact sheet",
     });
-    checks.push({ name: "contact-sheet", status: "passed", path: "qc/contact-sheet.png" });
+    const sheet = await waitForNonEmptyFile(contactSheet, {
+      timeout: options.contactSheetTimeout ?? 2_000,
+      pollInterval: options.contactSheetPollInterval,
+    });
+    checks.push({ name: "contact-sheet", status: "passed", path: "qc/contact-sheet.png", bytes: sheet.size });
   } catch (error) {
     checks.push({ name: "contact-sheet", status: "failed", diagnostic: error.message });
   }
-  const media = streamSummary(probe);
   const specificationPassed = media.video.codec === "h264"
     && media.video.width === 1920
     && media.video.height === 1080

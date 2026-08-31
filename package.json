@@ -1,6 +1,6 @@
 {
   "name": "creating-explainer-videos-skill",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "Executable Agent Skill and scaffold for producing rigorous mechanism and process explainer videos.",
   "type": "module",
   "bin": {
@@ -14,10 +14,12 @@
     "skill-manifest.json",
     "examples/",
     "scripts/build-examples.mjs",
+    "scripts/real-render-smoke.mjs",
     "scripts/run-tests.mjs",
     "test/",
     "docs/MIGRATION_V2.md",
     "docs/releases/v2.0.0.md",
+    "docs/releases/v2.0.1.md",
     "README.md",
     "README.en.md",
     "CHANGELOG.md",
@@ -32,11 +34,12 @@
     "pack:zip": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/build-zip.ps1",
     "audit:packed": "node scripts/audit-tarball.mjs",
     "examples:verify": "node scripts/build-examples.mjs --verify",
+    "smoke:render": "node scripts/real-render-smoke.mjs",
     "smoke:packed": "node scripts/smoke-packed.mjs",
     "prepublishOnly": "npm test && npm run build && npm run examples:verify && python skill/creating-explainer-videos/scripts/test_skill.py && python skill/creating-explainer-videos/scripts/test_extensions.py"
   },
   "engines": {
-    "node": ">=18"
+    "node": ">=22"
   },
   "keywords": [
     "codex",

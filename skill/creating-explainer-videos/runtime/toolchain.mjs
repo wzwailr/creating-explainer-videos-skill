@@ -3,6 +3,8 @@ import { access } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 
+export const MINIMUM_NODE_MAJOR = 22;
+
 async function defaultExists(filePath) {
   try {
     await access(filePath);
@@ -18,6 +20,11 @@ function defaultRunner(command, args) {
 
 function firstLine(value) {
   return String(value ?? "").split(/\r?\n/).map((line) => line.trim()).find(Boolean) || null;
+}
+
+export function parseNodeMajor(version) {
+  const match = String(version ?? "").match(/v?(\d+)/);
+  return match ? Number(match[1]) : null;
 }
 
 export function commandInfo(command, args = ["--version"], runner = defaultRunner) {
@@ -58,6 +65,14 @@ export async function doctor(options = {}) {
   const runner = options.runner || defaultRunner;
   const exists = options.exists || defaultExists;
   const projectRoot = path.resolve(options.projectRoot || process.cwd());
+  const nodeVersion = options.nodeVersion || process.version;
+  const nodeMajor = parseNodeMajor(nodeVersion);
+  const node = {
+    status: nodeMajor !== null && nodeMajor >= MINIMUM_NODE_MAJOR ? "available" : "incompatible",
+    version: nodeVersion,
+    major: nodeMajor,
+    minimumMajor: MINIMUM_NODE_MAJOR,
+  };
   const browser = await findBrowser({ browser: options.browser, exists, env: options.env });
   let npm = commandInfo("npm", ["--version"], runner);
   const bundledNpmCli = path.join(path.dirname(process.execPath), "node_modules", "npm", "bin", "npm-cli.js");
@@ -68,7 +83,27 @@ export async function doctor(options = {}) {
   const python = commandInfo("python", ["--version"], runner);
   const ffmpeg = commandInfo("ffmpeg", ["-version"], runner);
   const ffprobe = commandInfo("ffprobe", ["-version"], runner);
-  const hyperframes = commandInfo("hyperframes", ["--version"], runner);
+  const installedHyperframes = commandInfo("hyperframes", ["--version"], runner);
+  const npx = commandInfo("npx", ["--version"], runner);
+  const hyperframes = installedHyperframes.status === "available"
+    ? { ...installedHyperframes, package: "hyperframes@0.8.15", source: "installed", networkRequiredOnFirstRun: false }
+    : npx.status === "available"
+      ? {
+          status: "on-demand",
+          command: npx.command,
+          version: "0.8.15",
+          package: "hyperframes@0.8.15",
+          source: "pinned-npx",
+          networkRequiredOnFirstRun: true,
+        }
+      : {
+          status: "missing",
+          command: installedHyperframes.command,
+          version: null,
+          package: "hyperframes@0.8.15",
+          source: null,
+          networkRequiredOnFirstRun: true,
+        };
   const gsapPath = await firstExisting([
     path.join(projectRoot, "renderer", "assets", "gsap.min.js"),
     path.join(projectRoot, "node_modules", "gsap", "dist", "gsap.min.js"),
@@ -93,7 +128,7 @@ export async function doctor(options = {}) {
     : { status: "missing", adapterPath: null, invoked: false };
   return {
     schemaVersion: 1,
-    node: { status: "available", version: process.version },
+    node,
     npm,
     python,
     browser,
@@ -107,10 +142,11 @@ export async function doctor(options = {}) {
       scaffold: true,
       deterministicPreview: true,
       realNarration: tts.status === "configured",
-      render: browser.status === "available"
+      render: node.status === "available"
+        && browser.status === "available"
         && ffmpeg.status === "available"
         && ffprobe.status === "available"
-        && hyperframes.status === "available",
+        && new Set(["available", "on-demand"]).has(hyperframes.status),
     },
     paidProviderCalled: false,
   };

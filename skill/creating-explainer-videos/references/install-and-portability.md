@@ -2,6 +2,8 @@
 
 The npm package contains one portable folder-based Agent Skill plus the executable scaffold CLI. The Skill works in Codex and any host that can load a `SKILL.md` directory; the CLI also works independently of an Agent host.
 
+JavaScript project/render/media commands require Node.js 22+. Python lifecycle commands remain usable without Node.js.
+
 ## npm and npx
 
 Install the command globally:
@@ -53,7 +55,7 @@ explainer-video-skill templates list --json
 explainer-video-skill list-extensions --destination "C:\path\to\skills" --json
 ```
 
-`doctor` reports Node.js, npm, browser, FFmpeg, ffprobe, HyperFrames, GSAP capability/fallback status, fonts, and TTS configuration. Missing optional tools are not hidden. Paid TTS or generation providers remain unconfigured until the user supplies credentials and authorizes any cost.
+`doctor` reports Node.js, npm, browser, FFmpeg, ffprobe, HyperFrames, GSAP capability/fallback status, fonts, and TTS configuration. HyperFrames is `available` when installed and `on-demand` when the pinned `npx --yes hyperframes@0.8.15` path can fetch it at first render; `doctor` does not download it. Missing optional tools are not hidden. Paid TTS or generation providers remain unconfigured until the user supplies credentials and authorizes any cost.
 
 ## Asset boundaries
 

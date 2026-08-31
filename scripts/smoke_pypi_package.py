@@ -36,7 +36,7 @@ def executable(virtual_environment: Path, name: str) -> Path:
 
 def main() -> int:
     parser = argparse.ArgumentParser(description="Install and smoke-test a local wheel or public PyPI requirement.")
-    parser.add_argument("artifact", help="Wheel path or requirement such as creating-explainer-videos-skill==2.0.0")
+    parser.add_argument("artifact", help="Wheel path or requirement such as creating-explainer-videos-skill==2.0.1")
     parser.add_argument("--index-url")
     options = parser.parse_args()
 
@@ -68,7 +68,7 @@ def main() -> int:
         )
 
         template_ids = sorted(item["id"] for item in templates)
-        if version != "2.0.0" or legacy_version != version:
+        if version != "2.0.1" or legacy_version != version:
             raise RuntimeError(f"unexpected CLI versions: {version!r}, {legacy_version!r}")
         if "Explainer Video Skill installer and scaffold" not in help_text:
             raise RuntimeError("help output is incomplete")

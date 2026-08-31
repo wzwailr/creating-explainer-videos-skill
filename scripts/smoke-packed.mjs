@@ -32,8 +32,8 @@ function runJson(args, expectedStatus = 0) {
   return JSON.parse(execPacked("explainer-video-skill", [...args, "--json"], { expectedStatus }));
 }
 
-assert.equal(execPacked("explainer-video-skill", ["--version"]), "2.0.0");
-assert.equal(execPacked("ai-principle-video-skill", ["--version"]), "2.0.0");
+assert.equal(execPacked("explainer-video-skill", ["--version"]), "2.0.1");
+assert.equal(execPacked("ai-principle-video-skill", ["--version"]), "2.0.1");
 
 const templates = runJson(["templates", "list"]);
 assert.deepEqual(templates.map((item) => item.id).sort(), ["ink-explainer", "paper-theatre", "spatial-chamber"]);
@@ -87,6 +87,6 @@ const installedCli = path.join(
 );
 const installedVersion = spawnSync(process.execPath, [installedCli, "--version"], { encoding: "utf8", windowsHide: true });
 assert.equal(installedVersion.status, 0, installedVersion.stderr || installedVersion.stdout);
-assert.equal(installedVersion.stdout.trim(), "2.0.0");
+assert.equal(installedVersion.stdout.trim(), "2.0.1");
 
 console.log(`PASS packed npx/global CLI, scaffold, templates, and Skill lifecycle in ${tempRoot}`);

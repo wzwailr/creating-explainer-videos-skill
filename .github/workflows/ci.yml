@@ -12,7 +12,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest]
-        node: [18, 22]
+        node: [22, 24]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
@@ -41,6 +41,19 @@ jobs:
         run: python -m unittest discover -s python_tests -v
       - run: npm run build
 
+  real-render:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: node --version
+      - run: google-chrome --version
+      - run: ffmpeg -version
+      - run: npx --yes hyperframes@0.8.15 --version
+      - run: npm run smoke:render
+
   package-windows:
     runs-on: windows-latest
     steps:
@@ -50,8 +63,8 @@ jobs:
           node-version: 22
       - run: npm run pack:local
       - run: npm run pack:zip
-      - run: npm run audit:packed -- .\dist\creating-explainer-videos-skill-2.0.0.tgz
-      - run: npm run smoke:packed -- .\dist\creating-explainer-videos-skill-2.0.0.tgz
+      - run: npm run audit:packed -- .\dist\creating-explainer-videos-skill-2.0.1.tgz
+      - run: npm run smoke:packed -- .\dist\creating-explainer-videos-skill-2.0.1.tgz
 
   package-python:
     strategy:
@@ -71,4 +84,4 @@ jobs:
       - run: python -m build --no-isolation --sdist --wheel --outdir dist/pypi
       - run: python -m twine check dist/pypi/*
       - run: python scripts/audit_python_dist.py dist/pypi/*
-      - run: python scripts/smoke_pypi_package.py dist/pypi/creating_explainer_videos_skill-2.0.0-py3-none-any.whl
+      - run: python scripts/smoke_pypi_package.py dist/pypi/creating_explainer_videos_skill-2.0.1-py3-none-any.whl

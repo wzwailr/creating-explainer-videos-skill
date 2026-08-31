@@ -41,7 +41,7 @@ Usage:
   explainer-video-skill --version
 
 No command defaults to install. Python lifecycle commands do not require Node.js.
-Project and rendering commands use the bundled runtime and require Node.js 18+.
+Project and rendering commands use the bundled runtime and require Node.js 22+.
 """
 
 LIFECYCLE_COMMANDS = {"install", "update", "verify", "rollback", "uninstall", "list-extensions"}
@@ -130,7 +130,7 @@ def _node_executable() -> str:
     executable = shutil.which("node")
     if not executable:
         raise RuntimeError(
-            "Node.js 18+ is required for project, template, and rendering commands; "
+            "Node.js 22+ is required for project, template, and rendering commands; "
             "Skill install and verify commands remain available without Node.js."
         )
     result = subprocess.run(
@@ -141,8 +141,8 @@ def _node_executable() -> str:
         check=False,
     )
     match = re.search(r"v?(\d+)", result.stdout)
-    if result.returncode != 0 or not match or int(match.group(1)) < 18:
-        raise RuntimeError("Node.js 18+ is required for project, template, and rendering commands.")
+    if result.returncode != 0 or not match or int(match.group(1)) < 22:
+        raise RuntimeError("Node.js 22+ is required for project, template, and rendering commands.")
     return executable
 
 

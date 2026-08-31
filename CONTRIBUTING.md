@@ -15,13 +15,14 @@ Contributions are welcome when they preserve the executable production contract,
 
 ```powershell
 npm test
+npm run smoke:render
 npm run examples:verify
 $env:PYTHONUTF8='1'
 python skill\creating-explainer-videos\scripts\test_skill.py
 python skill\creating-explainer-videos\scripts\test_extensions.py
 npm run build
 npm run pack:local
-npm run smoke:packed -- .\dist\creating-explainer-videos-skill-2.0.0.tgz
+npm run smoke:packed -- .\dist\creating-explainer-videos-skill-2.0.1.tgz
 ```
 
 Run the clean ZIP build on Windows when changing the portable Skill payload. Review `npm pack --dry-run --json` and the unpacked tarball before a release.

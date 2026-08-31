@@ -69,10 +69,16 @@ test("real timing builds a deterministic template renderer and dedicated cover",
   assert.equal(first.html, second.html);
   assert.match(html, /spatial-chamber/);
   assert.match(html, /window\.__timelines/);
+  assert.match(html, /window\.__timelines\["main"\]=timeline/);
   assert.match(html, /window\.__explainer/);
+  assert.match(html, /data-composition-id="main"/);
+  assert.match(html, /data-width="1920"/);
+  assert.match(html, /data-height="1080"/);
+  assert.match(html, /data-fps="30"/);
+  assert.match(html, /@font-face[^}]+src:local\("Noto Sans SC"\)/);
+  assert.match(html, /id="caption-C01"/);
   assert.match(html, /刷卡成功只代表授权通过。/);
   assert.doesNotMatch(html, /scan-line|cue-sweep|full-canvas-sweep/);
   assert.match(coverHtml, /信用卡清算/);
   assert.match(coverHtml, /series-cluster/);
 });
-

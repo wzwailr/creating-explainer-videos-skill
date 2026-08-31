@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "packageVersion": "2.0.0",
+  "packageVersion": "2.0.1",
   "skillName": "creating-explainer-videos",
   "extensionApiVersion": 1,
   "files": [
@@ -151,8 +151,8 @@
     },
     {
       "path": "references/engineering-pipeline.md",
-      "sha256": "1ac665232693f0bdaa96a216d43a2ffc93f0689be54a5bdedb7e685d9ae99906",
-      "size": 3249
+      "sha256": "d3114cb0fc3d5758264d204efcae8853b284212aa200d982d0adadc641e0d552",
+      "size": 4188
     },
     {
       "path": "references/extension-api.md",
@@ -161,8 +161,8 @@
     },
     {
       "path": "references/install-and-portability.md",
-      "sha256": "40296a842e42f70931482257eb44e1c116da8adfd950c56535f2e641c8bf11ab",
-      "size": 2915
+      "sha256": "350420172ea12d8c25dc0303f2baf2a3fa2293b0da45b1c44d2fdb1f49df0e1b",
+      "size": 3206
     },
     {
       "path": "references/release-qc-and-publishing.md",
@@ -206,8 +206,8 @@
     },
     {
       "path": "runtime/media.mjs",
-      "sha256": "2e1b6d0aaac96531f7361dbb18f1d6ec68525b33adbc831b2a0128aef227f074",
-      "size": 10352
+      "sha256": "a97a9d671c78335f984d97299b5b2d9d04efe10016b6f8d30dfb6c06519f7506",
+      "size": 11672
     },
     {
       "path": "runtime/narration.mjs",
@@ -226,8 +226,8 @@
     },
     {
       "path": "runtime/renderer.mjs",
-      "sha256": "4000edeea0759bcbd06dce5d16437918b2556724d42d16d3a819982d2cf8fc88",
-      "size": 9238
+      "sha256": "fc641aef8e92e168b3d00d388cd5a872dc50052342b5bb72584a674ab739155b",
+      "size": 9810
     },
     {
       "path": "runtime/state.mjs",
@@ -241,8 +241,8 @@
     },
     {
       "path": "runtime/toolchain.mjs",
-      "sha256": "94e188f93b149beac27d86e7eb54d9b4cb22269c6638b9f5f294aa52a50886ad",
-      "size": 5450
+      "sha256": "1ef38739cc29287f48c474b4b39faff330f9f4b177716c2696d7a989204211db",
+      "size": 6707
     },
     {
       "path": "scripts/explainer-video.mjs",
@@ -266,8 +266,8 @@
     },
     {
       "path": "SKILL.md",
-      "sha256": "8b21502826091a086fceeaef25934ad8f01c6b90249ef7a788b5ea3a229e9b23",
-      "size": 7773
+      "sha256": "ee66f2b787ae01b81b21df3f6d4644d90a4f9b0d59d00a7d55c7377f68ce74bb",
+      "size": 8567
     },
     {
       "path": "templates/ink-explainer/cover.css",
