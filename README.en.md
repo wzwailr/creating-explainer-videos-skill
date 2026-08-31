@@ -1,18 +1,44 @@
 # Explainer Video Skill
 
-An installable, extensible, executable Agent Skill and project scaffold for mechanism, process, system, science, and technical explainer videos.
+<p align="center">
+  <strong>Help an Agent explain knowledge through motion instead of pouring text into a template.</strong><br>
+  From an exact question to a narration-synchronized MP4 — executable, traceable, and reviewable.
+</p>
 
-This is not a Markdown-only prompt pack. It ships a production state machine, JSON-first project generator, bounded topic visual DSL, executable voice adapters, narration caching and recovery, measured-audio timing, three programmable visual templates, deterministic HTML/SVG/GSAP rendering, HyperFrames/FFmpeg adapters, media QC, declarative extensions, release gates, and non-AI end-to-end fixtures.
+<p align="center">
+  <a href="https://github.com/wzwailr/creating-explainer-videos-skill/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/wzwailr/creating-explainer-videos-skill/actions/workflows/ci.yml/badge.svg"></a>
+  <a href="https://pypi.org/project/creating-explainer-videos-skill/"><img alt="PyPI" src="https://img.shields.io/pypi/v/creating-explainer-videos-skill"></a>
+  <a href="https://github.com/wzwailr/creating-explainer-videos-skill/releases"><img alt="Release" src="https://img.shields.io/github/v/release/wzwailr/creating-explainer-videos-skill"></a>
+  <a href="LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/License-MIT-yellow.svg"></a>
+</p>
 
-It combines an executable production scaffold with default quality safeguards. Visual programs compile into each template's native structure, semantic roles receive distinguishable states, routed connectors meet node boundaries and show direction, covers reuse the actual topic scene, and automated QC inspects template structure plus representative narration-cue frames. Facts, asset licensing, pronunciation, and final release still require human verification.
+![Actual generated explainer-video frame showing dispatch, compute, and merge in a mixture-of-experts route](https://raw.githubusercontent.com/wzwailr/creating-explainer-videos-skill/main/docs/assets/showcase/hero-s02e16-moe-dispatch.webp)
 
-## Install
+<p align="center"><sub>Actual project output · S02E16 “MoE expert routing” · Ink Explainer</sub></p>
+
+Give an Agent an exact question and it can advance through evidence, mechanism mapping, canonical narration and captions, semantic animation, rendering, QC, and publishing materials using an executable state machine. The scaffold is domain-neutral: mechanisms, processes, systems, science, and technical education are all first-class uses.
+
+| Production capability | Default safeguard |
+| --- | --- |
+| Create a runnable video project from a topic | A JSON-first state machine exposes the next action, evidence, and stop condition |
+| Make motion explain the current narration | A bounded visual DSL compiles cue actions into template-native structures and routes |
+| Keep captions, TTS, and animation synchronized | One canonical string, measured audio timing, and deterministic timelines |
+| Avoid treating “it rendered” as “it is ready” | Layout, media, template-structure, and human watch-and-listen gates |
+| Adapt the pipeline without forking the core | Pluggable visual, voice, research, QC, and publishing profiles |
+
+This is not a Markdown-only prompt pack. It ships a CLI, project generator, production state machine, topic visual compiler, executable voice adapters and recovery cache, deterministic HTML/SVG/GSAP rendering, HyperFrames/FFmpeg integration, three visual templates, media QC, extension APIs, packaging tools, and non-AI end-to-end fixtures.
+
+[中文说明](README.md) · [Quick start](#quick-start) · [Actual output](#actual-generated-output) · [Visual templates](#visual-template-collection) · [v2 migration](docs/MIGRATION_V2.md) · [Visual DSL](skill/creating-explainer-videos/references/visual-program-dsl.md) · [Extension API](skill/creating-explainer-videos/references/extension-api.md)
+
+## Quick start
 
 Recommended isolated CLI installation:
 
 ```powershell
 pipx install creating-explainer-videos-skill==2.2.1
 explainer-video-skill --version
+explainer-video-skill install --target codex --json
+explainer-video-skill doctor --json
 ```
 
 Or install into the current Python environment:
@@ -50,6 +76,17 @@ explainer-video-skill next --json ".\demo"
 Agents advance through `status -> next -> real work -> evidence -> validate`. The production stages cover brief, evidence, mechanism mapping, canonical narration/cues, measured audio timing, scene design, renderer, media render, automated QC, human listening, publishing package, and explicit human release decision.
 
 Automation cannot approve a release. It can only produce `release_candidate_pending_human_listen`; `passed` requires a named human who reviewed the exact artifact hash.
+
+## Actual generated output
+
+These frames come from real episode 16–18 video projects, not concept art or generative-video mockups. They demonstrate the same path from knowledge objects to narration cues, semantic actions, and deterministic rendering. The included AI-series preset is one example use of the domain-neutral core.
+
+| S02E17 · Worked Softmax | S02E18 · Online feedback loop |
+| --- | --- |
+| ![Actual generated frame explaining a worked Softmax distribution](https://raw.githubusercontent.com/wzwailr/creating-explainer-videos-skill/main/docs/assets/showcase/s02e17-softmax-explanation.webp) | ![Actual generated frame explaining an online feedback loop](https://raw.githubusercontent.com/wzwailr/creating-explainer-videos-skill/main/docs/assets/showcase/s02e18-online-feedback.webp) |
+| Probabilities, candidate distribution, and the failure source remain visible in one explanation scene. | Offline evaluation, limited traffic, and feedback return form a visible operational loop. |
+
+These images demonstrate actual visual output; they do not replace the complete human watch-and-listen release decision for the corresponding videos.
 
 ## Visual template collection
 

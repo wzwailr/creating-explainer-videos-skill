@@ -1,25 +1,44 @@
 # Explainer Video Skill
 
-[![CI](https://github.com/wzwailr/creating-explainer-videos-skill/actions/workflows/ci.yml/badge.svg)](https://github.com/wzwailr/creating-explainer-videos-skill/actions/workflows/ci.yml)
-[![PyPI](https://img.shields.io/pypi/v/creating-explainer-videos-skill)](https://pypi.org/project/creating-explainer-videos-skill/)
-[![Release](https://img.shields.io/github/v/release/wzwailr/creating-explainer-videos-skill)](https://github.com/wzwailr/creating-explainer-videos-skill/releases)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+<p align="center">
+  <strong>让 Agent 把知识讲成画面，而不是把文字塞进模板。</strong><br>
+  从精确问题到旁白同步的 MP4：过程可执行、可追踪、可复核。
+</p>
 
-一套通用、可安装、可扩展、真正可执行的解释型视频 Agent Skill 与工程脚手架。它适用于机制、流程、系统、科学和技术科普，不绑定某个系列或某类题材。
+<p align="center">
+  <a href="https://github.com/wzwailr/creating-explainer-videos-skill/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/wzwailr/creating-explainer-videos-skill/actions/workflows/ci.yml/badge.svg"></a>
+  <a href="https://pypi.org/project/creating-explainer-videos-skill/"><img alt="PyPI" src="https://img.shields.io/pypi/v/creating-explainer-videos-skill"></a>
+  <a href="https://github.com/wzwailr/creating-explainer-videos-skill/releases"><img alt="Release" src="https://img.shields.io/github/v/release/wzwailr/creating-explainer-videos-skill"></a>
+  <a href="LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/License-MIT-yellow.svg"></a>
+</p>
 
-它不只是几份 Markdown：包内包含生产状态机、项目生成器、主题视觉 DSL、可执行 TTS 适配器、旁白缓存与恢复、真实音频测量、三套可编程视觉模板、确定性 HTML/SVG/GSAP 渲染器、HyperFrames/FFmpeg 适配、媒体质检、扩展 API、打包工具和非 AI 端到端示例。
+![真实生成的解释视频画面：MoE 专家路由中的分派、计算与合并](https://raw.githubusercontent.com/wzwailr/creating-explainer-videos-skill/main/docs/assets/showcase/hero-s02e16-moe-dispatch.webp)
 
-它提供可执行生产骨架和默认质量保障：视觉程序会被编译成所选模板的原生结构，语义角色会获得可辨识的视觉状态，关系线会避开节点中心并显示方向，封面会复用真实主题场景，自动 QC 会检查模板结构与逐旁白代表帧。事实、素材授权、发音和最终发布仍需人工确认。
+<p align="center"><sub>真实项目生成画面 · S02E16「MoE 专家路由」· Ink Explainer</sub></p>
 
-[English](README.en.md) · [v2 迁移指南](docs/MIGRATION_V2.md) · [视觉 DSL](skill/creating-explainer-videos/references/visual-program-dsl.md) · [声音适配器](skill/creating-explainer-videos/references/voice-adapter-protocol.md) · [视觉模板集](skill/creating-explainer-videos/references/visual-template-collection.md) · [扩展 API](skill/creating-explainer-videos/references/extension-api.md)
+给 Agent 一个问题，它不只返回脚本或分镜，而是沿着可执行状态机完成证据、机制图、统一旁白与字幕、语义动画、渲染、质检和发布材料。这套通用脚手架适用于机制、流程、系统、科学与技术科普，不绑定某个系列或题材。
 
-## 一键使用
+| 交付能力 | 默认保障 |
+| --- | --- |
+| 从主题生成可运行视频工程 | JSON-first 状态机明确下一步、必需证据和停止条件 |
+| 让动画真正解释当前旁白 | 主题视觉 DSL、模板原生结构、cue 级语义动作与连接线 |
+| 保持字幕、TTS 与动画同步 | 唯一 canonical 文本、真实音频测量、确定性时间轴 |
+| 避免“能渲染就算完成” | 黑屏/静帧/静音/布局/模板结构检查与人工听看门禁 |
+| 按团队需要继续扩展 | 可插拔视觉、声音、研究、质检和发布 profile |
+
+它不是 Markdown 提示词合集。包内包含 CLI、项目生成器、生产状态机、主题视觉编译器、TTS 适配器与恢复缓存、HTML/SVG/GSAP 渲染器、HyperFrames/FFmpeg 工具链、三套视觉模板、媒体 QC、扩展 API、打包工具和非 AI 端到端示例。
+
+[English](README.en.md) · [快速开始](#60-秒开始) · [真实画面](#真实生成画面) · [视觉模板集](#视觉模板集) · [v2 迁移指南](docs/MIGRATION_V2.md) · [视觉 DSL](skill/creating-explainer-videos/references/visual-program-dsl.md) · [扩展 API](skill/creating-explainer-videos/references/extension-api.md)
+
+## 60 秒开始
 
 推荐使用 `pipx` 安装独立 CLI：
 
 ```powershell
 pipx install creating-explainer-videos-skill==2.2.1
 explainer-video-skill --version
+explainer-video-skill install --target codex --json
+explainer-video-skill doctor --json
 ```
 
 也可以安装到当前 Python 环境：
@@ -86,6 +105,17 @@ brief -> evidence -> mechanism_map -> narration_and_cues
 ```
 
 自动化只能生成 `release_candidate_pending_human_listen`。只有人工完整听看过同一个 SHA-256 成片并明确记录决定，才能成为 `passed`。
+
+## 真实生成画面
+
+以下画面来自第 16–18 集的实际视频工程，不是概念稿或 AI 视频模型示意图。它们展示的是同一套“知识对象 → 旁白 cue → 语义动作 → 确定性渲染”方法；系列预设只是通用框架的一种用法。
+
+| S02E17 · Softmax 数值演算 | S02E18 · 线上反馈闭环 |
+| --- | --- |
+| ![Softmax 数值演算的真实生成画面](https://raw.githubusercontent.com/wzwailr/creating-explainer-videos-skill/main/docs/assets/showcase/s02e17-softmax-explanation.webp) | ![线上反馈闭环的真实生成画面](https://raw.githubusercontent.com/wzwailr/creating-explainer-videos-skill/main/docs/assets/showcase/s02e18-online-feedback.webp) |
+| 概率计算、候选分布与错误来源在同一场景中对应讲解。 | 离线评测、小流量实验和反馈回流被组织成可见循环。 |
+
+这些图片用于展示真实视觉输出，不代替对应成片的完整人工听看与发布决定。
 
 ## 视觉模板集
 
